@@ -29,9 +29,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F6CD86892CF3B505003B7173 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		F6E870BC2CF19A77004E7A82 = {
 			isa = PBXGroup;
 			children = (
+				F6CD86892CF3B505003B7173 /* New Group */,
 				F6E870C72CF19A78004E7A82 /* FlitzCardEditorTest */,
 				F6E870C62CF19A78004E7A82 /* Products */,
 			);

@@ -67,8 +67,18 @@ extension Flitz {
         var id: card_id_t?
         var version: CardVersion
         
+        var background: ImageSource?
+        
         var elements: [any Element]
         var properties: [CardPropertyKey: String]
+        
+        init(id: card_id_t? = nil, version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [CardPropertyKey: String] = [:]) {
+            self.id = id
+            self.version = version
+            self.background = background
+            self.elements = elements
+            self.properties = properties
+        }
         
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
