@@ -29,12 +29,12 @@ extension Flitz {
         static let image = ElementType(rawValue: "image")
     }
     
-    struct ElementSize: Codable {
+    struct ElementSize: Codable, Hashable {
         var width: Double
         var height: Double
     }
     
-    struct Position: Codable {
+    struct Position: Codable, Hashable {
         static let zero = Position(x: 0, y: 0)
         static let center = Position(x: 0.5, y: 0.5)
         
@@ -42,7 +42,7 @@ extension Flitz {
         var y: Double
     }
     
-    class Transform: Codable, ObservableObject {
+    class Transform: Codable, ObservableObject, Hashable {
         @Published
         var position: Position
         
@@ -76,9 +76,19 @@ extension Flitz {
             try container.encode(scale, forKey: .scale)
             try container.encode(rotation, forKey: .rotation)
         }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(position)
+            hasher.combine(scale)
+            hasher.combine(rotation)
+        }
+        
+        static func == (lhs: Flitz.Transform, rhs: Flitz.Transform) -> Bool {
+            lhs.position == rhs.position && lhs.scale == rhs.scale && lhs.rotation == rhs.rotation
+        }
     }
 
-    protocol Element: Codable, ObservableObject {
+    protocol Element: Codable, ObservableObject, Hashable {
         var type: ElementType { get }
         var transform: Transform { get set }
     }

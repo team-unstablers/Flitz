@@ -38,6 +38,16 @@ extension Flitz {
             try container.encode(text, forKey: .text)
             try container.encode(transform, forKey: .transform)
         }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(text)
+            hasher.combine(transform)
+        }
+        
+        static func == (lhs: Flitz.Text, rhs: Flitz.Text) -> Bool {
+            lhs.text == rhs.text &&
+            lhs.transform == rhs.transform
+        }
     }
 }
 

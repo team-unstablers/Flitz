@@ -9,20 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State
-    var isEditing: Bool = false {
-        didSet {
-            if !isEditing {
-                cardInstance?.destroy()
-                cardInstance = nil
-                
-                let card = Flitz.Card(background: backgroundImage != nil ? .uiImage(backgroundImage!) : nil,
-                                      elements: elements)
-                
-                cardInstance = world.spawn(card: card)
-                cardInstance?.updateContent()
-            }
-        }
-    }
+    var isEditing: Bool = false
     
     @State
     var showNormalMap: Bool = false
@@ -42,7 +29,7 @@ struct ContentView: View {
     }()
     
     @State
-    var cardInstance: FZCardViewCardInstance? = nil
+    var card: Flitz.Card = Flitz.Card()
     
     var body: some View {
         if isEditing {
@@ -51,11 +38,20 @@ struct ContentView: View {
                     
                 Button("Go To Preview") {
                     isEditing = false
+                    
+                    var backgroundSource: Flitz.ImageSource? = nil
+                    
+                    if let image = self.backgroundImage {
+                        backgroundSource = .uiImage(image)
+                    }
+                    
+                    card = Flitz.Card(background: backgroundSource, elements: elements)
                 }
             }
         } else {
             VStack {
                 FZCardView(world: $world)
+                    .displayCard($card, to: $world, showNormalMap: $showNormalMap)
                     .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
                 /*
                 FlitzCardView("card_base_2_tmp",
@@ -70,7 +66,7 @@ struct ContentView: View {
                     Button("Toggle Normal Map") {
                         showNormalMap.toggle()
                         
-                        cardInstance?.showNormalMap = showNormalMap
+                        // cardInstance?.showNormalMap = showNormalMap
                     }
                     Button("Edit") {
                         isEditing = true

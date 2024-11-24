@@ -38,14 +38,20 @@ struct FZCardView: UIViewRepresentable, Equatable {
     
     func updateUIView(_ sceneView: SCNView, context: Context) {
         print("updateUIView called")
-        sceneView.scene = world.scene
-        sceneView.pointOfView = world.mainCamera
+        if (sceneView.scene !== world.scene) {
+            sceneView.scene = world.scene
+        }
+        
+        if (sceneView.pointOfView !== world.mainCamera) {
+            sceneView.pointOfView = world.mainCamera
+        }
     }
     
     static func == (lhs: FZCardView, rhs: FZCardView) -> Bool {
         lhs.world === rhs.world
     }
 }
+
 
 #Preview {
     let world: FZCardViewWorld = {

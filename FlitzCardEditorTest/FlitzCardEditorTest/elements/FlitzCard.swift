@@ -59,7 +59,7 @@ extension Flitz {
     typealias card_id_t = UUID
     
     
-    struct Card: Codable {
+    class Card: Codable, ObservableObject, Hashable {
         enum CodingKeys: String, CodingKey {
             case id, version, elements, properties
         }
@@ -80,7 +80,7 @@ extension Flitz {
             self.properties = properties
         }
         
-        init(from decoder: Decoder) throws {
+        required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
             self.id = try container.decodeIfPresent(card_id_t.self, forKey: .id)
@@ -110,6 +110,22 @@ extension Flitz {
             }
             
             try container.encode(properties, forKey: .properties)
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+            hasher.combine(version)
+            hasher.combine(background)
+            
+            for element in elements {
+                hasher.combine(element)
+            }
+            
+            hasher.combine(properties)
+        }
+        
+        static func == (lhs: Flitz.Card, rhs: Flitz.Card) -> Bool {
+            lhs.hashValue == rhs.hashValue
         }
     }
 }

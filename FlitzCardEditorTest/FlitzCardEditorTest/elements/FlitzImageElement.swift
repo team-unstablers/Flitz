@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 extension Flitz {
-    enum ImageSource {
+    enum ImageSource: Hashable {
         case uiImage(UIImage)
         case localURL(URL)
         case origin(URL)
@@ -52,6 +52,19 @@ extension Flitz {
             try container.encode(size, forKey: .size)
             try container.encode(transform, forKey: .transform)
         }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(source)
+            hasher.combine(size)
+            hasher.combine(transform)
+        }
+
+        static func == (lhs: Flitz.Image, rhs: Flitz.Image) -> Bool {
+            lhs.source == rhs.source &&
+            lhs.size == rhs.size &&
+            lhs.transform == rhs.transform
+        }
+        
     }
 }
 
