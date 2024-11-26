@@ -23,6 +23,7 @@ class FZCardViewWorld {
     
     let scene: SCNScene = SCNScene()
     let mainCamera: SCNNode = SCNNode()
+    let modelNode: SCNNode = SCNNode()
     
     private var cardIdCounter: Int = 0
     private(set) var cardArena: [FZCardViewCardInstance] = []
@@ -34,6 +35,7 @@ class FZCardViewWorld {
     private func setupScene() {
         // Clear the background color of the scene.
         scene.background.contents = UIColor.clear
+        scene.rootNode.addChildNode(modelNode)
     }
     
     private func setupMainCamera() {
@@ -204,7 +206,7 @@ class FZCardViewCardInstance: Identifiable {
             return
         }
         
-        world.scene.rootNode.addChildNode(rootNode)
+        world.modelNode.addChildNode(rootNode)
     }
     
     func detachFromScene() {
