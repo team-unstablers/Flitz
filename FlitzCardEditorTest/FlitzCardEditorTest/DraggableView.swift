@@ -27,30 +27,37 @@ struct DraggableView<Content>: View where Content: View {
     
     var body: some View {
         GeometryReader { geom in
-            content()
-                .onAppear {
-                    self.viewportSize = geom.size
+            ZStack {
+                if isDragging {
+                    Rectangle()
+                        .fill(.blue)
+                        .frame(width: geom.size.width, height: geom.size.height)
                 }
-                .overlay {
-                    if isDragging {
-                        Rectangle()
-                            .fill(Color.black.opacity(0.5))
+                content()
+                    .onAppear {
+                        self.viewportSize = geom.size
                     }
-                }
-                .rotationEffect(.degrees(transform.rotation))
-                .scaleEffect(x: transform.scale * deltaScale, y: transform.scale * deltaScale)
-                .position(x: transform.position.x * geom.size.width,
-                          y: transform.position.y * geom.size.height)
-                .offset(x: deltaPos.x * geom.size.width,
-                        y: deltaPos.y * geom.size.height)
-                .gesture(
-                    SimultaneousGesture(drag, SimultaneousGesture(scale, rotation))
-                        .onEnded { _ in
-                            withAnimation {
-                                self.isDragging = false
-                            }
+                    .overlay {
+                        if isDragging {
+                            Rectangle()
+                                .fill(Color.black.opacity(0.5))
                         }
-                )
+                    }
+                    .rotationEffect(.degrees(transform.rotation))
+                    .scaleEffect(x: transform.scale * deltaScale, y: transform.scale * deltaScale)
+                    .position(x: transform.position.x * geom.size.width,
+                              y: transform.position.y * geom.size.height)
+                    .offset(x: deltaPos.x * geom.size.width,
+                            y: deltaPos.y * geom.size.height)
+            }
+            .gesture(
+                SimultaneousGesture(drag, SimultaneousGesture(scale, rotation))
+                    .onEnded { _ in
+                        withAnimation {
+                            self.isDragging = false
+                        }
+                    }
+            )
         }
     }
     
