@@ -7,6 +7,7 @@
 
 import Foundation
 
+import CoreMotion
 import SceneKit
 import SwiftUI
 
@@ -62,9 +63,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
         private var lastPanUpdateTime: Date = Date()
         private var velocity: CGFloat = 0
         private var displayLink: CADisplayLink?
+        private var isTouching: Bool = false // 터치 상태 플래그
+        private let gyroController = GyroController()
         
         init(world: FZCardViewWorld) {
             self.world = world
+            gyroController.modelNode = world.modelNode
         }
         
         @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
@@ -75,6 +79,8 @@ struct FZCardView: UIViewRepresentable, Equatable {
                     
             // 드래그 중 카메라 회전
             if gesture.state == .changed {
+                isTouching = true
+                gyroController.isTouching = true
                 let rotationSpeed: Float = 0.005 // 회전 속도 비율
                 let deltaY = Float(translation.x - lastPanTranslation.x) * rotationSpeed
                 modelNode.eulerAngles.y += deltaY
@@ -84,6 +90,8 @@ struct FZCardView: UIViewRepresentable, Equatable {
             } else if gesture.state == .ended || gesture.state == .cancelled {
                 let timeInterval = currentTime.timeIntervalSince(lastPanUpdateTime)
                 lastPanTranslation = .zero
+                isTouching = false
+                gyroController.isTouching = false
                 // 제스처 종료 시 모멘텀 시작
                 if timeInterval < 0.1 {
                     startMomentum(modelNode: modelNode)
@@ -113,7 +121,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
             }
             
             // 속도 기반으로 Y축 회전 업데이트
-            let deltaY = Float(velocity * 0.001) // 속도를 부드럽게 조정
+            let deltaY = Float(velocity * 0.005) // 속도를 부드럽게 조정
             modelNode.eulerAngles.y += deltaY
         }
 
