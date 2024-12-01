@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F61C5C052CF9A46700D353CA /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F61C5C042CF9A46700D353CA /* Alamofire */; };
+		F61C5CD12CFC5F7A00D353CA /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F61C5CD02CFC5F7A00D353CA /* AlamofireImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F61C5C052CF9A46700D353CA /* Alamofire in Frameworks */,
+				F61C5CD12CFC5F7A00D353CA /* AlamofireImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +81,7 @@
 			name = FlitzCardEditorTest;
 			packageProductDependencies = (
 				F61C5C042CF9A46700D353CA /* Alamofire */,
+				F61C5CD02CFC5F7A00D353CA /* AlamofireImage */,
 			);
 			productName = FlitzCardEditorTest;
 			productReference = F6E870C52CF19A78004E7A82 /* FlitzCardEditorTest.app */;
@@ -110,6 +113,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F61C5C032CF9A46700D353CA /* XCRemoteSwiftPackageReference "Alamofire" */,
+				F61C5CCF2CFC5F7A00D353CA /* XCRemoteSwiftPackageReference "AlamofireImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F6E870C62CF19A78004E7A82 /* Products */;
@@ -351,6 +355,14 @@
 				minimumVersion = 5.10.2;
 			};
 		};
+		F61C5CCF2CFC5F7A00D353CA /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/AlamofireImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -358,6 +370,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F61C5C032CF9A46700D353CA /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		F61C5CD02CFC5F7A00D353CA /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F61C5CCF2CFC5F7A00D353CA /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

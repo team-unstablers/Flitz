@@ -21,3 +21,9 @@ struct FZCard: Codable, Identifiable {
     var created_at: String
     var updated_at: String
 }
+
+
+struct FZCardAssetReference: Codable, Identifiable {
+    var id: String
+    var public_url: String
+}

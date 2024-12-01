@@ -117,7 +117,7 @@ struct FZTransformModifier: ViewModifier {
                                 isScaling = false
                                 
                                 transform.scale *= scale
-                                transform.scale = max(transform.scale, 1)
+                                transform.scale = max(transform.scale, 0.25)
                                 delta.scale = 1.0
                             }
                         })

@@ -12,10 +12,18 @@ import UIKit
 extension Flitz {
     enum ImageSource: Hashable, Codable {
         case uiImage(UIImage)
-        case origin(URL)
+        case origin(String, URL)
         
         enum CodingKeys: String, CodingKey {
             case id, public_url
+        }
+        
+        var isLocal: Bool {
+            if case .uiImage = self {
+                return true
+            }
+            
+            return false
         }
         
         init(from decoder: any Decoder) throws {
@@ -23,16 +31,16 @@ extension Flitz {
             let id = try container.decode(String.self, forKey: .id)
             let public_url = try container.decode(URL.self, forKey: .public_url)
             
-            self = .origin(public_url)
+            self = .origin(id, public_url)
         }
         
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             switch self {
             case .uiImage(_):
-                break
-            case .origin(let url):
-                try container.encode("FIXME", forKey: .id)
+                fatalError("assertion failed: 로컬 이미지는 서버에 먼저 업로드되어야 합니다")
+            case .origin(let id, let url):
+                try container.encode(id, forKey: .id)
                 try container.encode(url, forKey: .public_url)
             }
         }

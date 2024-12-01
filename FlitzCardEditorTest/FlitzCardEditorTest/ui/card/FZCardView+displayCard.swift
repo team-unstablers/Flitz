@@ -17,6 +17,8 @@ extension FZCardView {
 }
 
 struct FZCardViewDisplayCard: ViewModifier, Equatable {
+    @Environment(\.fzAssetsLoader)
+    var assetsLoader: AssetsLoader
     
     @Binding
     var world: FZCardViewWorld
@@ -49,6 +51,9 @@ struct FZCardViewDisplayCard: ViewModifier, Equatable {
             }
             .onChange(of: showNormalMap) {
                 instance?.showNormalMap = showNormalMap
+            }
+            .onChange(of: assetsLoader.images) {
+                instance?.updateContent()
             }
             .onAppear {
                 replaceCardInstance()

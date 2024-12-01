@@ -9,6 +9,10 @@ import Foundation
 
 import Alamofire
 
+enum FZAPIError: LocalizedError {
+    case assertionFailure(message: String)
+}
+
 struct FZAPIEndpoint: RawRepresentable {
     var rawValue: String
     
@@ -32,7 +36,7 @@ struct FZAPIEndpoint: RawRepresentable {
     }
     
     static func cardAssetReferences(id: String) -> FZAPIEndpoint {
-        return FZAPIEndpoint(rawValue: "/cards/\(id)/asset_reference/")
+        return FZAPIEndpoint(rawValue: "/cards/\(id)/asset-references/")
     }
     // card end
     
@@ -125,6 +129,57 @@ class FZAPIClient {
     func card(by id: String) async throws -> FZCard {
         return try await self.request(to: .card(id: id), expects: FZCard.self)
     }
+    
+    func createCard() async throws -> FZCard {
+        return try await self.request(to: .cards, expects: FZCard.self, method: .post)
+    }
+    
+    func patchCard(which card: FZCard) async throws -> FZCard {
+        guard card.content.isReadyToPublish else {
+            throw FZAPIError.assertionFailure(message: "퍼블리싱 가능 상태가 아닌 카드를 업로드하려 했습니다")
+        }
+        
+        return try await self.request(to: .card(id: card.id),
+                                      expects: FZCard.self,
+                                      method: .patch,
+                                      parameters: card)
+    }
+    
+    func uploadCardAsset(of cardId: String, asset: Data, type: AssetCreationType) async throws -> FZCardAssetReference {
+        let url = FZAPIEndpoint.cardAssetReferences(id: cardId).url(for: context.baseURL)
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(context.token!)"
+        ]
+        
+        let response = try await AF.upload(multipartFormData: { (multipartFormData) in
+            multipartFormData.append(asset, withName: "file", fileName: type.defaultFileName, mimeType: type.mimeType)
+        }, to: url, method: .post, headers: headers)
+            .validate()
+            .serializingDecodable(FZCardAssetReference.self)
+            .response
+        
+        guard let value = response.value else {
+            let error = response.error!
+            let underlyingError = error.underlyingError
+            
+            throw error
+        }
+        
+        return value
+    }
+    
+    /// 알아서 모든 로컬 에셋을 업로드합니다
+    func uploadCardAssets(of card: FZCard) async throws {
+        try await card.content.background?.uploadToServer(using: self, cardId: card.id)
+        
+        for element in card.content.elements {
+            if let imageElement = element as? Flitz.Image {
+                try await imageElement.source.uploadToServer(using: self, cardId: card.id)
+            }
+        }
+    }
+    
 }
 
 
@@ -146,5 +201,21 @@ fileprivate extension String {
         }
         
         return server
+    }
+}
+
+fileprivate extension Flitz.ImageSource {
+    mutating func uploadToServer(using client: FZAPIClient, cardId: String) async throws {
+        guard case .uiImage(let image) = self else {
+            return
+        }
+        
+        guard let jpeg = image.jpegData(compressionQuality: 0.92) else {
+            fatalError("JPEG 저장 실패")
+        }
+        
+        let assetRef = try await client.uploadCardAsset(of: cardId, asset: jpeg, type: .image)
+        
+        self = .origin(assetRef.id, URL(string: assetRef.public_url)!)
     }
 }

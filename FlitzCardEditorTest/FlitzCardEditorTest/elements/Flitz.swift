@@ -15,8 +15,7 @@ struct Flitz {
             case let text as Flitz.Text:
                 TextElementView(element: text)
             case let image as Flitz.Image:
-                EmptyView()
-                // ImageRenderer(element: image)
+                ImageElementView(element: image)
             default:
                 EmptyView()
             }

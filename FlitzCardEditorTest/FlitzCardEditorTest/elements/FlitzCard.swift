@@ -73,9 +73,9 @@ extension Flitz {
         var elements: [any Element]
         
         @Published
-        var properties: [CardPropertyKey: String]
+        var properties: [String: String] = [:]
         
-        init(version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [CardPropertyKey: String] = [:]) {
+        init(version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [String: String] = [:]) {
             self.schema_version = version
             self.background = background
             self.elements = elements
@@ -131,3 +131,4 @@ extension Flitz {
         }
     }
 }
+

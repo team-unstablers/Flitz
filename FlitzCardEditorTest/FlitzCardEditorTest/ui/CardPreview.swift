@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct CardPreviewTest: View {
+    @Environment(\.fzAssetsLoader)
+    var assetsLoader: AssetsLoader
+    
     var cardId: String
     
     @Binding
@@ -21,6 +24,7 @@ struct CardPreviewTest: View {
         return world
     }()
     
+
     @State
     var showNormalMap: Bool = false
     
@@ -52,6 +56,7 @@ struct CardPreviewTest: View {
         Task {
             do {
                 let card = try await client.card(by: cardId)
+                try? await assetsLoader.resolveAll(from: card.content)
                 
                 DispatchQueue.main.async {
                     self.card = card.content

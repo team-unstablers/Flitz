@@ -95,6 +95,11 @@ struct TestView: View {
                         }
                     }
                 }
+                HStack {
+                    Button("new card") {
+                        self.createNewCard()
+                    }
+                }
             }
             .onAppear {
                 self.fetchSelfProfile()
@@ -133,6 +138,18 @@ struct TestView: View {
                 DispatchQueue.main.async {
                     self.cards = cards.results
                 }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func createNewCard() {
+        Task {
+            do {
+                try await self.client.createCard()
+                
+                self.fetchSelfCards()
             } catch {
                 print(error)
             }

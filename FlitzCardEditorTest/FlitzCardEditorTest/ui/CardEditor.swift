@@ -11,14 +11,24 @@ struct CardEditor: View {
     var cardId: String
     
     @State
-    var card: Flitz.Card?
+    var card: FZCard?
+    
+    @State
+    var assetsLoader: AssetsLoader = AssetsLoader()
     
     var body: some View {
         VStack {
             if let card = card {
-                CardEditorInternal(card: card)
+                CardEditorInternal(card: card.content)
+                    .environment(\.fzAssetsLoader, assetsLoader)
             } else {
                 EmptyView()
+            }
+            
+            HStack {
+                Button("save") {
+                    self.saveCard()
+                }
             }
         }.onAppear {
             self.fetchCard()
@@ -31,9 +41,30 @@ struct CardEditor: View {
         Task {
             do {
                 let card = try await client.card(by: cardId)
+                try? await self.assetsLoader.resolveAll(from: card.content)
                 
                 DispatchQueue.main.async {
-                    self.card = card.content
+                    self.card = card
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func saveCard() {
+        guard var card = card else { return }
+        card.title = "test"
+        
+        let client = FZAPIClient(context: FZAPIContext.stored!)
+        Task {
+            do {
+                try await client.uploadCardAssets(of: card)
+                let card = try await client.patchCard(which: card)
+                try? await self.assetsLoader.resolveAll(from: card.content)
+
+                DispatchQueue.main.async {
+                    self.card = card
                 }
             } catch {
                 print(error)
