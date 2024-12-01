@@ -10,6 +10,9 @@ import SwiftUI
 struct CardPreviewTest: View {
     var cardId: String
     
+    @Binding
+    var navState: [TestView.AppRootNavState]
+    
     @State
     var world: FZCardViewWorld = {
         let world = FZCardViewWorld()
@@ -32,6 +35,10 @@ struct CardPreviewTest: View {
             HStack {
                 Button("show normal map") {
                     showNormalMap.toggle()
+                }
+                
+                Button("editor") {
+                    navState.append(.cardEditor(cardId))
                 }
             }
         }

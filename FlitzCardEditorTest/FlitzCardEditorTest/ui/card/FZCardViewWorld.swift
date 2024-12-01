@@ -9,13 +9,6 @@ import Foundation
 import SceneKit
 
 
-func deg2rad(_ number: Float) -> Float {
-    return number * .pi / 180
-}
-
-func rad2deg(_ number: Float) -> Float {
-    return number * 180 / .pi
-}
 
 
 /// FZCardViewWorld - FZCardView에서 렌더링을 위해 사용하는 Scene, Geometry Element 등을 관리하는 클래스.

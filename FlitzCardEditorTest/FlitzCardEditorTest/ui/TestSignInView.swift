@@ -102,10 +102,10 @@ struct TestView: View {
             }
             .navigationDestination(for: AppRootNavState.self) { state in
                 switch state {
-                case .cardEditor(let cardID):
-                    Text("CardEditor \(cardID)")
+                case .cardEditor(let cardId):
+                    CardEditor(cardId: cardId)
                 case .cardPreview(let cardId):
-                    CardPreviewTest(cardId: cardId)
+                    CardPreviewTest(cardId: cardId, navState: $navState)
                 }
             }
         }

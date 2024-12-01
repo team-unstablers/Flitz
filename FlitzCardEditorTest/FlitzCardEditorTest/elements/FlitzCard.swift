@@ -66,9 +66,13 @@ extension Flitz {
         
         var schema_version: CardVersion
         
+        @Published
         var background: ImageSource?
         
+        @Published
         var elements: [any Element]
+        
+        @Published
         var properties: [CardPropertyKey: String]
         
         init(version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [CardPropertyKey: String] = [:]) {

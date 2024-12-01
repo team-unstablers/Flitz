@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct CardEditor: View {
-    @Binding
+struct CardEditorInternal: View {
+    @ObservedObject
+    var card: Flitz.Card
+    
+    @State
     var backgroundImage: UIImage?
 
-    @Binding
-    var elements: [any Flitz.Element]
-    
     @State
     var showImagePicker: Bool = false
     
@@ -31,7 +31,7 @@ struct CardEditor: View {
                     showBackgroundImagePicker = true
                 }
                 Button("Text") {
-                    elements.append(Flitz.Text("hello"))
+                    card.elements.append(Flitz.Text("hello"))
                 }
                 Button("Image") {
                     showImagePicker = true
@@ -39,7 +39,7 @@ struct CardEditor: View {
             }
             .sheet(isPresented: $showImagePicker, onDismiss: {
                 if let image = selectedImage {
-                    elements.append(
+                    card.elements.append(
                         Flitz.Image(.uiImage(image),
                                     size: .init(width: image.size.width,
                                                 height: image.size.height))
@@ -58,7 +58,7 @@ struct CardEditor: View {
             
             GeometryReader { geom in
                 ZStack {
-                    CardCanvas(background: backgroundImage, elements: $elements)
+                    CardCanvas(background: backgroundImage, elements: $card.elements)
                         .aspectScale(basedOn: FlitzCard.size, to: geom.size)
                         .onAppear {
                             print(geom.size.width / 550)
@@ -71,10 +71,12 @@ struct CardEditor: View {
     }
 }
 
+/*
 #Preview {
     @State
     @Previewable
     var elements: [any Flitz.Element] = []
     
-    CardEditor(backgroundImage: .constant(nil), elements: $elements)
+    CardEditorInternal(backgroundImage: .constant(nil), elements: $elements)
 }
+*/

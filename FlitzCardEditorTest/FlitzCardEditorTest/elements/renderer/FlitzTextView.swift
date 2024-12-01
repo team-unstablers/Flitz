@@ -8,20 +8,42 @@
 import SwiftUI
 
 extension Flitz.Renderer {
-    struct TextRenderer: RendererView {
-        @ObservedObject
-        var element: Flitz.Text
-        
-        @State
-        var isEditing = false
-        
-        private var bodyBase: some View {
-            SwiftUI.Text(element.text)
-                .bold()
+    struct Text {
+        struct TextRendererView: RendererView {
+            @ObservedObject
+            var element: Flitz.Text
+            
+            var body: some View {
+                SwiftUI.Text(element.text)
+                    .bold()
+                    .padding(8)
+                    .background(.white)
+                    .foregroundStyle(.black)
+                    .clipShape(.rect(cornerRadius: 8))
+                    .padding(4)
+            }
         }
         
-        var body: some View {
-            if isEditing {
+        struct TextNormalMapRendererView: NormalMapRendererView {
+            @ObservedObject
+            var element: Flitz.Text
+            
+            var body: some View {
+                SwiftUI.Text(element.text)
+                    .bold()
+                    .padding(7.5)
+                    .background(Color.height4)
+                    .foregroundStyle(Color.height8)
+                    .clipShape(.rect(cornerRadius: 8))
+                    .compositingGroup()
+            }
+        }
+        
+        struct TextEditorView: EditorView {
+            @ObservedObject
+            var element: Flitz.Text
+            
+            var body: some View {
                 SwiftUI.TextField(text: $element.text) {}
                     .bold()
                     .padding()
@@ -29,30 +51,13 @@ extension Flitz.Renderer {
                     .background(.white)
                     .foregroundStyle(.black)
                     .clipShape(.rect(cornerRadius: 8))
-                    .onSubmit {
-                        isEditing = false
-                    }
-            } else {
-                bodyBase
-                    .padding(8)
-                    .background(.white)
-                    .foregroundStyle(.black)
-                    .clipShape(.rect(cornerRadius: 8))
-                    .padding(4)
-                    .onTapGesture {
-                        isEditing = true
-                    }
             }
         }
-        
-        var normalMapBody: some View {
-            bodyBase
-                .padding(7.5)
-                .background(Color.height4)
-                .foregroundStyle(Color.height8)
-                .clipShape(.rect(cornerRadius: 8))
-                .compositingGroup()
-        }
     }
+    
+    typealias TextElementView = ElementView<Flitz.Text,
+                                            Text.TextRendererView,
+                                            Text.TextNormalMapRendererView,
+                                            Text.TextEditorView>
 }
 
