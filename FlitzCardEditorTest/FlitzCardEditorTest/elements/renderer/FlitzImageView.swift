@@ -72,8 +72,14 @@ extension Flitz.Renderer {
             @ObservedObject
             var element: Flitz.Image
             
+            var submitHandler: () -> Void
+            
             var body: some View {
                 EmptyView()
+                    .onAppear {
+                        // HACK: 이미지는 아직 편집할 수 없음
+                        submitHandler()
+                    }
             }
         }
     }

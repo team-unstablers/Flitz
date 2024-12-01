@@ -30,13 +30,14 @@ extension Flitz.Renderer {
         
         var element: Element { get }
         
-        init(element: Element)
+        var submitHandler: () -> Void { get }
+        
+        init(element: Element, submitHandler: @escaping () -> Void)
     }
     
     enum DisplayMode {
         case `default`
         case normalMap
-        case editor
     }
     
     public struct ElementView<Element: Flitz.Element,
@@ -56,17 +57,37 @@ extension Flitz.Renderer {
         @State
         var delta: Flitz.Transform = .zero
         
+        @State
+        var isEditing: Bool = false
+        
         var body: some View {
-            switch displayMode {
-            case .default:
-                Renderer(element: element)
-                    .applyFZTransform(element.transform, delta: delta, editable: true)
-            case .normalMap:
-                NormalMapRenderer(element: element)
-                    .applyFZTransform(element.transform, delta: delta)
-            case .editor:
-                Editor(element: element)
+            ZStack {
+                switch displayMode {
+                case .default:
+                    Renderer(element: element)
+                        .applyFZTransform(element.transform, delta: delta, editable: true)
+                        .onTapGesture {
+                            isEditing = true
+                        }
+                case .normalMap:
+                    NormalMapRenderer(element: element)
+                        .applyFZTransform(element.transform, delta: delta)
+                }
+                
+                if isEditing {
+                    GeometryReader { geom in
+                        Rectangle()
+                            .fill(.black.opacity(0.5))
+                            .frame(width: geom.size.width, height: geom.size.height)
+                        Editor(element: element) {
+                            isEditing = false
+                        }
+                            .position(x: geom.size.width / 2,
+                                      y: geom.size.height / 2)
+                    }
+                }
             }
+            
         }
     }
 }

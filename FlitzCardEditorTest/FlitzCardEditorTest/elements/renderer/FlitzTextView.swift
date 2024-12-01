@@ -43,6 +43,8 @@ extension Flitz.Renderer {
             @ObservedObject
             var element: Flitz.Text
             
+            var submitHandler: () -> Void
+            
             var body: some View {
                 SwiftUI.TextField(text: $element.text) {}
                     .bold()
@@ -51,6 +53,9 @@ extension Flitz.Renderer {
                     .background(.white)
                     .foregroundStyle(.black)
                     .clipShape(.rect(cornerRadius: 8))
+                    .onSubmit {
+                        submitHandler()
+                    }
             }
         }
     }
