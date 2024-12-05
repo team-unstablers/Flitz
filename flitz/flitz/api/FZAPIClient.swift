@@ -147,14 +147,11 @@ class FZAPIClient {
         _ = try await self.request(to: .waveDiscoveryEnd, expects: Ditch.self, method: .post)
     }
     
-    func reportWaveDiscovery(for sessionId: String, from selfSessionId: String) async throws {
+    func reportWaveDiscovery(_ args: ReportWaveDiscoveryArgs) async throws {
         _ = try await self.request(to: .waveReportDiscovery,
                                    expects: Ditch.self,
                                    method: .post,
-                                   parameters: [
-                                    "session_id": selfSessionId,
-                                    "discovered_session_id": sessionId
-                                   ])
+                                   parameters: args)
     }
 }
 

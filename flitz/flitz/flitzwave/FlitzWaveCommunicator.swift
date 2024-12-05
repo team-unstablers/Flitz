@@ -62,10 +62,20 @@ class FlitzWaveCommunicator: ObservableObject {
 }
 
 extension FlitzWaveCommunicator: FlitzWaveDiscovererDelegate {
-    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String) {
+    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
+        let args = ReportWaveDiscoveryArgs(
+            session_id: self.identity,
+            discovered_session_id: sessionId,
+            
+            latitude: location?.coordinate.latitude,
+            longitude: location?.coordinate.longitude,
+            altitude: location?.altitude,
+            
+            accuracy: location?.horizontalAccuracy
+        )
         Task {
             do {
-                try await self.client.reportWaveDiscovery(for: sessionId, from: self.identity)
+                try await self.client.reportWaveDiscovery(args)
             } catch {
                 print(error)
             }

@@ -9,7 +9,7 @@ import CoreBluetooth
 import CoreLocation
 
 protocol FlitzWaveDiscovererDelegate: AnyObject {
-    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String)
+    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
 }
 
 class FlitzWaveDiscoverer: NSObject {
@@ -128,7 +128,9 @@ extension FlitzWaveDiscoverer: CBPeripheralDelegate {
         }
         
         print("discovered \(id)")
-        self.delegate?.discoverer(self, didDiscover: id)
+        self.delegate?.discoverer(self,
+                                  didDiscover: id,
+                                  from: locationManager.location)
     }
 }
 
