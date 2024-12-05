@@ -34,6 +34,9 @@ struct FZTransformModifier: ViewModifier {
     private var viewportSize: CGSize = .zero
     
     @State
+    private var elementSize: CGSize = .zero
+    
+    @State
     var isDragging: Bool = false {
         didSet { didGestureStateChanged() }
     }
@@ -81,6 +84,16 @@ struct FZTransformModifier: ViewModifier {
                 }
                 content
                     .overlay {
+                        GeometryReader { elemGeom in
+                            Rectangle()
+                                .fill(.clear)
+                                .allowsHitTesting(false)
+                                .onAppear {
+                                    self.elementSize = elemGeom.size
+                                }
+                        }
+                    }
+                    .overlay {
                         if self.gestureState {
                             Rectangle()
                                 .fill(Color.black.opacity(0.5))
@@ -116,8 +129,16 @@ struct FZTransformModifier: ViewModifier {
                             } else if state == .ended {
                                 isScaling = false
                                 
+                                let tmpScale = transform.scale * scale
+                                let scaledWidth = elementSize.width * tmpScale
+                                let scaledHeight = elementSize.height * tmpScale
+                                
+                                if scaledWidth < 128 || scaledHeight < 128 {
+                                    delta.scale = 1.0
+                                    return
+                                }
+                                
                                 transform.scale *= scale
-                                transform.scale = max(transform.scale, 0.25)
                                 delta.scale = 1.0
                             }
                         })
