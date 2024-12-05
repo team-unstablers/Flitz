@@ -7,10 +7,25 @@
 
 import SwiftUI
 
+enum RootNavigationItem: Hashable {
+    case cardEditor(cardId: String)
+}
+
 struct RootNavigation: View {
+    @EnvironmentObject
+    var appState: RootAppState
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $appState.navState) {
             RootTabView()
+                .navigationDestination(for: RootNavigationItem.self) { item in
+                    switch (item) {
+                    case .cardEditor(let cardId):
+                        CardEditor(cardId: cardId, client: $appState.client)
+                    default:
+                        EmptyView()
+                    }
+                }
         }
     }
 }

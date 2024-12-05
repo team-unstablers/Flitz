@@ -14,9 +14,6 @@ struct CardListScreen: View {
     @State
     var cards: [FZSimpleCard] = []
     
-    @State
-    var editorCurrentCard: FZCard?
-    
     var body: some View {
         NavigationView {
             TabView {
@@ -34,9 +31,6 @@ struct CardListScreen: View {
                     }
                 }
             }
-        }
-        .sheet(item: $editorCurrentCard) { card in
-            CardEditor(cardId: card.id, client: $appState.client)
         }
         .onAppear {
             self.fetchSelfCards()
@@ -63,7 +57,7 @@ struct CardListScreen: View {
                 let card = try await self.appState.client.createCard()
                 
                 DispatchQueue.main.async {
-                    self.editorCurrentCard = card
+                    self.appState.navState.append(.cardEditor(cardId: card.id))
                 }
             } catch {
                 print(error)

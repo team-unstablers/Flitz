@@ -13,6 +13,9 @@ class RootAppState: ObservableObject {
     var client: FZAPIClient = FZAPIClient(context: .load())
     
     @Published
+    var navState: [RootNavigationItem] = []
+    
+    @Published
     var waveCommunicator: FlitzWaveCommunicator!
     
     @Published
