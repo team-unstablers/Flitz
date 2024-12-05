@@ -10,13 +10,17 @@ import SwiftUI
 
 extension FZCardView {
     func displayCard(_ card: Binding<Flitz.Card?>, to world: Binding<FZCardViewWorld>, showNormalMap: Binding<Bool> = .constant(false)) -> some View {
-        self.modifier(FZCardViewDisplayCard(world: world,
+        self
+            .equatable()
+            .modifier(FZCardViewDisplayCard(world: world,
                                             card: card,
                                             showNormalMap: showNormalMap))
     }
 }
 
-struct FZCardViewDisplayCard: ViewModifier, Equatable {
+struct FZCardViewDisplayCard: ViewModifier {
+    let lock = NSLock()
+    
     @Environment(\.fzAssetsLoader)
     var assetsLoader: AssetsLoader
     
@@ -32,22 +36,20 @@ struct FZCardViewDisplayCard: ViewModifier, Equatable {
     @State
     var instance: FZCardViewCardInstance?
     
-    func replaceCardInstance() {
-        instance?.destroy()
-        instance = nil
-        
-        if card == nil {
-            return
-        }
-        
-        instance = world.spawn(card: card!)
-        instance?.updateContent()
-    }
-    
     func body(content: Content) -> some View {
         return content
+            .onChange(of: instance) { prevValue, newValue in
+                prevValue?.destroy()
+                print("destroyed")
+                newValue?.updateContent()
+            }
             .onChange(of: card) {
-                replaceCardInstance()
+                if let card = card {
+                    instance = world.spawn(card: card)
+                } else {
+                    instance?.destroy()
+                    instance = nil
+                }
             }
             .onChange(of: showNormalMap) {
                 instance?.showNormalMap = showNormalMap
@@ -56,12 +58,13 @@ struct FZCardViewDisplayCard: ViewModifier, Equatable {
                 instance?.updateContent()
             }
             .onAppear {
-                replaceCardInstance()
+                if let card = card {
+                    instance = world.spawn(card: card)
+                }
+            }
+            .onDisappear {
+                instance?.destroy()
+                instance = nil
             }
     }
-    
-    static func == (lhs: FZCardViewDisplayCard, rhs: FZCardViewDisplayCard) -> Bool {
-        return lhs.world === rhs.world && lhs.card === rhs.card
-    }
-    
 }

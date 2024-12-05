@@ -14,16 +14,30 @@ struct CardListScreen: View {
     @State
     var cards: [FZSimpleCard] = []
     
+    @State
+    var editorCurrentCard: FZCard?
+    
     var body: some View {
-        VStack {
+        NavigationView {
             TabView {
                 ForEach(cards, id: \.id) { card in
                     SimpleCardPreview(client: $appState.client, cardId: card.id)
                 }
             }
             .tabViewStyle(.page)
+            .toolbarTitleDisplayMode(.inline)
+            .navigationTitle("My Cards")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("New Card") {
+                        self.createNewCard()
+                    }
+                }
+            }
         }
-        .navigationTitle("My Cards")
+        .sheet(item: $editorCurrentCard) { card in
+            CardEditor(cardId: card.id, client: $appState.client)
+        }
         .onAppear {
             self.fetchSelfCards()
         }
@@ -36,6 +50,20 @@ struct CardListScreen: View {
                 
                 DispatchQueue.main.async {
                     self.cards = cards.results
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func createNewCard() {
+        Task {
+            do {
+                let card = try await self.appState.client.createCard()
+                
+                DispatchQueue.main.async {
+                    self.editorCurrentCard = card
                 }
             } catch {
                 print(error)

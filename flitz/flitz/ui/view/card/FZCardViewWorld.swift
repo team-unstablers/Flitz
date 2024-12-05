@@ -19,7 +19,7 @@ class FZCardViewWorld {
     let modelNode: SCNNode = SCNNode()
     
     private var cardIdCounter: Int = 0
-    private(set) var cardArena: [FZCardViewCardInstance] = []
+    private(set) var cardArena: Set<FZCardViewCardInstance> = []
     
     init() {
         
@@ -49,7 +49,7 @@ class FZCardViewWorld {
         cardIdCounter += 1
         
         let instance = FZCardViewCardInstance(id: id, world: self, card: card)
-        cardArena.append(instance)
+        cardArena.insert(instance)
         
         instance.setup()
         instance.attachToScene()
@@ -58,12 +58,12 @@ class FZCardViewWorld {
     }
     
     fileprivate func remove(card: FZCardViewCardInstance) {
-        self.cardArena.removeAll(where: { $0.id == card.id })
+        self.cardArena.remove(card)
     }
 }
 
 
-class FZCardViewCardInstance: Identifiable {
+class FZCardViewCardInstance: Identifiable, Hashable {
     private static let MODEL_USDZ_NAME = "card_base_2_tmp"
     
     private static var baseModel: SCNReferenceNode? = loadBaseModel()
@@ -168,7 +168,7 @@ class FZCardViewCardInstance: Identifiable {
         
         guard let cube = modelNode.childNode(withName: "Cube", recursively: true),
               let geometry = cube.childNodes.first?.geometry,
-              let material = geometry.materials.first?.copy() as? SCNMaterial
+              let material = geometry.materials.first
         else {
             print("Failed to get material")
             return
@@ -187,8 +187,6 @@ class FZCardViewCardInstance: Identifiable {
         material.diffuse.magnificationFilter = .linear
         material.normal.magnificationFilter = .linear
         
-        geometry.replaceMaterial(at: 0, with: material)
-        
         SCNTransaction.commit()
     }
 
@@ -204,5 +202,14 @@ class FZCardViewCardInstance: Identifiable {
     
     func detachFromScene() {
         rootNode.removeFromParentNode()
+    }
+    
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: FZCardViewCardInstance, rhs: FZCardViewCardInstance) -> Bool {
+        lhs.hashValue == rhs.hashValue
     }
 }
