@@ -3,10 +3,12 @@ import SceneKit
 
 class GyroController: NSObject {
     private let motionManager = CMMotionManager()
-    var modelNode: SCNNode?
-    var isTouching: Bool = false // 터치 상태 플래그
+    var lightNode: SCNNode?
     private var previousYaw: Float? // 이전 프레임의 Yaw 값
+    private var previousPitch: Float?
     private var initialQuaternion: simd_quatf? // 초기 Quaternion 값
+    private var yAngle: Float = .zero
+    private var xAngle: Float = .zero
 
     override init() {
         super.init()
@@ -28,7 +30,7 @@ class GyroController: NSObject {
     }
 
     func applyDeviceRotation(attitude: CMAttitude) {
-        guard let modelNode = modelNode else { return }
+        guard let lightNode = lightNode else { return }
 
         // CoreMotion의 Quaternion 가져오기
         let quaternion = simd_quatf(ix: Float(attitude.quaternion.x),
@@ -47,15 +49,31 @@ class GyroController: NSObject {
         // Quaternion에서 Yaw 값 추출
         let yaw = atan2(2.0 * (correctedQuaternion.imag.z * correctedQuaternion.real),
                         1.0 - 2.0 * (correctedQuaternion.imag.z * correctedQuaternion.imag.z))
+        
+        let sinPitch = 2.0 * (correctedQuaternion.real * correctedQuaternion.imag.x - correctedQuaternion.imag.y * correctedQuaternion.imag.z)
+        let pitch = asin(max(-1.0, min(1.0, sinPitch)))
+        
 
         // 이전 값과 비교하여 변화량 계산
         let deltaYaw = yaw - (previousYaw ?? yaw)
+        let deltaPitch = pitch - (previousPitch ?? pitch)
 
         // SceneKit의 eulerAngles.y에 누적 회전 적용
         previousYaw = yaw
+        previousPitch = pitch
         
-        if !self.isTouching {
-            modelNode.eulerAngles.y -= deltaYaw / 2
+        yAngle -= deltaYaw
+        xAngle -= deltaPitch
+        
+        // when -pi/2 < yAngle < pi/2
+        
+        print("yAngle: \(yAngle), xAngle: \(xAngle)")
+        if -0.4 < yAngle && yAngle < 0.4 {
+            lightNode.eulerAngles.y = -yAngle * 2
+        }
+        
+        if -0.8 < xAngle && xAngle < 0.3 {
+            lightNode.eulerAngles.x = -xAngle * 2
         }
     }
 
