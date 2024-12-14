@@ -28,6 +28,10 @@ struct FZAPIContext: Codable {
         }
     }
     
+    static func reset() {
+        UserDefaults.standard.removeObject(forKey: "FZAPIContext")
+    }
+    
     var host: FZAPIServerHost = .default
     var token: String?
     

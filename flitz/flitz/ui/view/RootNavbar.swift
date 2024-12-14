@@ -7,10 +7,49 @@
 
 import SwiftUI
 
-struct NavbarButton: View {
-    var icon: String
-    var label: String
+extension RootTab {
+    var icon: String {
+        switch self {
+        case .dashboard:
+            return "house"
+        case .exchangedCards:
+            return "arrow.2.circlepath"
+        case .messages:
+            return "message"
+        case .profile:
+            return "person"
+        }
+    }
     
+    var label: String {
+        switch self {
+        case .dashboard:
+            return "홈"
+        case .exchangedCards:
+            return "웨이브"
+        case .messages:
+            return "메시지"
+        case .profile:
+            return "내 프로필"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .dashboard:
+            return Color.Brand.orange0
+        case .exchangedCards:
+            return Color.Brand.blue0
+        case .messages:
+            return Color.Brand.green0
+        case .profile:
+            return Color.Brand.yellow0
+        }
+    }
+}
+
+struct NavbarButton: View {
+    var tab: RootTab
     var isActive: Bool = false
     
     var handler: () -> Void
@@ -19,15 +58,15 @@ struct NavbarButton: View {
         Button {
             handler()
         } label: {
-            VStack(spacing: 6) {
-                Image(systemName: icon)
+            VStack(spacing: 4) {
+                Image(systemName: tab.icon)
                     .font(.system(size: 20))
                     .frame(width: 20, height: 20)
-                Text(label)
-                    .font(.system(size: 12))
+                Text(tab.label)
+                    .font(.small)
                     .bold(isActive)
             }
-            .foregroundStyle(isActive ? Color(hex: 0xFFC107) : Color(hex: 0xBDBDBD))
+            .foregroundStyle(isActive ? tab.color : Color(hex: 0xBDBDBD))
         }
         .frame(width: 64)
     }
@@ -41,19 +80,19 @@ struct RootNavbar: View {
         HStack {
             Group {
                 Spacer()
-                NavbarButton(icon: "house", label: "홈", isActive: activeTab == .dashboard) {
+                NavbarButton(tab: .dashboard, isActive: activeTab == .dashboard) {
                     activeTab = .dashboard
                 }
                 Spacer()
-                NavbarButton(icon: "arrow.2.circlepath", label: "웨이브", isActive: activeTab == .exchangedCards) {
+                NavbarButton(tab: .exchangedCards, isActive: activeTab == .exchangedCards) {
                     activeTab = .exchangedCards
                 }
                 Spacer()
-                NavbarButton(icon: "message", label: "메시지", isActive: activeTab == .messages) {
+                NavbarButton(tab: .messages, isActive: activeTab == .messages) {
                     activeTab = .messages
                 }
                 Spacer()
-                NavbarButton(icon: "person", label: "내 프로필", isActive: activeTab == .profile) {
+                NavbarButton(tab: .profile, isActive: activeTab == .profile) {
                     activeTab = .profile
                 }
                 Spacer()

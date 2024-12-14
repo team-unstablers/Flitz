@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct FlitzApp: App {
+    @UIApplicationDelegateAdaptor
+    private var appDelegate: AppDelegate
+
     var body: some Scene {
         WindowGroup {
             FlitzAppMain()
+                .font(.fzMain)
         }
     }
 }

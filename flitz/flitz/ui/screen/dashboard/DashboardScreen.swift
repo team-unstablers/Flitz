@@ -11,6 +11,9 @@ struct DashboardScreen: View {
     @EnvironmentObject
     var appState: RootAppState
     
+    @State
+    var isResetAlertPresented = false
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -35,7 +38,18 @@ struct DashboardScreen: View {
                     ProgressView()
                 }
             }
-            .navigationTitle("Dashboard")
+            .navigationTitle("대시보드")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Button("로그아웃") {
+                    FZAPIContext.reset()
+                    isResetAlertPresented = true
+                }
+                .alert("로그아웃 되었으므로 앱을 다시 기동하여 주십시오. (죄송합니다! 💦💦)", isPresented: $isResetAlertPresented) {
+                    
+                }
+            }
+            
         }
         .onAppear {
             if appState.profile == nil {

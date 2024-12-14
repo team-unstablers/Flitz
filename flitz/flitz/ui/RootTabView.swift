@@ -26,7 +26,7 @@ struct RootTabView: View {
                         .tag(RootTab.dashboard)
                     WaveScreen()
                         .tag(RootTab.exchangedCards)
-                    DashboardScreen()
+                    Text("아직 구현되지 않았습니다")
                         .tag(RootTab.messages)
                     CardListScreen()
                         .tag(RootTab.profile)

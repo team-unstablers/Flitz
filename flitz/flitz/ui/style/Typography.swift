@@ -32,6 +32,41 @@ extension UIFont {
     static let fzHeading1 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading1)!
     static let fzHeading2 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading2)!
     static let fzHeading3 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading3)!
+    
+    // https://stackoverflow.com/questions/34499735/how-to-apply-bold-and-italics-to-an-nsmutableattributedstring-range
+    func withTraits(_ traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
+        // create a new font descriptor with the given traits
+        guard let fd = fontDescriptor.withSymbolicTraits(traits) else {
+            // the given traits couldn't be applied, return self
+            return self
+        }
+            
+        // return a new font with the created font descriptor
+        return UIFont(descriptor: fd, size: pointSize)
+    }
+
+    func italics() -> UIFont {
+        return withTraits(.traitItalic)
+    }
+
+    func bold() -> UIFont {
+        return withTraits(.traitBold)
+    }
+
+    func boldItalics() -> UIFont {
+        return withTraits([ .traitBold, .traitItalic ])
+    }
+    
+    static func setupUINavigationBarTypography() {
+        UINavigationBar.appearance()
+            .largeTitleTextAttributes = [
+                .font: UIFont.fzHeading1.bold(),
+            ]
+        UINavigationBar.appearance()
+            .titleTextAttributes = [
+                .font: UIFont.fzHeading3.bold(),
+            ]
+    }
 }
 
 extension Font {
