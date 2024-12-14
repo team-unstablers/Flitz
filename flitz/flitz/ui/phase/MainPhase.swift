@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainPhase: View {
     @StateObject
-    var appState: RootAppState = RootAppState()
+    var appState: RootAppState = RootAppState.shared
     
     var body: some View {
         RootNavigation()

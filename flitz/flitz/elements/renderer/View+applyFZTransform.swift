@@ -133,10 +133,12 @@ struct FZTransformModifier: ViewModifier {
                                 let scaledWidth = elementSize.width * tmpScale
                                 let scaledHeight = elementSize.height * tmpScale
                                 
+                                /*
                                 if scaledWidth < 128 || scaledHeight < 128 {
                                     delta.scale = 1.0
                                     return
                                 }
+                                 */
                                 
                                 transform.scale *= scale
                                 delta.scale = 1.0

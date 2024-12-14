@@ -1,31 +1,13 @@
 //
-//  SignInScreen.swift
+//  SignUpScreen.swift
 //  Flitz
 //
-//  Created by Gyuhwan Park on 12/4/24.
+//  Created by Gyuhwan Park on 12/7/24.
 //
 
 import SwiftUI
 
-#if DEBUG
-struct ServerSelector: View {
-    
-    @Binding
-    var host: FZAPIServerHost
-    
-    var body: some View {
-        Picker("host", selection: $host) {
-            ForEach(FZAPIServerHost.allCases, id: \.self) { host in
-                Text(host.description)
-            }
-        }
-        Text("호스트: \(host.rawValue)")
-    }
-    
-}
-#endif
-
-struct SignInScreen: View {
+struct SignUpScreen: View {
     typealias AuthHandler = (FZAPIContext) -> Void
     
 #if DEBUG
@@ -93,6 +75,6 @@ struct SignInScreen: View {
 }
 
 #Preview {
-    SignInScreen { _ in
+    SignUpScreen { _ in
     }
 }

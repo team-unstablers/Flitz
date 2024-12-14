@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FZAPIServerHost: RawRepresentable, Codable {
+struct FZAPIServerHost: RawRepresentable, Codable, Hashable {
     var rawValue: String
     
     init(rawValue: String) {
@@ -28,6 +28,14 @@ struct FZAPIServerHost: RawRepresentable, Codable {
         hasher.combine(rawValue)
     }
     
+    static var allCases: [FZAPIServerHost] {
+#if DEBUG
+        return [.production, .development, .local]
+#else
+        return [.production]
+#endif
+    }
+    
     static let production = FZAPIServerHost(rawValue: "https://api-prod.flitz.cards")
     
 #if DEBUG
@@ -41,4 +49,22 @@ struct FZAPIServerHost: RawRepresentable, Codable {
 #else
     static let `default` = Self.production
 #endif
+    
+    
+    var description: String {
+        switch self {
+        case .default:
+            return "기본값"
+        case .production:
+            return "프로덕션"
+#if DEBUG
+        case .development:
+            return "개발"
+        case .local:
+            return "로컬"
+#endif
+        default:
+            return "임의 설정"
+        }
+    }
 }

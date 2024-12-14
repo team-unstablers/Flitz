@@ -44,6 +44,7 @@ class FlitzWaveCommunicator: ObservableObject {
         
         DispatchQueue.main.async {
             self.isActive = true
+            RootAppState.shared.waveActive = true
         }
     }
     
@@ -53,6 +54,7 @@ class FlitzWaveCommunicator: ObservableObject {
         
         DispatchQueue.main.async {
             self.isActive = false
+            RootAppState.shared.waveActive = false
         }
 
         try await client.stopWaveDiscovery()

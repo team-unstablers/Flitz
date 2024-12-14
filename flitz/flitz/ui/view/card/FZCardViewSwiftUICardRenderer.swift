@@ -11,18 +11,7 @@ import SwiftUI
 
 class FZCardViewSwiftUICardRenderer: FZCardViewCardRenderer {
     func render(card: Flitz.Card) throws -> UIImage {
-        var backgroundImage: UIImage? = nil
-        
-        if let backgroundSource = card.background {
-            switch backgroundSource {
-            case .uiImage(let image):
-                backgroundImage = image
-            default:
-                break
-            }
-        }
-        
-        let view = CardCanvas(background: backgroundImage, elements: .constant(card.elements))
+        let view = CardCanvas(background: card.background, elements: .constant(card.elements))
         let renderer = ImageRenderer(content: view)
         renderer.scale = 2.0
         

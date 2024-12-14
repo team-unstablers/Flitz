@@ -106,6 +106,8 @@ extension Flitz {
             var container = encoder.container(keyedBy: CodingKeys.self)
             
             try container.encode(schema_version, forKey: .schema_version)
+            try container.encode(background, forKey: .background)
+            
             var elementsArray = container.nestedUnkeyedContainer(forKey: .elements)
             for element in elements {
                 let container = ElementTypeContainer(element)

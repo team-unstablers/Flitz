@@ -79,6 +79,9 @@ extension Flitz.Renderer {
                         Rectangle()
                             .fill(.black.opacity(0.5))
                             .frame(width: geom.size.width, height: geom.size.height)
+                            .onTapGesture {
+                                isEditing = false
+                            }
                         Editor(element: element) {
                             isEditing = false
                         }

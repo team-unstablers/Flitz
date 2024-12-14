@@ -19,34 +19,25 @@ struct RootTabView: View {
     var currentTab: RootTab = .dashboard
     
     var body: some View {
-        TabView(selection: $currentTab) {
-            Group {
-                DashboardScreen()
-                    .tag(RootTab.dashboard)
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Dashboard")
-                    }
-                ReceivedCardListScreen()
-                    .tag(RootTab.exchangedCards)
-                    .tabItem {
-                        Image(systemName: "arrow.2.circlepath")
-                        Text("Exchanged Cards")
-                    }
-                DashboardScreen()
-                    .tag(RootTab.messages)
-                    .tabItem {
-                        Image(systemName: "message")
-                        Text("Messages")
-                    }
-                CardListScreen()
-                    .tag(RootTab.profile)
-                    .tabItem {
-                        Image(systemName: "person")
-                        Text("Profile")
-                    }
+        ZStack {
+            TabView(selection: $currentTab) {
+                Group {
+                    DashboardScreen()
+                        .tag(RootTab.dashboard)
+                    WaveScreen()
+                        .tag(RootTab.exchangedCards)
+                    DashboardScreen()
+                        .tag(RootTab.messages)
+                    CardListScreen()
+                        .tag(RootTab.profile)
+                }
+            }
+            .toolbar(.hidden, for: .tabBar)
+            
+            GeometryReader { geom in
+                RootNavbar(activeTab: $currentTab)
+                    .position(x: geom.size.width / 2, y: geom.size.height - 34)
             }
         }
     }
-    
 }

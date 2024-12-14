@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 class RootAppState: ObservableObject {
+    static let shared = RootAppState()
+    
     @Published
     var client: FZAPIClient = FZAPIClient(context: .load())
     
@@ -17,6 +19,9 @@ class RootAppState: ObservableObject {
     
     @Published
     var waveCommunicator: FlitzWaveCommunicator!
+    
+    @Published
+    var waveActive: Bool = false
     
     @Published
     var profile: FZUser?

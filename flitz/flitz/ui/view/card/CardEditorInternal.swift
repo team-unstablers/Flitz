@@ -37,6 +37,7 @@ struct CardEditorInternal: View {
                     showImagePicker = true
                 }
             }
+            .zIndex(100)
             .sheet(isPresented: $showImagePicker, onDismiss: {
                 if let image = selectedImage {
                     card.elements.append(
@@ -50,7 +51,7 @@ struct CardEditorInternal: View {
             }
             .sheet(isPresented: $showBackgroundImagePicker, onDismiss: {
                 if let image = backgroundImage {
-                    self.backgroundImage = image
+                    card.background = .uiImage(image)
                 }
             }) {
                 ImagePicker(image: $backgroundImage)
@@ -58,7 +59,7 @@ struct CardEditorInternal: View {
             
             GeometryReader { geom in
                 ZStack {
-                    CardCanvas(background: backgroundImage, elements: $card.elements)
+                    CardCanvas(background: card.background, elements: $card.elements)
                         .aspectScale(basedOn: FlitzCard.size, to: geom.size)
                         .onAppear {
                             print(geom.size.width / 550)

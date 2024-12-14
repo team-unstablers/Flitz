@@ -12,7 +12,10 @@ struct FlitzCard {
 }
 
 struct CardCanvas: View {
-    var background: UIImage?
+    @Environment(\.fzAssetsLoader)
+    var assetsLoader: AssetsLoader
+
+    var background: Flitz.ImageSource?
     
     @Binding
     var elements: [any Flitz.Element]
@@ -43,11 +46,22 @@ struct CardCanvas: View {
         .frame(width: FlitzCard.size.width, height: FlitzCard.size.height)
         .background {
             if let background = background {
-                Image(uiImage: background)
-                    .resizable()
-                    .scaledToFill()
+                switch background {
+                case .uiImage(let image):
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                case .origin(let id, _):
+                    if let image = assetsLoader.images[id] {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                    } else {
+                        Rectangle().fill(.white)
+                    }
+                }
             } else {
-                Rectangle().fill(.red)
+                Rectangle().fill(.white)
             }
         }
         .fixedSize()
