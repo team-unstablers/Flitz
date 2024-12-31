@@ -21,22 +21,30 @@ struct RootTabView: View {
     var body: some View {
         ZStack {
             TabView(selection: $currentTab) {
-                Group {
-                    WaveScreen()
-                        .tag(RootTab.wave)
-                    Text("아직 구현되지 않았습니다")
-                        .tag(RootTab.messages)
-                    Text("아직 구현되지 않았습니다")
-                        .tag(RootTab.store)
-                    CardListScreen()
-                        .tag(RootTab.profile)
-                }
-            }
-            .toolbar(.hidden, for: .tabBar)
-            
-            GeometryReader { geom in
-                RootNavbar(activeTab: $currentTab)
-                    .position(x: geom.size.width / 2, y: geom.size.height - 34)
+                WaveScreen()
+                    .tag(RootTab.wave)
+                    .tabItem {
+                        Image(systemName: "arrow.2.circlepath")
+                        Text("웨이브")
+                    }
+                Text("아직 구현되지 않았습니다")
+                    .tag(RootTab.messages)
+                    .tabItem {
+                        Image(systemName: "message")
+                        Text("메시지")
+                    }
+                Text("아직 구현되지 않았습니다")
+                    .tag(RootTab.store)
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("스토어")
+                    }
+                CardListScreen()
+                    .tag(RootTab.profile)
+                    .tabItem {
+                        Image(systemName: "person")
+                        Text("프로필")
+                    }
             }
         }
     }

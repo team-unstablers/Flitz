@@ -12,24 +12,28 @@ struct WaveScreen: View {
     var appState: RootAppState
     
     var body: some View {
-        NavigationView {
-            VStack {
-                if appState.waveActive {
-                    Button("FlitzWave 멈추기") {
-                        Task {
-                            try? await appState.waveCommunicator.stop()
-                        }
-                    }
-                } else {
-                    Text("아직 교환받은 카드가 없습니다.")
-                    Button("FlitzWave 시작하기") {
-                        Task {
-                            try? await appState.waveCommunicator.start()
-                        }
-                    }
+        VStack(spacing: 0) {
+            MainTitlebar {
+                NotificationButton(badged: false) {
+                    print("TODO: Implement notification screen")
+                }
+                
+                FlitzWaveButton(isOn: appState.waveActive) {
+                    self.toggleWave()
                 }
             }
-            .navigationTitle("최근 교환받은 카드")
+            Spacer()
+        }
+    }
+    
+    func toggleWave() {
+        let waveActive = appState.waveActive
+        Task {
+            if waveActive {
+                try? await appState.waveCommunicator.stop()
+            } else {
+                try? await appState.waveCommunicator.start()
+            }
         }
     }
 }
