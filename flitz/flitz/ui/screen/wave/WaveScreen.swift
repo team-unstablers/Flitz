@@ -22,7 +22,30 @@ struct WaveScreen: View {
                     self.toggleWave()
                 }
             }
-            Spacer()
+            
+            DummyCardView()
+                .shadow(radius: 8)
+                .blur(radius: 8)
+                .overlay {
+                    VStack() {
+                        Text("아직 교환된 카드가 없습니다.")
+                            .font(.heading2)
+                            .bold()
+                            .foregroundStyle(Color.Grayscale.gray8)
+                        
+                        Text("Wave가 꺼져 있습니다.\nWave를 켜고 주변 사람들과 카드를 교환해 보세요!")
+                            .multilineTextAlignment(.center)
+                            .font(.main)
+                            .foregroundStyle(Color.Grayscale.gray7)
+                        
+                        FZButton {
+                            
+                        } label: {
+                            Text("Wave 시작하기")
+                        }
+                    }
+                        .padding()
+                }
         }
     }
     
