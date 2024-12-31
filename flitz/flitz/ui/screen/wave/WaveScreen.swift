@@ -21,6 +21,7 @@ struct WaveScreen: View {
                         }
                     }
                 } else {
+                    Text("아직 교환받은 카드가 없습니다.")
                     Button("FlitzWave 시작하기") {
                         Task {
                             try? await appState.waveCommunicator.start()
@@ -28,7 +29,7 @@ struct WaveScreen: View {
                     }
                 }
             }
-            .navigationTitle("Wave")
+            .navigationTitle("최근 교환받은 카드")
         }
     }
 }

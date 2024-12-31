@@ -10,12 +10,12 @@ import SwiftUI
 extension RootTab {
     var icon: String {
         switch self {
-        case .dashboard:
-            return "house"
-        case .exchangedCards:
+        case .wave:
             return "arrow.2.circlepath"
         case .messages:
             return "message"
+        case .store:
+            return "house"
         case .profile:
             return "person"
         }
@@ -23,12 +23,12 @@ extension RootTab {
     
     var label: String {
         switch self {
-        case .dashboard:
-            return "홈"
-        case .exchangedCards:
+        case .wave:
             return "웨이브"
         case .messages:
             return "메시지"
+        case .store:
+            return "스토어"
         case .profile:
             return "내 프로필"
         }
@@ -36,12 +36,12 @@ extension RootTab {
     
     var color: Color {
         switch self {
-        case .dashboard:
-            return Color.Brand.orange0
-        case .exchangedCards:
-            return Color.Brand.blue0
-        case .messages:
+        case .wave:
             return Color.Brand.green0
+        case .messages:
+            return Color.Brand.blue0
+        case .store:
+            return Color.Brand.orange0
         case .profile:
             return Color.Brand.yellow0
         }
@@ -80,16 +80,16 @@ struct RootNavbar: View {
         HStack {
             Group {
                 Spacer()
-                NavbarButton(tab: .dashboard, isActive: activeTab == .dashboard) {
-                    activeTab = .dashboard
-                }
-                Spacer()
-                NavbarButton(tab: .exchangedCards, isActive: activeTab == .exchangedCards) {
-                    activeTab = .exchangedCards
+                NavbarButton(tab: .wave, isActive: activeTab == .wave) {
+                    activeTab = .wave
                 }
                 Spacer()
                 NavbarButton(tab: .messages, isActive: activeTab == .messages) {
                     activeTab = .messages
+                }
+                Spacer()
+                NavbarButton(tab: .store, isActive: activeTab == .store) {
+                    activeTab = .store
                 }
                 Spacer()
                 NavbarButton(tab: .profile, isActive: activeTab == .profile) {
@@ -107,5 +107,5 @@ struct RootNavbar: View {
 }
 
 #Preview {
-    RootNavbar(activeTab: .constant(.dashboard))
+    RootNavbar(activeTab: .constant(.wave))
 }

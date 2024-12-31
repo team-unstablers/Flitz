@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SimpleCardPreview: View {
+    @EnvironmentObject
+    var appState: RootAppState
+    
     @Environment(\.fzAssetsLoader)
     var assetsLoader: AssetsLoader
     
@@ -48,6 +51,10 @@ struct SimpleCardPreview: View {
                 
                 Button("set card as main") {
                     setCardAsMain()
+                }
+                
+                Button("edit this card") {
+                    appState.navState.append(.cardEditor(cardId: cardId))
                 }
             }
             

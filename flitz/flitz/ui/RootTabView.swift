@@ -8,26 +8,26 @@
 import SwiftUI
 
 enum RootTab: Hashable {
-    case dashboard
-    case exchangedCards
+    case wave
+    case store
     case messages
     case profile
 }
 
 struct RootTabView: View {
     @State
-    var currentTab: RootTab = .dashboard
+    var currentTab: RootTab = .wave
     
     var body: some View {
         ZStack {
             TabView(selection: $currentTab) {
                 Group {
-                    DashboardScreen()
-                        .tag(RootTab.dashboard)
                     WaveScreen()
-                        .tag(RootTab.exchangedCards)
+                        .tag(RootTab.wave)
                     Text("아직 구현되지 않았습니다")
                         .tag(RootTab.messages)
+                    Text("아직 구현되지 않았습니다")
+                        .tag(RootTab.store)
                     CardListScreen()
                         .tag(RootTab.profile)
                 }

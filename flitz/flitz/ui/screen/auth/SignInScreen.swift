@@ -47,6 +47,7 @@ struct SignInScreen: View {
             ServerSelector(host: $host)
 #endif
             
+            
             TextField("username", text: $username)
                 .autocorrectionDisabled(true)
                 .padding()
@@ -58,9 +59,17 @@ struct SignInScreen: View {
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
             
-            Button("signin") {
-                self.performSignIn()
+            HStack {
+                Button("로그인") {
+                    self.performSignIn()
+                }
+                Button("회원가입") {
+                    self.performSignUp()
+                }
             }
+            .padding(.vertical, 24)
+            
+           Text("**경고**: 테스트 서버이므로 자주 사용하는 비밀번호를 사용하지 마십시오.")
         }
         .padding()
     }
@@ -84,6 +93,30 @@ struct SignInScreen: View {
                 
                 DispatchQueue.main.async {
                     self.authHandler(newContext)
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    func performSignUp() {
+        var context = FZAPIContext()
+#if DEBUG
+        context.host = host
+#endif
+        
+        let client = FZAPIClient(context: context)
+        let credentials = FZCredentials(username: self.username,
+                                        password: self.password,
+                                        device_info: "FlitzCardEditorTest.app")
+        
+        Task {
+            do {
+                try await client.signup(with: credentials)
+                
+                DispatchQueue.main.async {
+                    self.performSignIn()
                 }
             } catch {
                 print(error)
