@@ -8,13 +8,27 @@
 import SwiftUI
 
 enum FZButtonStyle {
-    case general
+    case primary
+    case secondary
     
     case custom(background: Color, foreground: Color)
     
     var backgroundColor: Color {
         switch self {
-        case .general:
+        case .primary:
+            return Color.Grayscale.gray8
+        case .secondary:
+            return Color.white
+        case .custom(let background, _):
+            return background
+        }
+    }
+    
+    var borderColor: Color {
+        switch self {
+        case .primary:
+            return Color.Grayscale.gray8
+        case .secondary:
             return Color.Grayscale.gray8
         case .custom(let background, _):
             return background
@@ -23,8 +37,10 @@ enum FZButtonStyle {
     
     var disabledBackgroundColor: Color {
         switch self {
-        case .general:
+        case .primary:
             return Color.Grayscale.gray4
+        case .secondary:
+            return Color.Grayscale.gray2
         case .custom(let background, _):
             return background.opacity(0.5)
         }
@@ -32,8 +48,10 @@ enum FZButtonStyle {
     
     var foregroundColor: Color {
         switch self {
-        case .general:
+        case .primary:
             return .white
+        case .secondary:
+            return Color.Grayscale.gray7
         case .custom(_, let foreground):
             return foreground
         }
@@ -42,7 +60,7 @@ enum FZButtonStyle {
 
 struct FZButton<Content: View>: View {
     
-    var style: FZButtonStyle = .general
+    var style: FZButtonStyle = .primary
     
     var action: () -> Void
     @ViewBuilder
@@ -60,8 +78,12 @@ struct FZButton<Content: View>: View {
             .padding(.vertical, 8)
             .padding(.horizontal, 24)
             .background(isDisabled ? style.disabledBackgroundColor : style.backgroundColor)
-            .foregroundStyle(style.foregroundColor)
+            .foregroundStyle(isDisabled ? style.foregroundColor.opacity(0.75) : style.foregroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay {
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(isDisabled ? style.disabledBackgroundColor : style.borderColor, lineWidth: 1)
+            }
         }
         .disabled(isDisabled)
     }
@@ -81,7 +103,7 @@ struct FZButton<Content: View>: View {
         
         HStack {
             VStack {
-                FZButton(style: .general) {
+                FZButton(style: .primary) {
                     print("Hello, World!")
                 } label: {
                     Text("test")
@@ -89,7 +111,27 @@ struct FZButton<Content: View>: View {
                 Text("General")
             }
             VStack {
-                FZButton(style: .general) {
+                FZButton(style: .primary) {
+                    print("Hello, World!")
+                } label: {
+                    Text("test")
+                }
+                .disabled(true)
+                Text("Disabled")
+            }
+        }
+        
+        HStack {
+            VStack {
+                FZButton(style: .secondary) {
+                    print("Hello, World!")
+                } label: {
+                    Text("test")
+                }
+                Text("Secondary")
+            }
+            VStack {
+                FZButton(style: .secondary) {
                     print("Hello, World!")
                 } label: {
                     Text("test")
@@ -106,7 +148,7 @@ struct FZButton<Content: View>: View {
         
         HStack {
             VStack {
-                FZButton(style: .general) {
+                FZButton(style: .primary) {
                     print("Hello, World!")
                 } label: {
                     Image(systemName: "plus")
@@ -115,7 +157,7 @@ struct FZButton<Content: View>: View {
                 Text("General")
             }
             VStack {
-                FZButton(style: .general) {
+                FZButton(style: .primary) {
                     print("Hello, World!")
                 } label: {
                     Image(systemName: "minus")
