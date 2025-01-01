@@ -61,7 +61,7 @@ struct CardCanvas: View {
                     }
                 }
             } else {
-                Rectangle().fill(.white)
+                Rectangle().fill(.gray)
             }
         }
         .fixedSize()

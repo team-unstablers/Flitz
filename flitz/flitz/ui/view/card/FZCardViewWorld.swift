@@ -33,7 +33,7 @@ class FZCardViewWorld {
     
     private func setupMainCamera() {
         mainCamera.camera = SCNCamera()
-        mainCamera.position = SCNVector3(x: 0, y: 0, z: 12.5)
+        mainCamera.position = SCNVector3(x: 0, y: 0, z: 10)
         
         scene.rootNode.addChildNode(mainCamera)
     }

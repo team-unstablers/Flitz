@@ -19,4 +19,6 @@ extension Color {
         static let gray7 = Color(hex: 0x53524F)
         static let gray8 = Color(hex: 0x383734)
     }
+    
+    static let gray_4A4A4A = Color(hex: 0x4A4A4A)
 }
