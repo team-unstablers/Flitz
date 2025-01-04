@@ -27,7 +27,7 @@ struct RootTabView: View {
                         Image(systemName: "arrow.2.circlepath")
                         Text("웨이브")
                     }
-                Text("아직 구현되지 않았습니다")
+                ConversationListScreen()
                     .tag(RootTab.messages)
                     .tabItem {
                         Image(systemName: "message")
