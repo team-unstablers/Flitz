@@ -29,6 +29,7 @@ struct MessageListItemBadge: View {
 
 struct ProfileImage: View {
     var url: String?
+    var size: CGFloat = 56
     
     var body: some View {
         if let urlString = url,
@@ -36,14 +37,14 @@ struct ProfileImage: View {
             AsyncImage(url: url) { image in
                 image
                     .resizable()
-                    .frame(width: 56, height: 56)
+                    .frame(width: size, height: size)
             } placeholder: {
                 ProgressView()
-                    .frame(width: 56, height: 56)
+                    .frame(width: size, height: size)
             }
         } else {
             Image(systemName: "person")
-                .frame(width: 56, height: 56)
+                .frame(width: size, height: size)
         }
     }
 }

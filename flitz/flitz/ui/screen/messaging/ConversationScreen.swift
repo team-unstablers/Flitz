@@ -136,21 +136,31 @@ struct ConversationScreen: View {
                 }
             }
             
-            // 메시지 입력 창은 나중에 구현
-            Rectangle()
-                .frame(height: 50)
-                .foregroundColor(.gray.opacity(0.2))
+            MessageComposeArea()
+        }
+        .toolbarVisibility(.visible, for: .navigationBar)
+        .toolbarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack {
+                    ProfileImage(
+                        url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
+                        size: 36
+                    )
+                    Text("Gyuhwan Park").bold()
+                }
+            }
         }
     }
 }
 
 // Array 안전 접근을 위한 Extension
 extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
+subscript(safe index: Int) -> Element? {
+    return indices.contains(index) ? self[index] : nil
+}
 }
 
 #Preview {
-    ConversationScreen()
+ConversationScreen()
 }
