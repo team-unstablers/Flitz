@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// @Deprecated
 struct CardListScreen: View {
     @EnvironmentObject
     var appState: RootAppState

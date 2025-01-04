@@ -27,28 +27,6 @@ struct MessageListItemBadge: View {
     }
 }
 
-struct ProfileImage: View {
-    var url: String?
-    var size: CGFloat = 56
-    
-    var body: some View {
-        if let urlString = url,
-           let url = URL(string: urlString) {
-            AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .frame(width: size, height: size)
-            } placeholder: {
-                ProgressView()
-                    .frame(width: size, height: size)
-            }
-        } else {
-            Image(systemName: "person")
-                .frame(width: size, height: size)
-        }
-    }
-}
-
 struct ConversationListItem: View {
     var conversation: DirectMessageConversation
     
