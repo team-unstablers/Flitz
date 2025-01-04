@@ -26,7 +26,8 @@ struct CardCanvas: View {
                     Rectangle().fill(.black)
                     GeometryReader { innerGeom in
                         ForEach(0..<elements.count, id: \.self) { index in
-                            Flitz.Renderer.normalMappedRenderer(for: elements[index])
+                            Flitz.Renderer.renderer(for: elements[index])
+                                .mode(.normalMap)
                         }
                     }
                 }
@@ -34,7 +35,7 @@ struct CardCanvas: View {
             } else {
                 GeometryReader { innerGeom in
                     ForEach(0..<elements.count, id: \.self) { index in
-                        Flitz.Renderer.coordinatedRenderer(for: elements[index])
+                        Flitz.Renderer.renderer(for: elements[index])
                     }
                 }
             }

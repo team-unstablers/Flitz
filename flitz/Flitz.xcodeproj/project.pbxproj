@@ -1,0 +1,646 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F699D0E22D0039DF00761976 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E12D0039DF00761976 /* Alamofire */; };
+		F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E42D0039E700761976 /* AlamofireImage */; };
+		F699D0E82D0039F400761976 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E72D0039F400761976 /* Collections */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F699D0992D00325500761976 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F699D0802D00325300761976 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F699D0872D00325300761976;
+			remoteInfo = flitz;
+		};
+		F699D0A32D00325500761976 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F699D0802D00325300761976 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F699D0872D00325300761976;
+			remoteInfo = flitz;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F699D0882D00325300761976 /* Flitz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flitz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F699D0982D00325500761976 /* flitzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F699D0A22D00325500761976 /* flitzUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F699D20F2D005B1A00761976 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Flitz/Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F699D2122D005B5600761976 /* Exceptions for "flitz" folder in "Flitz" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F699D0872D00325300761976 /* Flitz */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F699D08A2D00325300761976 /* flitz */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F699D2122D005B5600761976 /* Exceptions for "flitz" folder in "Flitz" target */,
+			);
+			path = flitz;
+			sourceTree = "<group>";
+		};
+		F699D09B2D00325500761976 /* flitzTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = flitzTests;
+			sourceTree = "<group>";
+		};
+		F699D0A52D00325500761976 /* flitzUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = flitzUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F699D0852D00325300761976 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F699D0E82D0039F400761976 /* Collections in Frameworks */,
+				F699D0E22D0039DF00761976 /* Alamofire in Frameworks */,
+				F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D0952D00325500761976 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D09F2D00325500761976 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F699D07F2D00325300761976 = {
+			isa = PBXGroup;
+			children = (
+				F699D20F2D005B1A00761976 /* Info.plist */,
+				F699D08A2D00325300761976 /* flitz */,
+				F699D09B2D00325500761976 /* flitzTests */,
+				F699D0A52D00325500761976 /* flitzUITests */,
+				F699D0892D00325300761976 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F699D0892D00325300761976 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F699D0882D00325300761976 /* Flitz.app */,
+				F699D0982D00325500761976 /* flitzTests.xctest */,
+				F699D0A22D00325500761976 /* flitzUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F699D0872D00325300761976 /* Flitz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F699D0AC2D00325500761976 /* Build configuration list for PBXNativeTarget "Flitz" */;
+			buildPhases = (
+				F699D0842D00325300761976 /* Sources */,
+				F699D0852D00325300761976 /* Frameworks */,
+				F699D0862D00325300761976 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F699D08A2D00325300761976 /* flitz */,
+			);
+			name = Flitz;
+			packageProductDependencies = (
+				F699D0E12D0039DF00761976 /* Alamofire */,
+				F699D0E42D0039E700761976 /* AlamofireImage */,
+				F699D0E72D0039F400761976 /* Collections */,
+			);
+			productName = flitz;
+			productReference = F699D0882D00325300761976 /* Flitz.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F699D0972D00325500761976 /* flitzTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F699D0AF2D00325500761976 /* Build configuration list for PBXNativeTarget "flitzTests" */;
+			buildPhases = (
+				F699D0942D00325500761976 /* Sources */,
+				F699D0952D00325500761976 /* Frameworks */,
+				F699D0962D00325500761976 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F699D09A2D00325500761976 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F699D09B2D00325500761976 /* flitzTests */,
+			);
+			name = flitzTests;
+			packageProductDependencies = (
+			);
+			productName = flitzTests;
+			productReference = F699D0982D00325500761976 /* flitzTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F699D0A12D00325500761976 /* flitzUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F699D0B22D00325500761976 /* Build configuration list for PBXNativeTarget "flitzUITests" */;
+			buildPhases = (
+				F699D09E2D00325500761976 /* Sources */,
+				F699D09F2D00325500761976 /* Frameworks */,
+				F699D0A02D00325500761976 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F699D0A42D00325500761976 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F699D0A52D00325500761976 /* flitzUITests */,
+			);
+			name = flitzUITests;
+			packageProductDependencies = (
+			);
+			productName = flitzUITests;
+			productReference = F699D0A22D00325500761976 /* flitzUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F699D0802D00325300761976 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					F699D0872D00325300761976 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					F699D0972D00325500761976 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = F699D0872D00325300761976;
+					};
+					F699D0A12D00325500761976 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = F699D0872D00325300761976;
+					};
+				};
+			};
+			buildConfigurationList = F699D0832D00325300761976 /* Build configuration list for PBXProject "Flitz" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F699D07F2D00325300761976;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F699D0E02D0039DF00761976 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */,
+				F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F699D0892D00325300761976 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F699D0872D00325300761976 /* Flitz */,
+				F699D0972D00325500761976 /* flitzTests */,
+				F699D0A12D00325500761976 /* flitzUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F699D0862D00325300761976 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D0962D00325500761976 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D0A02D00325500761976 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F699D0842D00325300761976 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D0942D00325500761976 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F699D09E2D00325500761976 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F699D09A2D00325500761976 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F699D0872D00325300761976 /* Flitz */;
+			targetProxy = F699D0992D00325500761976 /* PBXContainerItemProxy */;
+		};
+		F699D0A42D00325500761976 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F699D0872D00325300761976 /* Flitz */;
+			targetProxy = F699D0A32D00325500761976 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F699D0AA2D00325500761976 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F699D0AB2D00325500761976 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F699D0AD2D00325500761976 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Flitz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Flitz;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = fixme;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F699D0AE2D00325500761976 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Flitz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Flitz;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = fixme;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F699D0B02D00325500761976 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitzTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flitz.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/flitz";
+			};
+			name = Debug;
+		};
+		F699D0B12D00325500761976 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitzTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/flitz.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/flitz";
+			};
+			name = Release;
+		};
+		F699D0B32D00325500761976 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitzUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = flitz;
+			};
+			name = Debug;
+		};
+		F699D0B42D00325500761976 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitzUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = flitz;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F699D0832D00325300761976 /* Build configuration list for PBXProject "Flitz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F699D0AA2D00325500761976 /* Debug */,
+				F699D0AB2D00325500761976 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F699D0AC2D00325500761976 /* Build configuration list for PBXNativeTarget "Flitz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F699D0AD2D00325500761976 /* Debug */,
+				F699D0AE2D00325500761976 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F699D0AF2D00325500761976 /* Build configuration list for PBXNativeTarget "flitzTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F699D0B02D00325500761976 /* Debug */,
+				F699D0B12D00325500761976 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F699D0B22D00325500761976 /* Build configuration list for PBXNativeTarget "flitzUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F699D0B32D00325500761976 /* Debug */,
+				F699D0B42D00325500761976 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F699D0E02D0039DF00761976 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/AlamofireImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.3.0;
+			};
+		};
+		F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F699D0E12D0039DF00761976 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F699D0E02D0039DF00761976 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		F699D0E42D0039E700761976 /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
+		};
+		F699D0E72D0039F400761976 /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F699D0802D00325300761976 /* Project object */;
+}

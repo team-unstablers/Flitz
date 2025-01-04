@@ -8,11 +8,42 @@
 import Foundation
 import UIKit
 
+
 extension Flitz {
-    enum ImageSource: Hashable {
+    enum ImageSource: Hashable, Codable {
         case uiImage(UIImage)
-        case localURL(URL)
-        case origin(URL)
+        case origin(String, URL)
+        
+        enum CodingKeys: String, CodingKey {
+            case id, public_url
+        }
+        
+        var isLocal: Bool {
+            if case .uiImage = self {
+                return true
+            }
+            
+            return false
+        }
+        
+        init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let id = try container.decode(String.self, forKey: .id)
+            let public_url = try container.decode(URL.self, forKey: .public_url)
+            
+            self = .origin(id, public_url)
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            switch self {
+            case .uiImage(_):
+                fatalError("assertion failed: 로컬 이미지는 서버에 먼저 업로드되어야 합니다")
+            case .origin(let id, let url):
+                try container.encode(id, forKey: .id)
+                try container.encode(url, forKey: .public_url)
+            }
+        }
     }
     
     class Image: Element, ObservableObject {
@@ -20,7 +51,7 @@ extension Flitz {
             case type, source, size, transform
         }
 
-        var type: ElementType { .text }
+        var type: ElementType { .image }
         
         @Published
         var source: ImageSource
@@ -39,8 +70,7 @@ extension Flitz {
         
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            // source = try container.decode(URL.self, forKey: .source)
-            source = .uiImage(UIImage())
+            source = try container.decode(ImageSource.self, forKey: .source)
             size = try container.decode(ElementSize.self, forKey: .size)
             transform = try container.decode(Transform.self, forKey: .transform)
         }
@@ -48,7 +78,7 @@ extension Flitz {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(type, forKey: .type)
-            // try container.encode(source, forKey: .source)
+            try container.encode(source, forKey: .source)
             try container.encode(size, forKey: .size)
             try container.encode(transform, forKey: .transform)
         }

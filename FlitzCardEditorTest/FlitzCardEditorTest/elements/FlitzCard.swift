@@ -61,20 +61,22 @@ extension Flitz {
     
     class Card: Codable, ObservableObject, Hashable {
         enum CodingKeys: String, CodingKey {
-            case id, version, elements, properties
+            case schema_version, background, elements, properties
         }
         
-        var id: card_id_t?
-        var version: CardVersion
+        var schema_version: CardVersion
         
+        @Published
         var background: ImageSource?
         
+        @Published
         var elements: [any Element]
-        var properties: [CardPropertyKey: String]
         
-        init(id: card_id_t? = nil, version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [CardPropertyKey: String] = [:]) {
-            self.id = id
-            self.version = version
+        @Published
+        var properties: [String: String] = [:]
+        
+        init(version: CardVersion = .v1, background: ImageSource? = nil, elements: [any Element] = [], properties: [String: String] = [:]) {
+            self.schema_version = version
             self.background = background
             self.elements = elements
             self.properties = properties
@@ -83,9 +85,8 @@ extension Flitz {
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
-            self.id = try container.decodeIfPresent(card_id_t.self, forKey: .id)
-            self.version = try container.decode(CardVersion.self, forKey: .version)
-            self.properties = try container.decode([CardPropertyKey: String].self, forKey: .properties)
+            self.schema_version = try container.decode(CardVersion.self, forKey: .schema_version)
+            self.background = try container.decode(ImageSource?.self, forKey: .background)
             
             var elementsArray = try container.nestedUnkeyedContainer(forKey: .elements)
             var elements: [any Element] = []
@@ -96,13 +97,15 @@ extension Flitz {
             }
             
             self.elements = elements
+            
+            // self.properties = try container.decode([CardPropertyKey: String].self, forKey: .properties)
+            self.properties = [:]
         }
         
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             
-            try container.encode(id, forKey: .id)
-            try container.encode(version, forKey: .version)
+            try container.encode(schema_version, forKey: .schema_version)
             var elementsArray = container.nestedUnkeyedContainer(forKey: .elements)
             for element in elements {
                 let container = ElementTypeContainer(element)
@@ -113,8 +116,7 @@ extension Flitz {
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-            hasher.combine(version)
+            hasher.combine(schema_version)
             hasher.combine(background)
             
             for element in elements {
@@ -129,3 +131,4 @@ extension Flitz {
         }
     }
 }
+

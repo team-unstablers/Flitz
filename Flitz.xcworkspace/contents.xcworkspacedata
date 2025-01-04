@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:flitz/Flitz.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:FlitzCardExchangeTest/FlitzCardExchangeTest.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:FlitzCardEditorTest/FlitzCardEditorTest.xcodeproj">
    </FileRef>
    <FileRef

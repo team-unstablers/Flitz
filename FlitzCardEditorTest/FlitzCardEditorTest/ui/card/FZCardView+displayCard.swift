@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 extension FZCardView {
-    func displayCard(_ card: Binding<Flitz.Card>, to world: Binding<FZCardViewWorld>, showNormalMap: Binding<Bool> = .constant(false)) -> some View {
+    func displayCard(_ card: Binding<Flitz.Card?>, to world: Binding<FZCardViewWorld>, showNormalMap: Binding<Bool> = .constant(false)) -> some View {
         self.modifier(FZCardViewDisplayCard(world: world,
                                             card: card,
                                             showNormalMap: showNormalMap))
@@ -17,12 +17,14 @@ extension FZCardView {
 }
 
 struct FZCardViewDisplayCard: ViewModifier, Equatable {
+    @Environment(\.fzAssetsLoader)
+    var assetsLoader: AssetsLoader
     
     @Binding
     var world: FZCardViewWorld
     
     @Binding
-    var card: Flitz.Card
+    var card: Flitz.Card?
     
     @Binding
     var showNormalMap: Bool
@@ -34,7 +36,11 @@ struct FZCardViewDisplayCard: ViewModifier, Equatable {
         instance?.destroy()
         instance = nil
         
-        instance = world.spawn(card: card)
+        if card == nil {
+            return
+        }
+        
+        instance = world.spawn(card: card!)
         instance?.updateContent()
     }
     
@@ -45,6 +51,9 @@ struct FZCardViewDisplayCard: ViewModifier, Equatable {
             }
             .onChange(of: showNormalMap) {
                 instance?.showNormalMap = showNormalMap
+            }
+            .onChange(of: assetsLoader.images) {
+                instance?.updateContent()
             }
             .onAppear {
                 replaceCardInstance()

@@ -43,6 +43,10 @@ extension Flitz {
     }
     
     class Transform: Codable, ObservableObject, Hashable {
+        static var zero: Transform {
+            Transform(position: .zero, scale: 1, rotation: 0)
+        }
+        
         @Published
         var position: Position
         
