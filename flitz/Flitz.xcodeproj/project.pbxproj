@@ -30,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F64996F42D2A87740090E3F6 /* Flitz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Flitz.entitlements; path = Flitz/Flitz.entitlements; sourceTree = "<group>"; };
 		F699D0882D00325300761976 /* Flitz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flitz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D0982D00325500761976 /* flitzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D0A22D00325500761976 /* flitzUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +99,7 @@
 		F699D07F2D00325300761976 = {
 			isa = PBXGroup;
 			children = (
+				F64996F42D2A87740090E3F6 /* Flitz.entitlements */,
 				F699D20F2D005B1A00761976 /* Info.plist */,
 				F699D08A2D00325300761976 /* flitz */,
 				F699D09B2D00325500761976 /* flitzTests */,
@@ -425,6 +427,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
@@ -465,6 +468,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";

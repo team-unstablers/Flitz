@@ -14,5 +14,8 @@ struct MainPhase: View {
     var body: some View {
         RootNavigation()
             .environmentObject(appState)
+            .onAppear() {
+                UNUserNotificationCenter.setup()
+            }
     }
 }
