@@ -117,12 +117,12 @@ class FZCardViewCardInstance: Identifiable, Hashable {
     }
     
     fileprivate func setup() {
-        guard let baseModel = Self.baseModel else {
+        guard let baseModel = Self.loadBaseModel() else {
             // Sentry.captureMessage("Failed to load base model")
             return
         }
         
-        modelNode = baseModel.clone()
+        modelNode = baseModel
         rootNode.addChildNode(self.modelNode)
         
         modelNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: deg2rad(-90))
