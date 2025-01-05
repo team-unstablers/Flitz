@@ -10,6 +10,9 @@ import SwiftUI
 enum RootNavigationItem: Hashable {
     case cardEditor(cardId: String)
     case conversation(conversationId: String)
+    
+    case settings
+    case protectionSettings
 }
 
 struct RootNavigation: View {
@@ -26,6 +29,12 @@ struct RootNavigation: View {
                     
                     case .conversation(let conversationId):
                         ConversationScreen()
+                        
+                    case .settings:
+                        SettingsScreen()
+                    case .protectionSettings:
+                        ProtectionSettingsScreen()
+                        
                     default:
                         EmptyView()
                     }

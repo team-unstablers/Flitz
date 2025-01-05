@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ProfileScreen: View {
+    @EnvironmentObject
+    var appState: RootAppState
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -17,18 +20,16 @@ struct ProfileScreen: View {
                         .font(.heading2)
                         .bold()
                     HStack {
-                        Button {
+                        FZButton(style: .secondary) {
                             
                         } label: {
                             Text("편집하기")
-                                .font(.main)
                         }
                         
-                        Button {
+                        FZButton(style: .secondary) {
                             
                         } label: {
                             Text("다른 카드로 교체")
-                                .font(.main)
                         }
                     }
                 }
@@ -37,10 +38,21 @@ struct ProfileScreen: View {
             .navigationTitle("현재 교환 중인 카드")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    ProfileImage(
-                        url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
-                        size: 36
-                    )
+                    HStack {
+                        Button {
+                            
+                        } label: {
+                            Text("카드아이콘좀그려주세요 ㅠㅠ")
+                        }
+                        Button {
+                            appState.navState.append(.settings)
+                        } label: {
+                            ProfileImage(
+                                url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
+                                size: 36
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -50,4 +62,5 @@ struct ProfileScreen: View {
 
 #Preview {
     ProfileScreen()
+        .environmentObject(RootAppState())
 }
