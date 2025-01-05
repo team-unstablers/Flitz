@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SimpleCardPreview: View {
+struct WaveCardPreview: View {
     @EnvironmentObject
     var appState: RootAppState
     
@@ -17,7 +17,11 @@ struct SimpleCardPreview: View {
     @Binding
     var client: FZAPIClient
     
+    var distributionId: String
+    
     var cardId: String
+    
+    var dismissHandler: () -> Void
     
     @State
     var world: FZCardViewWorld = {
@@ -39,28 +43,13 @@ struct SimpleCardPreview: View {
     
     var body: some View {
         VStack {
-            if let cardMeta = cardMeta {
-                HStack {
-                    Text("\(cardMeta.id)")
-                }
-            }
-            HStack {
-                Button("show normal map") {
-                    showNormalMap.toggle()
-                }
-                
-                Button("set card as main") {
-                    setCardAsMain()
-                }
-                
-                Button("edit this card") {
-                    appState.navState.append(.cardEditor(cardId: cardId))
-                }
-            }
-            
-            FZCardView(world: $world, enableGesture: false)
+            FZCardView(world: $world, enableGesture: true)
                 .displayCard($card, to: $world, showNormalMap: $showNormalMap)
                 .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
+            ECController(distributionId: distributionId) { _ in
+                dismissHandler()
+            }
+                .offset(x: 0, y: -60)
         }
         .onAppear {
             self.fetchCard()

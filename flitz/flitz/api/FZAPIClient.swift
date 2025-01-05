@@ -26,7 +26,7 @@ class FZAPIClient {
         let url = endpoint.url(for: context.host.rawValue)
         
         let headers: HTTPHeaders? = (requiresAuth) ? [
-            "Authorization": "Bearer \(context.token!)"
+            "Authorization": "Bearer \(context.token ?? "")"
         ] : nil
         
         let response = AF.request(url,
@@ -84,8 +84,16 @@ class FZAPIClient {
         return try await self.request(to: .cards, expects: Paginated<FZSimpleCard>.self)
     }
     
-    func cardsReceived() async throws -> Paginated<FZSimpleCard> {
-        return try await self.request(to: .cardsReceived, expects: Paginated<FZSimpleCard>.self)
+    func receivedCards() async throws -> Paginated<FZCardDistribution> {
+        return try await self.request(to: .cardsDistribution, expects: Paginated<FZCardDistribution>.self)
+    }
+    
+    func markAsLike(which distributionId: String) async throws {
+        _ = try await self.request(to: .like(distributionId: distributionId), expects: Ditch.self, method: .put)
+    }
+    
+    func markAsDislike(which distributionId: String) async throws {
+        _ = try await self.request(to: .dislike(distributionId: distributionId), expects: Ditch.self, method: .put)
     }
     
     func card(by id: String) async throws -> FZCard {

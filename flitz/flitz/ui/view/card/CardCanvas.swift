@@ -61,7 +61,7 @@ struct CardCanvas: View {
                     }
                 }
             } else {
-                Rectangle().fill(.gray)
+                Rectangle().fill([.gray, .blue, .red].randomElement()!)
             }
         }
         .fixedSize()

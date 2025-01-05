@@ -19,7 +19,7 @@ struct CardListScreen: View {
         NavigationView {
             TabView {
                 ForEach(cards, id: \.id) { card in
-                    SimpleCardPreview(client: $appState.client, cardId: card.id)
+                    CardPreview(client: $appState.client, cardId: card.id)
                 }
             }
             .tabViewStyle(.page)

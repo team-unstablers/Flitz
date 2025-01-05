@@ -27,11 +27,12 @@ enum ECControlButtonSize {
 struct ECControlButton<Content: View>: View {
     var size: ECControlButtonSize = .large
     
+    var action: () -> Void
     var content: () -> Content
     
     var body: some View {
         Button {
-            
+            action()
         } label: {
             VStack {
                 content()
@@ -51,6 +52,8 @@ struct ECControlButton<Content: View>: View {
 
 #Preview {
     ECControlButton(size: .large) {
+        
+    } content: {
         Image("ECHeart")
             .resizable()
             .scaledToFit()
@@ -59,6 +62,8 @@ struct ECControlButton<Content: View>: View {
     }
     
     ECControlButton(size: .large) {
+        
+    } content: {
         Image("ECSkip")
             .resizable()
             .scaledToFit()

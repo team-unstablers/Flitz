@@ -7,6 +7,31 @@
 
 import SwiftUI
 
+fileprivate struct ProfileButton: View {
+    var profile: FZUser
+    
+    var body: some View {
+        Button {} label: {
+            HStack {
+                ProfileImage(
+                    url: profile.profile_image_url,
+                    size: 72
+                )
+                
+                VStack(alignment: .leading) {
+                    Text(profile.display_name)
+                        .font(.heading2)
+                        .bold()
+                    
+                    Text("프로필 편집하기")
+                        .font(.main)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 struct SettingsScreen: View {
     @EnvironmentObject
     var appState: RootAppState
@@ -14,24 +39,14 @@ struct SettingsScreen: View {
     var body: some View {
         Form {
             Section {
-                Button {} label: {
-                    HStack {
-                        ProfileImage(
-                            url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
-                            size: 72
-                        )
-                        
-                        VStack(alignment: .leading) {
-                            Text("Gyuhwan Park")
-                                .font(.heading2)
-                                .bold()
-                            
-                            Text("프로필 편집하기")
-                                .font(.main)
+                if let profile = appState.profile {
+                    ProfileButton(profile: profile)
+                } else {
+                    ProgressView()
+                        .onAppear {
+                            appState.loadProfile()
                         }
-                    }
                 }
-                .buttonStyle(.plain)
             }
             
             Section(header: Text("개인 정보 보호")) {
@@ -67,7 +82,7 @@ struct SettingsScreen: View {
                 }) {
                     Text("Flitz 도움말 보기")
                 }
-
+                
                 Button(action: {
                     print("Contact us")
                 }) {
@@ -89,9 +104,9 @@ struct SettingsScreen: View {
             
             AboutAppFooter()
                 .listRowInsets(EdgeInsets())
-
+            
             Section {
-
+                
             } footer: {
                 Text("Flitz v1.0.0\n" +
                      "© 2025 team unstablers Inc. All rights reserved.")

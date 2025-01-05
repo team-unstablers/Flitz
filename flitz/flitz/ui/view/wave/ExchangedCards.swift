@@ -8,10 +8,20 @@
 import SwiftUI
 
 struct ECController: View {
+    var distributionId: String
+    
+    var dismissHandler: (String) -> Void
+    
     var body: some View {
         HStack {
             Spacer()
             ECControlButton(size: .large) {
+                Task {
+                    try? await RootAppState.shared.client.markAsDislike(which: distributionId)
+                }
+                
+                dismissHandler(distributionId)
+            } content: {
                 Image("ECSkip")
                     .resizable()
                     .scaledToFit()
@@ -22,6 +32,8 @@ struct ECController: View {
             Spacer()
             
             ECControlButton(size: .medium) {
+                print("menu")
+            } content: {
                 Image("ECMenu")
                     .resizable()
                     .scaledToFit()
@@ -33,6 +45,12 @@ struct ECController: View {
 
 
             ECControlButton(size: .large) {
+                Task {
+                    try? await RootAppState.shared.client.markAsLike(which: distributionId)
+                }
+                
+                dismissHandler(distributionId)
+            } content: {
                 Image("ECHeart")
                     .resizable()
                     .scaledToFit()
@@ -48,12 +66,7 @@ struct ECController: View {
 struct ExchangedCards: View {
     var body: some View {
         VStack {
-            DummyCardView()
-                .shadow(radius: 8)
-                .background(.white)
-            
-            ECController()
-                .offset(x: 0, y: -60)
+            WaveCardManagerView()
         }
     }
 }

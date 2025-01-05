@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct FZCardDistribution: Codable, Identifiable {
+    var id: String
+    var card: FZSimpleCard
+    var user: FZUser
+}
+
 struct FZSimpleCard: Codable, Identifiable {
     var id: String
     var title: String
