@@ -17,6 +17,7 @@ class FZCardViewWorld {
     let scene: SCNScene = SCNScene()
     let mainCamera: SCNNode = SCNNode()
     let modelNode: SCNNode = SCNNode()
+    let lightNode: SCNNode = SCNNode()
     
     private var cardIdCounter: Int = 0
     private(set) var cardArena: [FZCardViewCardInstance] = []
@@ -29,6 +30,7 @@ class FZCardViewWorld {
         // Clear the background color of the scene.
         scene.background.contents = UIColor.clear
         scene.rootNode.addChildNode(modelNode)
+        scene.rootNode.addChildNode(lightNode)
     }
     
     private func setupMainCamera() {
@@ -36,6 +38,26 @@ class FZCardViewWorld {
         mainCamera.position = SCNVector3(x: 0, y: 0, z: 12.5)
         
         scene.rootNode.addChildNode(mainCamera)
+        
+        let directLight = SCNLight()
+        directLight.type = .directional
+        directLight.intensity = 500  // 조명의 강도 조정
+        let directLightNode = SCNNode()
+        directLightNode.position = SCNVector3(x: 0, y: 0, z: 12.5)
+        directLightNode.light = directLight
+        
+        let omniLight = SCNLight()
+        omniLight.type = .omni
+        omniLight.intensity = 200  // 조명의 강도 조정
+        let omniLightNode = SCNNode()
+        omniLightNode.position = SCNVector3(x: 0, y: 3, z: 4)
+        omniLightNode.light = omniLight
+    
+        
+        self.scene.rootNode.addChildNode(directLightNode)
+        self.lightNode.addChildNode(omniLightNode)
+//        
+//        self.lightNode.rotation = SCNVector4(x: 0, y: 0, z: 1, w: deg2rad(10))
     }
     
     
@@ -92,6 +114,7 @@ class FZCardViewCardInstance: Identifiable {
     
     let rootNode = SCNNode()
     var modelNode: SCNReferenceNode!
+    var lightNode: SCNReferenceNode!
     
     private var mainTexture: UIImage? = nil
     private var normalMap: UIImage? = nil
@@ -123,6 +146,7 @@ class FZCardViewCardInstance: Identifiable {
         }
         
         modelNode = baseModel.clone()
+
         rootNode.addChildNode(self.modelNode)
         
         modelNode.rotation = SCNVector4(x: 1, y: 0, z: 0, w: deg2rad(-90))
@@ -133,6 +157,7 @@ class FZCardViewCardInstance: Identifiable {
         self.detachFromScene()
         
         modelNode.unload()
+        lightNode.unload()
         rootNode.removeFromParentNode()
         
         world.remove(card: self)
@@ -173,6 +198,8 @@ class FZCardViewCardInstance: Identifiable {
             print("Failed to get material")
             return
         }
+        
+        geometry.subdivisionLevel = 2
         
         let scaleX = Float(mainTexture.size.height) / Float(mainTexture.size.width)
         

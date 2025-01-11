@@ -26,7 +26,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         sceneView.backgroundColor = .clear
         
         sceneView.allowsCameraControl = false
-        sceneView.autoenablesDefaultLighting = true
+        sceneView.autoenablesDefaultLighting = false
         sceneView.antialiasingMode = .multisampling2X
         // cameraNode.camera?.wantsHDR = true
         
@@ -43,6 +43,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
     
     func updateUIView(_ sceneView: SCNView, context: Context) {
         print("updateUIView called")
+//        let directLight = SCNLight()
+//        directLight.type = .omni
+//        directLight.intensity = 100  // 조명의 강도 조정
+//
+//        sceneView.pointOfView!.light = directLight
+
         if (sceneView.scene !== world.scene) {
             sceneView.scene = world.scene
         }
@@ -68,7 +74,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         
         init(world: FZCardViewWorld) {
             self.world = world
-            gyroController.modelNode = world.modelNode
+            gyroController.lightNode = world.lightNode
         }
         
         @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
@@ -80,7 +86,6 @@ struct FZCardView: UIViewRepresentable, Equatable {
             // 드래그 중 카메라 회전
             if gesture.state == .changed {
                 isTouching = true
-                gyroController.isTouching = true
                 let rotationSpeed: Float = 0.005 // 회전 속도 비율
                 let deltaY = Float(translation.x - lastPanTranslation.x) * rotationSpeed
                 modelNode.eulerAngles.y += deltaY
@@ -91,7 +96,6 @@ struct FZCardView: UIViewRepresentable, Equatable {
                 let timeInterval = currentTime.timeIntervalSince(lastPanUpdateTime)
                 lastPanTranslation = .zero
                 isTouching = false
-                gyroController.isTouching = false
                 // 제스처 종료 시 모멘텀 시작
                 if timeInterval < 0.1 {
                     startMomentum(modelNode: modelNode)
