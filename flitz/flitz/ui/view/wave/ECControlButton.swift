@@ -30,6 +30,12 @@ struct ECControlButton<Content: View>: View {
     var action: () -> Void
     var content: () -> Content
     
+    let gradient = LinearGradient(
+        gradient: Gradient(colors: [.white, .white, Color(hex: 0xF0F0F0)]),
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    
     var body: some View {
         Button {
             action()
@@ -38,14 +44,15 @@ struct ECControlButton<Content: View>: View {
                 content()
             }
             .frame(width: size.size, height: size.size)
-            .background(.white)
-            .clipShape(Circle())
-            .overlay {
+            .background(
                 Circle()
-                    .stroke(Color.gray_4A4A4A, lineWidth: 2)
-            }
+                    .fill(
+                        gradient
+                        .shadow(.inner(color: .black.opacity(0.25), radius: 2, x: 0, y: -2))
+                    )
+            )
             .compositingGroup()
-            .shadow(color: .black.opacity(0.25), radius: 0, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 2)
         }
     }
 }
