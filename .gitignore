@@ -125,3 +125,7 @@ DerivedData/
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Swift,Xcode,SwiftPM
 
 .DS_Store
+
+.vscode
+.index-build
+
