@@ -6,9 +6,9 @@
 //
 
 import Foundation
-
 import SceneKit
 import SwiftUI
+import CoreMotion
 
 enum FZCardViewError: Error {
     case renderFailed
@@ -29,15 +29,20 @@ struct FZCardView: UIViewRepresentable, Equatable {
         sceneView.backgroundColor = .clear
         
         sceneView.allowsCameraControl = false
-        sceneView.autoenablesDefaultLighting = true
+        sceneView.autoenablesDefaultLighting = false // 자체 라이팅 사용하므로 비활성화
         sceneView.antialiasingMode = .multisampling2X
         // cameraNode.camera?.wantsHDR = true
         
         sceneView.scene = world.scene
         sceneView.pointOfView = world.mainCamera
+        /*
         sceneView.isPlaying = true
         sceneView.rendersContinuously = true
+         */
         sceneView.contentScaleFactor = UIScreen.main.scale * 0.9
+        
+        // 자이로스코프 업데이트 설정
+        context.coordinator.setupMotionUpdates()
         
         return sceneView
     }
@@ -76,12 +81,50 @@ struct FZCardView: UIViewRepresentable, Equatable {
         private var velocity: CGFloat = 0
         private var displayLink: CADisplayLink?
         
+        // motionManager를 Coordinator로 이동
+        private let motionManager = CMMotionManager()
+        
         init(world: FZCardViewWorld) {
             self.world = world
             
             super.init()
             
             self.gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(Coordinator.handlePanGesture(_:)))
+        }
+        
+        deinit {
+            // 자이로스코프 및 기타 리소스 정리
+            stopMomentum()
+            motionManager.stopDeviceMotionUpdates()
+        }
+        
+        // 자이로스코프 설정을 Coordinator로 이동
+        func setupMotionUpdates() {
+            guard motionManager.isDeviceMotionAvailable else { return }
+            
+            motionManager.deviceMotionUpdateInterval = 1.0 / 30.0 // 30Hz 업데이트
+            motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
+                guard let self = self, let motion = motion, error == nil else { return }
+                
+                // 자이로스코프 데이터를 사용하여 광원 위치 업데이트
+                self.updateLightPosition(with: motion)
+            }
+        }
+        
+        private func updateLightPosition(with motion: CMDeviceMotion) {
+            // 자이로스코프 데이터를 광원 위치로 변환
+            // 기기의 기울기에 따라 -10~10 범위의 값으로 변환
+            let maxOffset: Float = 10.0
+            
+            let xRoll = Float(motion.attitude.roll) * 2.0
+            let yPitch = Float(motion.attitude.pitch) * 2.0
+            
+            // 기본 위치에서 기울기에 따라 ±maxOffset 이동
+            let lightX = -xRoll * maxOffset
+            let lightY = yPitch * maxOffset
+            let lightZ: Float = 40.0 // 기본 Z 위치 유지
+            
+            world.updateLightPosition(x: lightX, y: lightY, z: lightZ)
         }
         
         @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {

@@ -17,6 +17,7 @@ class FZCardViewWorld {
     let scene: SCNScene = SCNScene()
     let mainCamera: SCNNode = SCNNode()
     let modelNode: SCNNode = SCNNode()
+    let lightNode: SCNNode = SCNNode()
     
     private var cardIdCounter: Int = 0
     private(set) var cardArena: Set<FZCardViewCardInstance> = []
@@ -30,6 +31,26 @@ class FZCardViewWorld {
         scene.background.contents = UIColor.clear
         scene.rootNode.addChildNode(modelNode)
     }
+
+    private func setupLight() {
+        let envLight = SCNLight()
+        envLight.type = .ambient
+        envLight.intensity = 800
+        envLight.temperature = 6500 // 주광색
+        
+        scene.rootNode.light = envLight
+        
+        
+        let light = SCNLight()
+        light.type = .omni
+        light.intensity = 400
+        light.temperature = 6500 // 주광색
+        
+        lightNode.light = light
+        lightNode.position = SCNVector3(x: 0, y: 0, z: 40)
+        
+        scene.rootNode.addChildNode(lightNode)
+    }
     
     private func setupMainCamera() {
         mainCamera.camera = SCNCamera()
@@ -42,6 +63,17 @@ class FZCardViewWorld {
     func setup() {
         setupScene()
         setupMainCamera()
+        setupLight()
+    }
+
+    // 광원 위치 업데이트 메서드
+    func updateLightPosition(x: Float, y: Float, z: Float) {
+        SCNTransaction.begin()
+        SCNTransaction.animationDuration = 0.1 // 부드러운 전환
+        
+        lightNode.position = SCNVector3(x: x, y: y, z: z)
+        
+        SCNTransaction.commit()
     }
     
     func spawn(card: Flitz.Card) -> FZCardViewCardInstance {
@@ -183,6 +215,14 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         material.normal.contents = normalMap
         
         material.lightingModel = .physicallyBased
+        
+        // 반사율 및 금속성 조정
+        material.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
+        material.roughness.contents = 0.3  // 약간 매끄러운 표면 (0.0-1.0)
+        
+        // 광택 효과 강화
+        material.specular.contents = UIColor.white
+        material.specular.intensity = 0.8
         
         material.diffuse.magnificationFilter = .linear
         material.normal.magnificationFilter = .linear

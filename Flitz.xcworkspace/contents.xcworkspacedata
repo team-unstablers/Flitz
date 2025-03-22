@@ -4,13 +4,4 @@
    <FileRef
       location = "group:flitz/Flitz.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:FlitzCardExchangeTest/FlitzCardExchangeTest.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:FlitzCardEditorTest/FlitzCardEditorTest.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:FlitzCardTest/FlitzCardTest.xcodeproj">
-   </FileRef>
 </Workspace>
