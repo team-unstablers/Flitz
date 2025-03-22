@@ -18,6 +18,7 @@ struct FZAPIEndpoint: RawRepresentable {
     
     // user start
     static let register = FZAPIEndpoint(rawValue: "/users/register/")
+    static let apnsToken = FZAPIEndpoint(rawValue: "/users/self/apns-token")
     
     static func user(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/users/\(id)/")

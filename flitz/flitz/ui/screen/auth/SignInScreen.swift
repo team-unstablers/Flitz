@@ -83,7 +83,8 @@ struct SignInScreen: View {
         let client = FZAPIClient(context: context)
         let credentials = FZCredentials(username: self.username,
                                         password: self.password,
-                                        device_info: "FlitzCardEditorTest.app")
+                                        device_info: "FlitzCardEditorTest.app",
+                                        apns_token: AppDelegate.apnsToken)
         
         Task {
             do {
@@ -109,7 +110,8 @@ struct SignInScreen: View {
         let client = FZAPIClient(context: context)
         let credentials = FZCredentials(username: self.username,
                                         password: self.password,
-                                        device_info: "FlitzCardEditorTest.app")
+                                        device_info: "FlitzCardEditorTest.app",
+                                        apns_token: AppDelegate.apnsToken)
         
         Task {
             do {

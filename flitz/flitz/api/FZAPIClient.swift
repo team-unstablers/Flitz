@@ -169,6 +169,19 @@ class FZAPIClient {
                                    method: .post,
                                    parameters: args)
     }
+    
+    func updateAPNSToken(_ token: String) async throws {
+        struct APNSTokenRequest: Encodable {
+            let apns_token: String
+        }
+        
+        let parameters = APNSTokenRequest(apns_token: token)
+        
+        _ = try await self.request(to: .apnsToken,
+                                  expects: Ditch.self,
+                                  method: .put,
+                                  parameters: parameters)
+    }
 }
 
 fileprivate extension Flitz.ImageSource {

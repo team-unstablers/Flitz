@@ -28,6 +28,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let stringifiedToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Self.apnsToken = stringifiedToken
         print("stringifiedToken:", stringifiedToken)
+        
+        RootAppState.shared.updateAPNSToken()
     }
 }
 

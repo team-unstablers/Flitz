@@ -44,4 +44,17 @@ class RootAppState: ObservableObject {
             }
         }
     }
+    
+    func updateAPNSToken() {
+        Task {
+            do {
+                guard let token = await AppDelegate.apnsToken else {
+                    return
+                }
+                try await self.client.updateAPNSToken(token)
+            } catch {
+                print(error)
+            }
+        }
+    }
 }
