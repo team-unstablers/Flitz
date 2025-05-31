@@ -69,7 +69,7 @@ struct NoCardsAvailable: View {
                             Text("앱 설정 열기")
                         }
                         
-                        FZButton(style: .secondary) {
+                        FZButton {
                             
                         } label: {
                             Text("Wave에 대해 자세히 알아보기")
