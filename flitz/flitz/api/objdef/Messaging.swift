@@ -9,7 +9,7 @@ import Foundation
 
 struct DirectMessageParticipant: Codable {
     var user: FZUser
-    var read_at: Int
+    var read_at: String?
     
     /// 자기 자신일 때에만 존재함
     var unread_count: Int?

@@ -57,6 +57,30 @@ struct FZAPIEndpoint: RawRepresentable {
     static let waveReportDiscovery = FZAPIEndpoint(rawValue: "/wave/discovery/report/")
     // wave end
     
+    // messaging start
+    static let conversations = FZAPIEndpoint(rawValue: "/conversations/")
+    
+    static func conversation(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(id)/")
+    }
+    
+    static func messages(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/")
+    }
+    
+    static func message(conversationId: String, messageId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/\(messageId)/")
+    }
+    
+    static func markAsRead(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/mark_as_read/")
+    }
+    
+    static func attachments(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/attachments/")
+    }
+    // messaging end
+    
     func urlString(for server: String) -> String {
         return "\(server)\(self.rawValue)"
     }
