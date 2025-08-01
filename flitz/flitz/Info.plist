@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Flitz 앱 개발을 위하여 로컬 네트워크에 액세스합니다. (이 메시지는 실제 프로덕션 환경에서 표시되어선 안됩니다)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansKR.ttf</string>
