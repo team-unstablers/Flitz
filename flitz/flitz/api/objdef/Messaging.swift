@@ -27,7 +27,7 @@ struct DirectMessageContent: Codable {
     var attachment_id: String?
     
     var public_url: String?
-    var private_url: String?
+    var thumbnail_url: String?
 }
 
 struct DirectMessage: Codable, Identifiable {
@@ -45,3 +45,14 @@ struct DirectMessageConversation: Codable, Identifiable {
     
     var latest_message: DirectMessage?
 }
+
+struct DirectMessageAttachment: Codable, Identifiable {
+    var id: String
+    var type: String
+    var public_url: String
+    var mimetype: String
+    var size: Int
+    var created_at: String
+    var updated_at: String
+}
+

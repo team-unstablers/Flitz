@@ -65,26 +65,3 @@ struct FZAPIEndpoint: RawRepresentable {
         return URL(string: self.urlString(for: server))!
     }
 }
-
-
-
-fileprivate extension String {
-    func sanitizeServerAddress() -> String {
-        var server = self
-        if server.hasPrefix("https://") {
-            server.removeFirst("https://".count)
-        } else if server.hasPrefix("http://") {
-            server.removeFirst("http://".count)
-        } else if server.hasPrefix("wss://") {
-            server.removeFirst("wss://".count)
-        } else if server.hasPrefix("ws://") {
-            server.removeFirst("ws://".count)
-        }
-        
-        if server.hasSuffix("/") {
-            server.removeLast()
-        }
-        
-        return server
-    }
-}
