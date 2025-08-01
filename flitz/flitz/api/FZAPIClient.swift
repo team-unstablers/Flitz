@@ -15,16 +15,14 @@ class FZAPIClient {
     init(context: FZAPIContext) {
         self.context = context
     }
-        
+    
     func request<Parameters: Encodable & Sendable, Response>(
-        to endpoint: FZAPIEndpoint,
+        to url: URL,
         expects type: Response.Type,
         method: HTTPMethod = .get,
         parameters: Parameters = Dictionary<String, String>(),
         requiresAuth: Bool = true
     ) async throws -> Response where Response: Decodable & Sendable {
-        let url = endpoint.url(for: context.host.rawValue)
-        
         let headers: HTTPHeaders? = (requiresAuth) ? [
             "Authorization": "Bearer \(context.token ?? "")"
         ] : nil
@@ -57,5 +55,41 @@ class FZAPIClient {
             return value
         }
     }
+ 
+        
+    func request<Parameters: Encodable & Sendable, Response>(
+        to endpoint: FZAPIEndpoint,
+        expects type: Response.Type,
+        method: HTTPMethod = .get,
+        parameters: Parameters = Dictionary<String, String>(),
+        requiresAuth: Bool = true
+    ) async throws -> Response where Response: Decodable & Sendable {
+        let url = endpoint.url(for: context.host.rawValue)
+        
+        return try await self.request(to: url,
+                                      expects: type,
+                                      method: method,
+                                      parameters: parameters,
+                                      requiresAuth: requiresAuth)
+    }
     
+    func nextPage<T: Codable>(_ pagination: Paginated<T>) async throws -> Paginated<T>? {
+        guard let next = pagination.next,
+              let url = URL(string: next) else {
+            return nil
+        }
+        
+        return try await self.request(to: url,
+                                      expects: Paginated<T>.self)
+    }
+    
+    func prevPage<T: Codable>(_ pagination: Paginated<T>) async throws -> Paginated<T>? {
+        guard let next = pagination.next,
+              let url = URL(string: next) else {
+            return nil
+        }
+        
+        return try await self.request(to: url,
+                                      expects: Paginated<T>.self)
+    }
 }

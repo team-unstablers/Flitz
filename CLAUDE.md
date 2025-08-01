@@ -259,6 +259,14 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
 - 멀티파트 폼 데이터를 통한 이미지 업로드 지원
 - WebSocket 기반 실시간 통신 지원
 
+### FZAPIClient 기능 확장
+- **리팩토링된 request 메서드**: URL을 직접 받는 버전과 FZAPIEndpoint를 받는 버전으로 분리
+  - URL 직접 전달 버전: 페이지네이션 응답의 next/previous URL 처리에 유용
+  - FZAPIEndpoint 버전: 기존 코드와의 호환성 유지
+- **페이지네이션 지원**: 
+  - `nextPage<T>`: Paginated 응답의 다음 페이지 요청
+  - `prevPage<T>`: Paginated 응답의 이전 페이지 요청
+
 ### 메시징 API
 
 #### 엔드포인트
