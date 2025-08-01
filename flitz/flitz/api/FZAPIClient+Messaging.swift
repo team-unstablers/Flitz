@@ -7,8 +7,44 @@
 
 import Foundation
 import Alamofire
+import Combine
 
 extension FZAPIClient {
+    /// 대화방별 WebSocket 클라이언트를 관리하는 딕셔너리
+    private static var streamClients: [String: FZMessagingStreamClient] = [:]
+    private static let streamClientsQueue = DispatchQueue(label: "com.flitz.messaging.streamclients")
+    
+    /// 특정 대화방의 실시간 메시징 스트림 연결
+    func connectMessagingStream(conversationId: String) -> FZMessagingStreamClient {
+        Self.streamClientsQueue.sync {
+            if let existingClient = Self.streamClients[conversationId] {
+                return existingClient
+            }
+            
+            let client = FZMessagingStreamClient(context: context, conversationId: conversationId)
+            Self.streamClients[conversationId] = client
+            client.connect()
+            return client
+        }
+    }
+    
+    /// 특정 대화방의 실시간 메시징 스트림 연결 해제
+    func disconnectMessagingStream(conversationId: String) {
+        Self.streamClientsQueue.sync {
+            if let client = Self.streamClients[conversationId] {
+                client.disconnect()
+                Self.streamClients.removeValue(forKey: conversationId)
+            }
+        }
+    }
+    
+    /// 모든 실시간 메시징 스트림 연결 해제
+    func disconnectAllMessagingStreams() {
+        Self.streamClientsQueue.sync {
+            Self.streamClients.values.forEach { $0.disconnect() }
+            Self.streamClients.removeAll()
+        }
+    }
     func conversations() async throws -> Paginated<DirectMessageConversation> {
         return try await self.request(to: .conversations, expects: Paginated<DirectMessageConversation>.self)
     }

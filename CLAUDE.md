@@ -206,6 +206,7 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
     - **FZAPIClient.swift**: HTTP 요청 처리 클라이언트
     - **FZAPIClient+Messaging.swift**: 메시징 API 메서드 구현
     - **FZAPIEndpoint.swift**: API 엔드포인트 정의
+    - **FZMessagingStreamClient.swift**: WebSocket 기반 실시간 메시징 클라이언트
   - **elements/**: 카드 요소 관련 코드
     - **renderer/**: 카드 요소 렌더링 관련 코드
     - **FlitzCard.swift**: 카드 데이터 모델
@@ -256,6 +257,7 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
 - RESTful API 기반 통신
 - 토큰 기반 인증 시스템
 - 멀티파트 폼 데이터를 통한 이미지 업로드 지원
+- WebSocket 기반 실시간 통신 지원
 
 ### 메시징 API
 
@@ -301,5 +303,41 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
    - 이미지 첨부 시 서버에서 자동으로 썸네일 생성
    - WebSocket을 통한 실시간 메시지 수신 지원
    - 읽음 표시는 conversation 단위로 처리
+
+### WebSocket 실시간 메시징 구현
+
+#### FZMessagingStreamClient
+- **URLSession WebSocket API** 사용
+- **이벤트 타입**:
+  - `connected`: WebSocket 연결 성공
+  - `disconnected`: 연결 해제
+  - `message`: 새 메시지 수신
+  - `readEvent`: 읽음 상태 업데이트
+  - `error`: 에러 발생
+- **자동 재연결 로직**: 연결 끊김 시 최대 5회까지 재시도
+- **Ping/Pong**: 30초마다 연결 상태 확인
+- **인증**: JWT 토큰을 쿼리 파라미터로 전달 (`?token=...`)
+
+#### 사용 방법
+```swift
+// WebSocket 연결
+let streamClient = apiClient.connectMessagingStream(conversationId: "conversation-id")
+
+// 이벤트 구독
+streamClient.eventPublisher
+    .sink { event in
+        switch event {
+        case .message(let message):
+            // 새 메시지 처리
+        case .readEvent(let userId, let readAt):
+            // 읽음 상태 업데이트
+        // ...
+        }
+    }
+    .store(in: &cancellables)
+
+// 연결 해제
+apiClient.disconnectMessagingStream(conversationId: "conversation-id")
+```
 
 </section>
