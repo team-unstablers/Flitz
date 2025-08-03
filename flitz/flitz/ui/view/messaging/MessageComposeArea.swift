@@ -8,27 +8,16 @@
 import SwiftUI
 
 struct MessageComposeArea: View {
-    @State
-    var text: String = ""
+    @State private var text: String = ""
+    
+    var onSend: ((String) -> Void)?
+    var onAttach: (() -> Void)?
+    var isSending: Bool = false
     
     var body: some View {
         HStack(spacing: 8) {
-            /*
-            HStack {
-                Image(systemName: "paperclip")
-                Image(systemName: "camera")
-                Image(systemName: "mic")
-                Image(systemName: "hand.raised")
-                Image(systemName: "ellipsis")
-            }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(20)
-            .padding()
-             */
-            
             Button {
-                print("Attach")
+                onAttach?()
             } label: {
                 Image(systemName: "photo")
                     .font(.system(size: 16))
@@ -38,29 +27,48 @@ struct MessageComposeArea: View {
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)
+            .disabled(isSending)
             
             TextField("메시지를 입력하세요", text: $text, axis: .vertical)
                 .lineLimit(1...3)
                 .padding(12)
                 .background(Color(.systemGray6))
                 .cornerRadius(20)
+                .disabled(isSending)
+                .onSubmit {
+                    sendMessage()
+                }
             
             Button {
-                print("Send")
+                sendMessage()
             } label: {
-                Image(systemName: "paperplane.fill")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.white)
-                    .padding(12)
-                    .background(Color(.systemBlue))
-                    .clipShape(Circle())
+                if isSending {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(.white)
+                        .frame(width: 16, height: 16)
+                } else {
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                }
             }
+            .padding(12)
+            .background(text.isEmpty || isSending ? Color.gray : Color.blue)
+            .clipShape(Circle())
             .buttonStyle(.plain)
+            .disabled(text.isEmpty || isSending)
         }
         .padding(.vertical)
         .padding(.horizontal, 8)
     }
     
+    private func sendMessage() {
+        guard !text.isEmpty else { return }
+        let message = text
+        text = ""
+        onSend?(message)
+    }
 }
 
 #Preview {

@@ -6,161 +6,339 @@
 //
 
 import SwiftUI
+import PhotosUI
 
+@MainActor
 class ConversationViewModel: ObservableObject {
-    // SORTED BY ID DESC (NEWEST FIRST)
-    @Published
-    var messages: [DirectMessage] = []
+    @Published var messages: [DirectMessage] = []
+    @Published var conversation: DirectMessageConversation?
+    @Published var isLoading = false
+    @Published var isLoadingMore = false
+    @Published var isSending = false
+    
+    private var currentPage: Paginated<DirectMessage>?
+    private var apiClient: FZAPIClient?
+    private var currentUserId: String?
+    let conversationId: String
     
     init(conversationId: String) {
-        self.messages = [
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385419")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "가장 마지막 메시지입니다"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385418")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385417")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385416")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385415")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385414")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385413")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385412")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385411")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385410")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요! 반갑습니다 😊"
-                ),
-                created_at: "1970-01-01 00:00:00"
-            )
-        ]
+        self.conversationId = conversationId
     }
     
-    func loadPreviousMessages(until id: UUID) {
-        // @copilot, 이 부분은 나중에 직접 구현할 것이므로 수정하지 마십시오.
-        print("TODO: Implement loadPreviousMessages")
+    func configure(with apiClient: FZAPIClient, currentUserId: String) {
+        self.apiClient = apiClient
+        self.currentUserId = currentUserId
+        Task {
+            await loadConversation()
+            await loadMessages()
+            await markAsRead()
+        }
+    }
+    
+    func loadConversation() async {
+        guard let apiClient = apiClient else { return }
+        
+        do {
+            let conversations = try await apiClient.conversations()
+            self.conversation = conversations.results.first { $0.id == conversationId }
+        } catch {
+            print("[Conversation] Failed to load conversation info: \(error)")
+        }
+    }
+    
+    func loadMessages() async {
+        guard let apiClient = apiClient, !isLoading else { return }
+        
+        isLoading = true
+        do {
+            let page = try await apiClient.messages(conversationId: conversationId)
+            self.currentPage = page
+            self.messages = page.results.reversed() // API는 최신순, UI는 오래된순
+        } catch {
+            print("[Conversation] Failed to load messages: \(error)")
+        }
+        isLoading = false
+    }
+    
+    func loadPreviousMessages() async {
+        guard let apiClient = apiClient,
+              let currentPage = currentPage,
+              let nextUrl = currentPage.next,
+              !isLoadingMore else { return }
+        
+        isLoadingMore = true
+        do {
+            guard let page = try await apiClient.nextPage(currentPage) else {
+                return
+            }
+            self.currentPage = page
+            self.messages.insert(contentsOf: page.results.reversed(), at: 0)
+        } catch {
+            print("[Conversation] Failed to load more messages: \(error)")
+        }
+        isLoadingMore = false
+    }
+    
+    func sendMessage(text: String) async {
+        guard let apiClient = apiClient, !text.isEmpty, !isSending else { return }
+        
+        isSending = true
+        do {
+            let content = DirectMessageContent(type: "text", text: text)
+            let message = try await apiClient.sendMessage(conversationId: conversationId, content: content)
+            messages.append(message)
+        } catch {
+            print("[Conversation] Failed to send message: \(error)")
+        }
+        isSending = false
+    }
+    
+    func sendImage(data: Data, fileName: String, mimeType: String) async {
+        guard let apiClient = apiClient, !isSending else { return }
+        
+        isSending = true
+        do {
+            let message = try await apiClient.uploadAttachment(conversationId: conversationId, file: data, fileName: fileName, mimeType: mimeType)
+            messages.append(message)
+        } catch {
+            print("[Conversation] Failed to send image: \(error)")
+        }
+        isSending = false
+    }
+    
+    func deleteMessage(id: String) async {
+        guard let apiClient = apiClient else { return }
+        
+        do {
+            try await apiClient.deleteMessage(conversationId: conversationId, messageId: id)
+            messages.removeAll { $0.id.uuidString == id }
+        } catch {
+            print("[Conversation] Failed to delete message: \(error)")
+        }
+    }
+    
+    func markAsRead() async {
+        guard let apiClient = apiClient else { return }
+        
+        do {
+            try await apiClient.markAsRead(conversationId: conversationId)
+        } catch {
+            print("[Conversation] Failed to mark as read: \(error)")
+        }
+    }
+    
+    func isFromCurrentUser(_ message: DirectMessage) -> Bool {
+        return message.sender == currentUserId
     }
 }
 
 struct ConversationScreen: View {
-    @StateObject
-    var viewModel: ConversationViewModel = ConversationViewModel(conversationId: "1")
+    @EnvironmentObject var appState: RootAppState
+    @StateObject var viewModel: ConversationViewModel
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var scrollProxy: ScrollViewProxy?
+    
+    init(conversationId: String) {
+        _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
+    }
    
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.messages.reversed()) { message in
-                        MessageBubble(
-                            message: message,
-                            isFromCurrentUser: message.sender == "me"
-                        )
-                        .onAppear {
-                            // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
-                            if message.id == viewModel.messages[safe: 2]?.id {
-                                viewModel.loadPreviousMessages(until: message.id)
+        VStack(spacing: 0) {
+            if viewModel.isLoading && viewModel.messages.isEmpty {
+                Spacer()
+                ProgressView()
+                Spacer()
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 8) {
+                            // 로딩 인디케이터
+                            if viewModel.isLoadingMore {
+                                ProgressView()
+                                    .padding()
+                            }
+                            
+                            ForEach(viewModel.messages) { message in
+                                MessageBubble(
+                                    message: message,
+                                    isFromCurrentUser: viewModel.isFromCurrentUser(message)
+                                )
+                                .id(message.id)
+                                .contextMenu {
+                                    if viewModel.isFromCurrentUser(message) {
+                                        Button("메시지 삭제", role: .destructive) {
+                                            Task {
+                                                await viewModel.deleteMessage(id: message.id.uuidString)
+                                            }
+                                        }
+                                    }
+                                }
+                                .onAppear {
+                                    // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
+                                    if message.id == viewModel.messages[safe: 2]?.id {
+                                        Task {
+                                            await viewModel.loadPreviousMessages()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                    .onAppear {
+                        scrollProxy = proxy
+                        // 최신 메시지로 스크롤
+                        if let lastMessage = viewModel.messages.last {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                        }
+                    }
+                    .onChange(of: viewModel.messages.count) { _ in
+                        // 새 메시지가 추가되면 스크롤
+                        if let lastMessage = viewModel.messages.last {
+                            withAnimation {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
                             }
                         }
                     }
                 }
             }
             
-            MessageComposeArea()
+            Divider()
+            
+            MessageComposeArea(
+                onSend: { text in
+                    Task {
+                        await viewModel.sendMessage(text: text)
+                    }
+                },
+                onAttach: {
+                    // PhotosPicker 표시는 나중에 구현
+                },
+                isSending: viewModel.isSending
+            )
         }
-        .toolbarVisibility(.visible, for: .navigationBar)
-        .toolbarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                HStack {
-                    ProfileImage(
-                        url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
-                        size: 36
-                    )
-                    Text("Gyuhwan Park").bold()
+                if let conversation = viewModel.conversation,
+                   let opponent = conversation.participants.first(where: { $0.user.id != appState.profile?.id }) {
+                    HStack {
+                        ProfileImage(
+                            url: opponent.user.profile_image_url,
+                            size: 36
+                        )
+                        Text(opponent.user.display_name).bold()
+                    }
+                } else {
+                    Text("대화")
                 }
             }
+        }
+        .onAppear {
+            viewModel.configure(with: appState.client, currentUserId: appState.profile?.id ?? "self")
         }
     }
 }
 
 // Array 안전 접근을 위한 Extension
-extension Array {
-subscript(safe index: Int) -> Element? {
-    return indices.contains(index) ? self[index] : nil
-}
+fileprivate extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
 }
 
+#if DEBUG
+class ConversationPreviewViewModel: ConversationViewModel {
+    override init(conversationId: String) {
+        super.init(conversationId: conversationId)
+        
+        self.messages = [
+            DirectMessage(
+                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385410")!,
+                sender: "other",
+                content: DirectMessageContent(
+                    type: "text",
+                    text: "안녕하세요! 처음 메시지입니다."
+                ),
+                created_at: "2025-01-01T10:00:00Z"
+            ),
+            DirectMessage(
+                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385411")!,
+                sender: "self",
+                content: DirectMessageContent(
+                    type: "text",
+                    text: "안녕하세요! 반갑습니다 😊"
+                ),
+                created_at: "2025-01-01T10:01:00Z"
+            ),
+            DirectMessage(
+                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385412")!,
+                sender: "other",
+                content: DirectMessageContent(
+                    type: "text",
+                    text: "네 반가워요! 오늘 날씨가 좋네요"
+                ),
+                created_at: "2025-01-01T10:02:00Z"
+            ),
+            DirectMessage(
+                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385413")!,
+                sender: "self",
+                content: DirectMessageContent(
+                    type: "attachment",
+                    attachment_type: "image",
+                    thumbnail_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"
+                ),
+                created_at: "2025-01-01T10:03:00Z"
+            ),
+            DirectMessage(
+                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385419")!,
+                sender: "other",
+                content: DirectMessageContent(
+                    type: "text",
+                    text: "멋진 사진이네요!"
+                ),
+                created_at: "2025-01-01T10:04:00Z"
+            )
+        ]
+        
+        // Preview용 대화 정보
+        let userSelf = DirectMessageParticipant(
+            user: FZUser(id: "self", username: "self", display_name: "나"),
+            read_at: nil
+        )
+        let userOther = DirectMessageParticipant(
+            user: FZUser(
+                id: "other",
+                username: "other",
+                display_name: "Gyuhwan Park",
+                profile_image_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"
+            ),
+            read_at: nil
+        )
+        
+        self.conversation = DirectMessageConversation(
+            id: conversationId,
+            participants: [userSelf, userOther],
+            latest_message: messages.last
+        )
+    }
+    
+    override func sendMessage(text: String) async {
+        let newMessage = DirectMessage(
+            id: UUID(),
+            sender: "self",
+            content: DirectMessageContent(type: "text", text: text),
+            created_at: ISO8601DateFormatter().string(from: Date())
+        )
+        messages.append(newMessage)
+    }
+}
+#endif
+
 #Preview {
-ConversationScreen()
+    NavigationView {
+        ConversationScreen(conversationId: "preview-conversation")
+            .environmentObject(RootAppState())
+    }
 }
