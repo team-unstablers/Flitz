@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import Combine
 
 @MainActor
 class ConversationViewModel: ObservableObject {
@@ -19,6 +20,8 @@ class ConversationViewModel: ObservableObject {
     private var currentPage: Paginated<DirectMessage>?
     private var apiClient: FZAPIClient?
     private var currentUserId: String?
+    private var streamClient: FZMessagingStreamClient?
+    private var cancellables = Set<AnyCancellable>()
     let conversationId: String
     
     init(conversationId: String) {
@@ -28,10 +31,64 @@ class ConversationViewModel: ObservableObject {
     func configure(with apiClient: FZAPIClient, currentUserId: String) {
         self.apiClient = apiClient
         self.currentUserId = currentUserId
+        
+        // WebSocket 연결 설정
+        connectWebSocket()
+        
         Task {
             await loadConversation()
             await loadMessages()
             await markAsRead()
+        }
+    }
+    
+    private func connectWebSocket() {
+        guard let apiClient = apiClient else { return }
+        
+        // WebSocket 연결
+        streamClient = apiClient.connectMessagingStream(conversationId: conversationId)
+        
+        // 이벤트 구독
+        streamClient?.eventPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                self?.handleStreamEvent(event)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func disconnectWebSocket() {
+        if let apiClient = apiClient {
+            apiClient.disconnectMessagingStream(conversationId: conversationId)
+        }
+        streamClient = nil
+        cancellables.removeAll()
+    }
+    
+    private func handleStreamEvent(_ event: FZMessagingStreamClient.StreamEvent) {
+        switch event {
+        case .connected:
+            print("[WebSocket] Connected to conversation: \(conversationId)")
+            
+        case .disconnected(let error):
+            print("[WebSocket] Disconnected: \(error?.localizedDescription ?? "Unknown")")
+            
+        case .message(let message):
+            // 중복 메시지 체크 후 추가
+            if !messages.contains(where: { $0.id == message.id }) {
+                messages.append(message)
+            }
+            
+        case .readEvent(let userId, let readAt):
+            // 읽음 상태 업데이트
+            print("[WebSocket] User \(userId) read messages at \(readAt)")
+            // 대화 참여자의 읽음 시간 업데이트
+            if let index = conversation?.participants.firstIndex(where: { $0.user.id == userId }) {
+                conversation?.participants[index].read_at = readAt.ISO8601Format()
+            }
+            
+        case .error(let error):
+            print("[WebSocket] Error: \(error)")
         }
     }
     
@@ -86,7 +143,11 @@ class ConversationViewModel: ObservableObject {
         do {
             let content = DirectMessageContent(type: "text", text: text)
             let message = try await apiClient.sendMessage(conversationId: conversationId, content: content)
-            messages.append(message)
+            // WebSocket을 통해 메시지가 자동으로 수신되므로 여기서는 추가하지 않음
+            // 만약 WebSocket이 연결되지 않았다면 수동으로 추가
+            if streamClient == nil {
+                messages.append(message)
+            }
         } catch {
             print("[Conversation] Failed to send message: \(error)")
         }
@@ -99,7 +160,11 @@ class ConversationViewModel: ObservableObject {
         isSending = true
         do {
             let message = try await apiClient.uploadAttachment(conversationId: conversationId, file: data, fileName: fileName, mimeType: mimeType)
-            messages.append(message)
+            // WebSocket을 통해 메시지가 자동으로 수신되므로 여기서는 추가하지 않음
+            // 만약 WebSocket이 연결되지 않았다면 수동으로 추가
+            if streamClient == nil {
+                messages.append(message)
+            }
         } catch {
             print("[Conversation] Failed to send image: \(error)")
         }
@@ -122,9 +187,14 @@ class ConversationViewModel: ObservableObject {
         
         do {
             try await apiClient.markAsRead(conversationId: conversationId)
+            // WebSocket을 통해서도 읽음 확인 전송
+            streamClient?.sendReadReceipt()
         } catch {
             print("[Conversation] Failed to mark as read: \(error)")
         }
+    }
+    
+    deinit {
     }
     
     func isFromCurrentUser(_ message: DirectMessage) -> Bool {
@@ -221,6 +291,9 @@ struct ConversationScreen: View {
         }
         .onAppear {
             viewModel.configure(with: appState.client, currentUserId: appState.profile?.id ?? "self")
+        }
+        .onDisappear {
+            viewModel.disconnectWebSocket()
         }
     }
 }
