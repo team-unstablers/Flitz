@@ -152,6 +152,10 @@ struct ConversationScreen: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 8) {
+                            VStack {}
+                                .padding(.bottom, 16)
+                                .id("__BEGIN_OF_CONVERSATION__")
+
                             // 로딩 인디케이터
                             if viewModel.isLoadingMore {
                                 ProgressView()
@@ -182,22 +186,24 @@ struct ConversationScreen: View {
                                     }
                                 }
                             }
+                            VStack {}
+                                .padding(.bottom, 16)
+                                .id("__END_OF_CONVERSATION__")
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, 8)
                     }
                     .onAppear {
                         scrollProxy = proxy
                         // 최신 메시지로 스크롤
                         if let lastMessage = viewModel.messages.last {
-                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            proxy.scrollTo("__END_OF_CONVERSTAION__", anchor: .bottom)
                         }
                     }
                     .onChange(of: viewModel.messages.count) { _ in
                         // 새 메시지가 추가되면 스크롤
                         if let lastMessage = viewModel.messages.last {
                             withAnimation {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                proxy.scrollTo("__END_OF_CONVERSATION__", anchor: .bottom)
                             }
                         }
                     }
