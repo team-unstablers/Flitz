@@ -28,19 +28,22 @@ struct MessageListItemBadge: View {
 }
 
 struct ConversationListItem: View {
+    @Environment(\.userId)
+    var userId: String
+    
     var conversation: DirectMessageConversation
     
-    var opponent: DirectMessageParticipant {
-        conversation.participants.first { $0.user.id != "self" }!
+    var opponent: DirectMessageParticipant? {
+        conversation.participants.first { $0.user.id != userId }
     }
     
     var body: some View {
         HStack(alignment: .top) {
             HStack {
-                ProfileImage(url: opponent.user.profile_image_url)
+                ProfileImage(url: opponent?.user.profile_image_url)
                     .padding(.trailing, 4)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(opponent.user.display_name)
+                    Text(opponent?.user.display_name ?? "알 수 없음")
                         .font(.heading3)
                         .bold()
                         .lineLimit(1)
@@ -55,7 +58,7 @@ struct ConversationListItem: View {
                     .font(.main)
                     .lineLimit(1)
                 
-                MessageListItemBadge(count: conversation.unreadCount(for: "self"))
+                MessageListItemBadge(count: conversation.unreadCount(for: userId))
             }
         }
             .padding(.horizontal, 16)
