@@ -136,7 +136,6 @@ struct ConversationScreen: View {
     @EnvironmentObject var appState: RootAppState
     @StateObject var viewModel: ConversationViewModel
     @State private var selectedItem: PhotosPickerItem?
-    @State private var scrollProxy: ScrollViewProxy?
     
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
@@ -149,65 +148,44 @@ struct ConversationScreen: View {
                 ProgressView()
                 Spacer()
             } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 8) {
-                            VStack {}
-                                .padding(.bottom, 16)
-                                .id("__BEGIN_OF_CONVERSATION__")
-
-                            // 로딩 인디케이터
-                            if viewModel.isLoadingMore {
-                                ProgressView()
-                                    .padding()
-                            }
-                            
-                            ForEach(viewModel.messages) { message in
-                                MessageBubble(
-                                    message: message,
-                                    isFromCurrentUser: viewModel.isFromCurrentUser(message)
-                                )
-                                .id(message.id)
-                                .contextMenu {
-                                    if viewModel.isFromCurrentUser(message) {
-                                        Button("메시지 삭제", role: .destructive) {
-                                            Task {
-                                                await viewModel.deleteMessage(id: message.id.uuidString)
-                                            }
-                                        }
-                                    }
-                                }
-                                .onAppear {
-                                    // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
-                                    if message.id == viewModel.messages[safe: 2]?.id {
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        // 로딩 인디케이터
+                        if viewModel.isLoadingMore {
+                            ProgressView()
+                                .padding()
+                        }
+                        
+                        ForEach(viewModel.messages) { message in
+                            MessageBubble(
+                                message: message,
+                                isFromCurrentUser: viewModel.isFromCurrentUser(message)
+                            )
+                            .id(message.id)
+                            .contextMenu {
+                                if viewModel.isFromCurrentUser(message) {
+                                    Button("메시지 삭제", role: .destructive) {
                                         Task {
-                                            await viewModel.loadPreviousMessages()
+                                            await viewModel.deleteMessage(id: message.id.uuidString)
                                         }
                                     }
                                 }
                             }
-                            VStack {}
-                                .padding(.bottom, 16)
-                                .id("__END_OF_CONVERSATION__")
-                        }
-                        .padding(.horizontal, 8)
-                    }
-                    .onAppear {
-                        scrollProxy = proxy
-                        // 최신 메시지로 스크롤
-                        if let lastMessage = viewModel.messages.last {
-                            proxy.scrollTo("__END_OF_CONVERSTAION__", anchor: .bottom)
-                        }
-                    }
-                    .onChange(of: viewModel.messages.count) { _ in
-                        // 새 메시지가 추가되면 스크롤
-                        if let lastMessage = viewModel.messages.last {
-                            withAnimation {
-                                proxy.scrollTo("__END_OF_CONVERSATION__", anchor: .bottom)
+                            .onAppear {
+                                // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
+                                if message.id == viewModel.messages[safe: 2]?.id {
+                                    Task {
+                                        await viewModel.loadPreviousMessages()
+                                    }
+                                }
                             }
                         }
+                        
+                        Spacer(minLength: 16)
                     }
+                    .padding(.horizontal, 8)
                 }
+                .defaultScrollAnchor(.bottom)
             }
             
             Divider()
