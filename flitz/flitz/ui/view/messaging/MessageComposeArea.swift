@@ -8,6 +8,9 @@
 import SwiftUI
 import PhotosUI
 
+import BrightroomEngine
+import BrightroomUI
+
 struct MessageRequest {
     var text: String
     var images: [UIImage]
@@ -18,8 +21,60 @@ struct MessageRequest {
     }
 }
 
+struct EditableImageThumbnail: View {
+    var editorContext: ImageEditorContext
+    var image: UIImage
+    
+    var onSave: (() -> Void)? = nil
+    
+    @State
+    var editorVisible = false
+
+    var body: some View {
+        VStack {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+        }
+            .frame(width: 64, height: 64)
+            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
+            .padding(4)
+            .background(Color(.systemGray5))
+            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
+            .onTapGesture {
+                editorVisible = true
+            }
+            .sheet(isPresented: $editorVisible) {
+                NavigationStack {
+                    VStack {
+                        SwiftUICropView(editingStack: editorContext.editingStack, isAutoApplyEditingStackEnabled: true)
+                    }
+                    .navigationTitle("이미지 자르기")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("취소") {
+                                editorContext.editingStack.revertEdit()
+                                editorVisible = false
+                                self.onSave?()
+                            }
+                        }
+                        
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("완료") {
+                                editorVisible = false
+                                self.onSave?()
+                            }
+                        }
+                    }
+
+                }
+            }
+    }
+}
+
 struct MessageComposeArea: View {
-    @State 
+    @State
     private var text: String = ""
     
     @FocusState
@@ -32,17 +87,24 @@ struct MessageComposeArea: View {
     var selectedItems: [PhotosPickerItem] = []
     
     @State
-    var images: [UIImage] = []
+    var editorContexts: [ImageEditorContext] = []
+    
+    @State
+    var renderedImages: [UIImage] = []
+    
+    @State
+    var editorIndex: Int? = nil
+    
     
     var isEmpty: Bool {
         get {
-            text.isEmpty && images.isEmpty
+            text.isEmpty && editorContexts.isEmpty
         }
     }
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            PhotosPicker(selection: $selectedItems, maxSelectionCount: 4 - images.count, matching: .images) {
+            PhotosPicker(selection: $selectedItems, maxSelectionCount: 4 - editorContexts.count, matching: .images) {
                 Image(systemName: "photo")
                     .font(.system(size: 16))
                     .foregroundStyle(.secondary)
@@ -52,7 +114,7 @@ struct MessageComposeArea: View {
 
             }
                 .buttonStyle(.plain)
-                .disabled(images.count >= 4)
+                .disabled(editorContexts.count >= 4)
                 .onChange(of: selectedItems) { _, newValue in
                     Task {
                         await self.loadImages()
@@ -60,21 +122,16 @@ struct MessageComposeArea: View {
                 }
             
             VStack(alignment: .leading) {
-                if !images.isEmpty {
+                if !editorContexts.isEmpty {
                     ScrollView(.horizontal) {
                         HStack {
-                            ForEach(images, id: \.self) { image in
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 64, height: 64)
-                                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
-                                    .padding(4)
-                                    .background(Color(.systemGray5))
-                                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
+                            ForEach(0..<editorContexts.count, id: \.self) { index in
+                                EditableImageThumbnail(editorContext: editorContexts[index],
+                                                       image: renderedImages[index]) {
+                                    self.renderImages()
+                                }
                             }
                         }
-                        
                     }
                     
                     Divider()
@@ -90,7 +147,7 @@ struct MessageComposeArea: View {
                 .padding(12)
                 .background(Color(.systemGray6))
                 .cornerRadius(20)
-
+            
            
             Button {
                 sendMessage()
@@ -116,6 +173,7 @@ struct MessageComposeArea: View {
         }
         .padding(.vertical)
         .padding(.horizontal, 8)
+
     }
     
     private func loadImages() async {
@@ -123,16 +181,17 @@ struct MessageComposeArea: View {
         
         for item in selectedItems {
             if let data = try? await item.loadTransferable(type: Data.self),
-               let image = UIImage(data: data) {
-                images.append(image)
+               let editorContext = try? await ImageEditorContext(from: data) {
+                editorContexts.append(editorContext)
             }
             
-            if images.count >= 4 {
+            if editorContexts.count >= 4 {
                 break
             }
         }
         
         selectedItems = []
+        self.renderImages()
     }
     
     private func sendMessage() {
@@ -140,7 +199,9 @@ struct MessageComposeArea: View {
         let message = text
         text = ""
         
-        let request = MessageRequest(text: message, images: images)
+        self.renderImages()
+        
+        let request = MessageRequest(text: message, images: renderedImages)
         onSend?(request)
         
         DispatchQueue.main.async {
@@ -148,7 +209,23 @@ struct MessageComposeArea: View {
         }
         
         selectedItems = []
-        images = []
+        editorContexts = []
+    }
+    
+    private func renderImages() {
+        renderedImages = []
+        
+        for context in editorContexts {
+            do {
+                try context.render()
+                
+                if let image = context.rendered?.uiImage {
+                    renderedImages.append(image)
+                }
+            } catch {
+                print("Failed to render image: \(error)")
+            }
+        }
     }
 }
 

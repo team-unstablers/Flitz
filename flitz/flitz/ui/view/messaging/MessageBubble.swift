@@ -62,21 +62,32 @@ struct ThumbnailPreview: View {
     let url: String
     
     var body: some View {
-        CachedAsyncImage(url: URL(string: url)) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: 200, maxHeight: 200)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        } placeholder: {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.1))
-                .frame(width: 200, height: 150)
-                .overlay(
-                    ProgressView()
-                        .scaleEffect(0.8)
-                )
+        AsyncImage(url: URL(string: url)) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+            case .success(let image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 200, maxHeight: 200)
+            case .failure:
+                Image(systemName: "photo")
+                    .foregroundColor(.gray)
+                    .frame(width: 100, height: 100)
+            @unknown default:
+                EmptyView()
+            }
         }
+        /*
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color.gray.opacity(0.1))
+            .frame(width: 200, height: 150)
+            .overlay(
+                ProgressView()
+                    .scaleEffect(0.8)
+            )
+         */
     }
 }
 
