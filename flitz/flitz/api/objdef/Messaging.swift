@@ -26,6 +26,9 @@ struct DirectMessageContent: Codable {
     var attachment_type: String?
     var attachment_id: String?
     
+    var width: Int?
+    var height: Int?
+    
     var public_url: String?
     var thumbnail_url: String?
 }

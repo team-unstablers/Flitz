@@ -50,9 +50,6 @@ struct MessageBubble: View {
             
             VStack(alignment: isFromCurrentUser ? .trailing : .leading) {
                 contentView
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(bubbleColor)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
             
@@ -71,10 +68,21 @@ struct MessageBubble: View {
             if let text = message.content.text {
                 Text(text)
                     .foregroundColor(isFromCurrentUser ? .white : .primary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(bubbleColor)
             }
         case "attachment":
-            if let url = message.content.thumbnail_url ?? message.content.public_url {
-                ThumbnailPreview(url: url)
+            if let url = message.content.thumbnail_url ?? message.content.public_url,
+               let width = message.content.width,
+               let height = message.content.height {
+                let originalSize = CGSize(width: width, height: height)
+                let scaledSize = originalSize.scaleInto(target: CGSize(width: 200, height: 200))
+                
+                VStack(spacing: 0) {
+                    ThumbnailPreview(url: url, size: scaledSize)
+                }
+                    .frame(width: scaledSize.width, height: scaledSize.height)
             }
         default:
             Text("Unsupported message type")
@@ -84,6 +92,7 @@ struct MessageBubble: View {
 
 struct ThumbnailPreview: View {
     let url: String
+    let size: CGSize
     
     var body: some View {
         AsyncImage(url: URL(string: url)) { phase in
@@ -94,11 +103,11 @@ struct ThumbnailPreview: View {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 200, maxHeight: 200)
+                    .frame(maxWidth: size.width, maxHeight: size.height)
             case .failure:
                 Image(systemName: "photo")
                     .foregroundColor(.gray)
-                    .frame(width: 100, height: 100)
+                    .frame(width: size.width, height: size.height)
             @unknown default:
                 EmptyView()
             }

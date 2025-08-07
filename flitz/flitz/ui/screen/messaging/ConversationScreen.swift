@@ -331,7 +331,7 @@ struct ConversationScreen: View {
                         
                         // 하단 패딩용 빈 뷰
                         Color.clear
-                            .frame(height: 1)
+                            .frame(height: 0)
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
@@ -344,7 +344,7 @@ struct ConversationScreen: View {
                             }
                     }
                     .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
+                    .scrollContentBackground(.visible)
                     .scrollDismissesKeyboard(.interactively)
                     .defaultScrollAnchor(.bottom)
                     .onChange(of: viewModel.messages.count) { oldCount, newCount in
@@ -354,9 +354,12 @@ struct ConversationScreen: View {
                         }
                     }
                     .onChange(of: composeAreaFocused) { _, newValue in
-                        if shouldStickToBottom {
+                        if newValue && shouldStickToBottom {
                             // 키보드가 나타날 때 스크롤
-                            proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                // 약간의 지연을 주어 키보드가 나타난 후 스크롤
+                                proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                            }
                         }
                     }
                     .onAppear {
