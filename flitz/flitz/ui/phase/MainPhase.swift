@@ -14,8 +14,10 @@ struct MainPhase: View {
     var body: some View {
         RootNavigation()
             .environmentObject(appState)
+            .environment(\.userId, appState.profile?.id ?? UserIdKey.defaultValue)
             .onAppear() {
                 UNUserNotificationCenter.setup()
+                appState.loadProfile()
             }
     }
 }

@@ -10,9 +10,9 @@ import SwiftUI
 struct SplashScreen: View {
     var body: some View {
         VStack {
-            Text("Flitz")
-                .font(.largeTitle)
-            Text("TODO: Add a splash screen")
+            FlitzLogo()
+                .frame(maxWidth: 200)
+                .padding(32)
         }
     }
 }

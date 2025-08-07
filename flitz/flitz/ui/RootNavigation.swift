@@ -28,7 +28,7 @@ struct RootNavigation: View {
                         CardEditor(cardId: cardId, client: $appState.client)
                     
                     case .conversation(let conversationId):
-                        ConversationScreen()
+                        ConversationScreen(conversationId: conversationId)
                         
                     case .settings:
                         SettingsScreen()

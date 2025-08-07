@@ -8,6 +8,8 @@
 import SwiftUI
 
 extension Color {
+    static let mainBlack = Color(hex: 0x090909)
+    
     struct Grayscale {
         static let gray0 = Color(hex: 0xF5F4F3)
         static let gray1 = Color(hex: 0xF1F0EE)

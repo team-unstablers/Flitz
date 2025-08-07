@@ -18,7 +18,7 @@ struct FZAPIEndpoint: RawRepresentable {
     
     // user start
     static let register = FZAPIEndpoint(rawValue: "/users/register/")
-    static let apnsToken = FZAPIEndpoint(rawValue: "/users/self/apns-token")
+    static let apnsToken = FZAPIEndpoint(rawValue: "/users/self/apns-token/")
     
     static func user(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/users/\(id)/")
@@ -57,34 +57,35 @@ struct FZAPIEndpoint: RawRepresentable {
     static let waveReportDiscovery = FZAPIEndpoint(rawValue: "/wave/discovery/report/")
     // wave end
     
+    // messaging start
+    static let conversations = FZAPIEndpoint(rawValue: "/conversations/")
+    
+    static func conversation(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(id)/")
+    }
+    
+    static func messages(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/")
+    }
+    
+    static func message(conversationId: String, messageId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/\(messageId)/")
+    }
+    
+    static func markAsRead(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/mark_as_read/")
+    }
+    
+    static func attachments(conversationId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/attachments/")
+    }
+    // messaging end
+    
     func urlString(for server: String) -> String {
         return "\(server)\(self.rawValue)"
     }
     
     func url(for server: String) -> URL {
         return URL(string: self.urlString(for: server))!
-    }
-}
-
-
-
-fileprivate extension String {
-    func sanitizeServerAddress() -> String {
-        var server = self
-        if server.hasPrefix("https://") {
-            server.removeFirst("https://".count)
-        } else if server.hasPrefix("http://") {
-            server.removeFirst("http://".count)
-        } else if server.hasPrefix("wss://") {
-            server.removeFirst("wss://".count)
-        } else if server.hasPrefix("ws://") {
-            server.removeFirst("ws://".count)
-        }
-        
-        if server.hasSuffix("/") {
-            server.removeLast()
-        }
-        
-        return server
     }
 }

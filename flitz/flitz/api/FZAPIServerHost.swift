@@ -40,7 +40,6 @@ struct FZAPIServerHost: RawRepresentable, Codable, Hashable {
     
 #if DEBUG
     static let development = FZAPIServerHost(rawValue: "http://192.168.250.230:8000")
-    
     static let local = FZAPIServerHost(rawValue: "http://cheese-mbpr14.local:8000")
 #endif
     

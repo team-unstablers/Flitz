@@ -49,7 +49,7 @@ struct MessageBubble: View {
                     .foregroundColor(isFromCurrentUser ? .white : .primary)
             }
         case "attachment":
-            if let url = message.content.public_url {
+            if let url = message.content.thumbnail_url ?? message.content.public_url {
                 ThumbnailPreview(url: url)
             }
         default:

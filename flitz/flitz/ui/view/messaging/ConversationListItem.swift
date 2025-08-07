@@ -28,19 +28,22 @@ struct MessageListItemBadge: View {
 }
 
 struct ConversationListItem: View {
+    @Environment(\.userId)
+    var userId: String
+    
     var conversation: DirectMessageConversation
     
-    var opponent: DirectMessageParticipant {
-        conversation.participants.first { $0.user.id != "self" }!
+    var opponent: DirectMessageParticipant? {
+        conversation.participants.first { $0.user.id != userId }
     }
     
     var body: some View {
         HStack(alignment: .top) {
             HStack {
-                ProfileImage(url: opponent.user.profile_image_url)
+                ProfileImage(url: opponent?.user.profile_image_url)
                     .padding(.trailing, 4)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(opponent.user.display_name)
+                    Text(opponent?.user.display_name ?? "알 수 없음")
                         .font(.heading3)
                         .bold()
                         .lineLimit(1)
@@ -55,7 +58,7 @@ struct ConversationListItem: View {
                     .font(.main)
                     .lineLimit(1)
                 
-                MessageListItemBadge(count: conversation.unreadCount(for: "self"))
+                MessageListItemBadge(count: conversation.unreadCount(for: userId))
             }
         }
             .padding(.horizontal, 16)
@@ -102,14 +105,14 @@ fileprivate extension DirectMessageConversation {
     let userSelf = DirectMessageParticipant(user: FZUser(id: "self",
                                                          username: "self",
                                                          display_name: "Flitz User"),
-                                            read_at: 0,
+                                            read_at: "2020-04-01T00:00:00Z",
                                             unread_count: 3)
     
     let userOther = DirectMessageParticipant(user: FZUser(id: "other",
                                                           username: "other",
                                                           display_name: "Other User",
                                                           profile_image_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"),
-                                             read_at: 0)
+                                             read_at: "2020-04-01T00:00:00Z")
     
     
     let latest_message_1 = DirectMessage(id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385415")!,

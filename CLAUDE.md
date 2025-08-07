@@ -47,6 +47,21 @@ Flitz 앱은 **Bluetooth LE + GPS**를 사용하여 주변에 있는 Flitz 사�
 
 호감이 서로 교환되면, 사용자들은 서로 매칭되어 채팅을 할 수 있습니다.
 
+## 메시징 시스템
+
+매칭된 사용자들은 Direct Message를 통해 대화를 나눌 수 있습니다.
+
+### 주요 기능
+- **텍스트 메시지**: 일반적인 텍스트 기반 대화
+- **이미지 첨부**: 사진을 첨부하여 전송 가능 (썸네일 자동 생성)
+- **읽음 표시**: 상대방이 메시지를 읽었는지 확인 가능
+- **실시간 알림**: WebSocket을 통한 실시간 메시지 수신
+
+### 보안 및 안전 기능
+- 매칭되지 않은 사용자와는 대화 불가
+- 부적절한 메시지 신고 기능
+- 메시지 삭제 기능 (본인이 보낸 메시지만)
+
 ## DELAYED EXCHANGE
 
 **Flitz 앱은 다른 사용자와 카드가 교환되었더라도, 곧바로 상대방의 카드를 표시하지 않습니다. 카드가 교환된 후 사용자에게 표시되려면 아래 조건을 만족해야 합니다.**
@@ -187,8 +202,11 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
 - **flitz/flitz/**: 메인 앱 소스 코드
   - **api/**: API 통신 관련 코드
     - **objdef/**: API 응답 데이터 모델 정의
+      - **Messaging.swift**: 메시징 관련 데이터 모델
     - **FZAPIClient.swift**: HTTP 요청 처리 클라이언트
+    - **FZAPIClient+Messaging.swift**: 메시징 API 메서드 구현
     - **FZAPIEndpoint.swift**: API 엔드포인트 정의
+    - **FZMessagingStreamClient.swift**: WebSocket 기반 실시간 메시징 클라이언트
   - **elements/**: 카드 요소 관련 코드
     - **renderer/**: 카드 요소 렌더링 관련 코드
     - **FlitzCard.swift**: 카드 데이터 모델
@@ -239,6 +257,34 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
 - RESTful API 기반 통신
 - 토큰 기반 인증 시스템
 - 멀티파트 폼 데이터를 통한 이미지 업로드 지원
+- WebSocket 기반 실시간 통신 지원
+
+### FZAPIClient 기능 확장
+- **리팩토링된 request 메서드**: URL을 직접 받는 버전과 FZAPIEndpoint를 받는 버전으로 분리
+  - URL 직접 전달 버전: 페이지네이션 응답의 next/previous URL 처리에 유용
+  - FZAPIEndpoint 버전: 기존 코드와의 호환성 유지
+- **페이지네이션 지원**: 
+  - `nextPage<T>`: Paginated 응답의 다음 페이지 요청
+  - `prevPage<T>`: Paginated 응답의 이전 페이지 요청
+
+### 메시징 API
+
+#### 엔드포인트
+- `GET /conversations/` - 대화 목록 조회
+- `POST /conversations/` - 새 대화 생성
+- `DELETE /conversations/{id}/` - 대화 삭제
+- `GET /conversations/{id}/messages/` - 메시지 목록 조회
+- `POST /conversations/{id}/messages/` - 메시지 전송
+- `DELETE /conversations/{id}/messages/{messageId}/` - 메시지 삭제
+- `POST /conversations/{id}/messages/mark_as_read/` - 읽음 표시
+- `POST /conversations/{id}/attachments/` - 이미지 첨부파일 업로드
+
+#### 데이터 모델
+- **DirectMessageConversation**: 대화 정보 (ID, 참여자, 최신 메시지)
+- **DirectMessageParticipant**: 대화 참여자 정보 (사용자, 읽음 시간, 읽지 않은 메시지 수)
+- **DirectMessage**: 메시지 정보 (ID, 발신자, 내용, 생성 시간)
+- **DirectMessageContent**: 메시지 내용 (텍스트 또는 첨부파일)
+- **DirectMessageAttachment**: 첨부파일 정보 (타입, URL, 썸네일 URL, 크기 등)
 
 # 개발 참고 사항
 
@@ -258,5 +304,48 @@ Flitz에서는 의도치 않은 아웃팅 방지를 위해, 사용자 자신을 
    - 사용자 토큰은 앱 내부에만 저장
    - 민감한 통신은 HTTPS 사용
    - 사진 데이터는 DNA 추출 후 원본은 저장하지 않음
+
+5. **메시징 시스템**:
+   - 대화는 매칭된 사용자 간에만 가능
+   - DirectMessageContent는 Union Type으로 구현 (텍스트/첨부파일)
+   - 이미지 첨부 시 서버에서 자동으로 썸네일 생성
+   - WebSocket을 통한 실시간 메시지 수신 지원
+   - 읽음 표시는 conversation 단위로 처리
+
+### WebSocket 실시간 메시징 구현
+
+#### FZMessagingStreamClient
+- **URLSession WebSocket API** 사용
+- **이벤트 타입**:
+  - `connected`: WebSocket 연결 성공
+  - `disconnected`: 연결 해제
+  - `message`: 새 메시지 수신
+  - `readEvent`: 읽음 상태 업데이트
+  - `error`: 에러 발생
+- **자동 재연결 로직**: 연결 끊김 시 최대 5회까지 재시도
+- **Ping/Pong**: 30초마다 연결 상태 확인
+- **인증**: JWT 토큰을 쿼리 파라미터로 전달 (`?token=...`)
+
+#### 사용 방법
+```swift
+// WebSocket 연결
+let streamClient = apiClient.connectMessagingStream(conversationId: "conversation-id")
+
+// 이벤트 구독
+streamClient.eventPublisher
+    .sink { event in
+        switch event {
+        case .message(let message):
+            // 새 메시지 처리
+        case .readEvent(let userId, let readAt):
+            // 읽음 상태 업데이트
+        // ...
+        }
+    }
+    .store(in: &cancellables)
+
+// 연결 해제
+apiClient.disconnectMessagingStream(conversationId: "conversation-id")
+```
 
 </section>

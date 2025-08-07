@@ -48,19 +48,19 @@ struct CardPreview: View {
                     .font(.heading2)
                     .bold()
                 HStack {
-                    FZButton(style: .secondary) {
+                    FZButton {
                         showNormalMap.toggle()
                     } label: {
                         Text("노멀 맵")
                     }
                     
-                    FZButton(style: .secondary) {
+                    FZButton {
                         appState.navState.append(.cardEditor(cardId: cardId))
                     } label: {
                         Text("편집하기")
                     }
                     
-                    FZButton(style: .secondary) {
+                    FZButton {
                         setCardAsMain()
                     } label: {
                         Text("메인 카드로 설정")

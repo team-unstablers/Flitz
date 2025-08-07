@@ -128,4 +128,4 @@ DerivedData/
 
 .vscode
 .index-build
-
+.swiftpm

@@ -9,7 +9,7 @@ import Foundation
 
 struct DirectMessageParticipant: Codable {
     var user: FZUser
-    var read_at: Int
+    var read_at: String?
     
     /// 자기 자신일 때에만 존재함
     var unread_count: Int?
@@ -27,7 +27,7 @@ struct DirectMessageContent: Codable {
     var attachment_id: String?
     
     var public_url: String?
-    var private_url: String?
+    var thumbnail_url: String?
 }
 
 struct DirectMessage: Codable, Identifiable {
@@ -45,3 +45,14 @@ struct DirectMessageConversation: Codable, Identifiable {
     
     var latest_message: DirectMessage?
 }
+
+struct DirectMessageAttachment: Codable, Identifiable {
+    var id: String
+    var type: String
+    var public_url: String
+    var mimetype: String
+    var size: Int
+    var created_at: String
+    var updated_at: String
+}
+
