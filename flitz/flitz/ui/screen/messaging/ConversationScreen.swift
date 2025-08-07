@@ -326,11 +326,6 @@ struct ConversationScreen: View {
                                         await viewModel.loadPreviousMessages()
                                     }
                                 }
-                                
-                                // 마지막 메시지가 나타나면 스크롤 상태 업데이트
-                                if message.id == viewModel.messages.last?.id {
-                                    shouldStickToBottom = true
-                                }
                             }
                         }
                         
@@ -341,6 +336,12 @@ struct ConversationScreen: View {
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
                             .id("bottomAnchor")
+                            .onAppear {
+                                shouldStickToBottom = true
+                            }
+                            .onDisappear {
+                                shouldStickToBottom = false
+                            }
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
@@ -348,15 +349,18 @@ struct ConversationScreen: View {
                     .defaultScrollAnchor(.bottom)
                     .onChange(of: viewModel.messages.count) { oldCount, newCount in
                         // 새 메시지가 추가되었을 때만 스크롤
-                        if newCount > oldCount && shouldStickToBottom {
+                        if shouldStickToBottom || composeAreaFocused {
                             proxy.scrollTo("bottomAnchor", anchor: .bottom)
                         }
                     }
                     .onChange(of: composeAreaFocused) { _, newValue in
-                        if newValue && shouldStickToBottom {
+                        if shouldStickToBottom {
                             // 키보드가 나타날 때 스크롤
                             proxy.scrollTo("bottomAnchor", anchor: .bottom)
                         }
+                    }
+                    .onAppear {
+                        proxy.scrollTo("bottomAnchor", anchor: .bottom)
                     }
                 }
             }
