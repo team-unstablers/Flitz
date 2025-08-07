@@ -349,3 +349,8 @@ apiClient.disconnectMessagingStream(conversationId: "conversation-id")
 ```
 
 </section>
+<section name="note">
+# NOTE
+
+- **xcodebuild 절대 실행시키지 마세요**
+</section>
