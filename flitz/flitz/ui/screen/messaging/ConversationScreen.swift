@@ -101,7 +101,8 @@ class ConversationViewModel: ObservableObject {
         guard let apiClient = apiClient else { return }
         
         do {
-            // ???? 이게뭐야??? 왜 list에서 가져오지??
+            // TODO: 단일 conversation을 가져오는 API 엔드포인트가 필요함
+            // 현재는 전체 리스트를 가져와서 필터링하는 비효율적인 방식
             let conversations = try await apiClient.conversations()
             self.conversation = conversations.results.first { $0.id == conversationId }
             
@@ -234,9 +235,6 @@ class ConversationViewModel: ObservableObject {
         }
     }
     
-    deinit {
-    }
-    
     func isFromCurrentUser(_ message: DirectMessage) -> Bool {
         return message.sender == currentUserId
     }
@@ -286,75 +284,78 @@ struct ConversationScreen: View {
                 Spacer()
             } else {
                 ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 8) {
-                            // 로딩 인디케이터
-                            if viewModel.isLoadingMore {
+                    List {
+                        // 로딩 인디케이터
+                        if viewModel.isLoadingMore {
+                            HStack {
+                                Spacer()
                                 ProgressView()
-                                    .padding()
+                                Spacer()
                             }
-                            
-                            ForEach(viewModel.messages) { message in
-                                MessageBubble(
-                                    message: message,
-                                    isFromCurrentUser: viewModel.isFromCurrentUser(message),
-                                    isRead: viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
-                                )
-                                .drawingGroup()
-                                .id(message.id)
-                                .contextMenu {
-                                    if viewModel.isFromCurrentUser(message) {
-                                        Button("메시지 삭제", role: .destructive) {
-                                            Task {
-                                                await viewModel.deleteMessage(id: message.id.uuidString)
-                                            }
-                                        }
-                                    }
-                                }
-                                .onAppear {
-                                    // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
-                                    if message.id == viewModel.messages[safe: 2]?.id {
-                                        Task {
-                                            await viewModel.loadPreviousMessages()
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            Spacer(minLength: 16)
-                            
-                            VStack {}
-                                .id("__CONVERSATION_BOTTOM__")
-                                .onAppear {
-                                    print("APPEARED")
-                                    shouldStickToBottom = true
-                                }
-                                .onDisappear {
-                                    print("DISAPPEARED")
-                                    shouldStickToBottom = false
-                                }
-                        }
-                        .padding(.horizontal, 8)
-                    }
-                    .defaultScrollAnchor(.bottom)
-                    .onChange(of: viewModel.messages) { _, _ in
-                        // 스크롤을 가장 아래로 이동
-                        if !shouldStickToBottom && !composeAreaFocused {
-                            return
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
                         }
                         
-                        print("Scroll to bottom on new messages")
-                        DispatchQueue.main.async {
-                            proxy.scrollTo("__CONVERSATION_BOTTOM__", anchor: .bottom)
+                        ForEach(viewModel.messages) { message in
+                            MessageBubble(
+                                message: message,
+                                isFromCurrentUser: viewModel.isFromCurrentUser(message),
+                                isRead: viewModel.opponentId != nil && viewModel.readState[viewModel.opponentId!] != nil 
+                                    ? viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
+                                    : false
+                            )
+                            .drawingGroup()
+                            .id(message.id)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                            .listRowBackground(Color.clear)
+                            .contextMenu {
+                                if viewModel.isFromCurrentUser(message) {
+                                    Button("메시지 삭제", role: .destructive) {
+                                        Task {
+                                            await viewModel.deleteMessage(id: message.id.uuidString)
+                                        }
+                                    }
+                                }
+                            }
+                            .onAppear {
+                                // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
+                                if message.id == viewModel.messages[safe: 2]?.id {
+                                    Task {
+                                        await viewModel.loadPreviousMessages()
+                                    }
+                                }
+                                
+                                // 마지막 메시지가 나타나면 스크롤 상태 업데이트
+                                if message.id == viewModel.messages.last?.id {
+                                    shouldStickToBottom = true
+                                }
+                            }
+                        }
+                        
+                        // 하단 패딩용 빈 뷰
+                        Color.clear
+                            .frame(height: 1)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            .id("bottomAnchor")
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .scrollDismissesKeyboard(.interactively)
+                    .defaultScrollAnchor(.bottom)
+                    .onChange(of: viewModel.messages.count) { oldCount, newCount in
+                        // 새 메시지가 추가되었을 때만 스크롤
+                        if newCount > oldCount && shouldStickToBottom {
+                            proxy.scrollTo("bottomAnchor", anchor: .bottom)
                         }
                     }
                     .onChange(of: composeAreaFocused) { _, newValue in
-                        if (newValue && shouldStickToBottom) {
-                            print("composeAreaFocused")
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                proxy.scrollTo("__CONVERSATION_BOTTOM__", anchor: .bottom)
-                            }
+                        if newValue && shouldStickToBottom {
+                            // 키보드가 나타날 때 스크롤
+                            proxy.scrollTo("bottomAnchor", anchor: .bottom)
                         }
                     }
                 }
