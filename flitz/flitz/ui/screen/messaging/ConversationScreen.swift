@@ -312,9 +312,6 @@ struct ConversationScreen: View {
                         await viewModel.sendMessage(request: request)
                     }
                 },
-                onAttach: {
-                    // PhotosPicker 표시는 나중에 구현
-                },
                 isSending: viewModel.isSending
             )
         }

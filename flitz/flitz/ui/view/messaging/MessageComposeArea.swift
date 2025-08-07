@@ -26,7 +26,6 @@ struct MessageComposeArea: View {
     private var textFieldFocused: Bool
     
     var onSend: ((MessageRequest) -> Void)?
-    var onAttach: (() -> Void)?
     var isSending: Bool = false
     
     @State
