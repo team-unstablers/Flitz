@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct MessageComposeArea: View {
-    @State private var text: String = ""
+    @State 
+    private var text: String = ""
+    
+    @FocusState
+    private var textFieldFocused: Bool
     
     var onSend: ((String) -> Void)?
     var onAttach: (() -> Void)?
@@ -34,7 +38,8 @@ struct MessageComposeArea: View {
                 .padding(12)
                 .background(Color(.systemGray6))
                 .cornerRadius(20)
-                .disabled(isSending)
+                // .disabled(isSending)
+                .focused($textFieldFocused)
                 .onSubmit {
                     sendMessage()
                 }
@@ -58,6 +63,7 @@ struct MessageComposeArea: View {
             .clipShape(Circle())
             .buttonStyle(.plain)
             .disabled(text.isEmpty || isSending)
+            .focusable(false)
         }
         .padding(.vertical)
         .padding(.horizontal, 8)
@@ -68,6 +74,10 @@ struct MessageComposeArea: View {
         let message = text
         text = ""
         onSend?(message)
+        
+        DispatchQueue.main.async {
+            textFieldFocused = true
+        }
     }
 }
 

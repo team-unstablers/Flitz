@@ -203,9 +203,14 @@ class ConversationViewModel: ObservableObject {
 }
 
 struct ConversationScreen: View {
-    @EnvironmentObject var appState: RootAppState
-    @StateObject var viewModel: ConversationViewModel
-    @State private var selectedItem: PhotosPickerItem?
+    @EnvironmentObject
+    var appState: RootAppState
+    
+    @StateObject
+    var viewModel: ConversationViewModel
+    
+    @State
+    private var selectedItem: PhotosPickerItem?
     
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
