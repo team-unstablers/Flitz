@@ -126,9 +126,11 @@ struct MessageComposeArea: View {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(0..<editorContexts.count, id: \.self) { index in
-                                EditableImageThumbnail(editorContext: editorContexts[index],
-                                                       image: renderedImages[index]) {
-                                    self.renderImages()
+                                if index < renderedImages.count {
+                                    EditableImageThumbnail(editorContext: editorContexts[index],
+                                                           image: renderedImages[index]) {
+                                        self.renderImages()
+                                    }
                                 }
                             }
                         }
