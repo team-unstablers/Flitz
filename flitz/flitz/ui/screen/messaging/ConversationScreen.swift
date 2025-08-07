@@ -111,6 +111,9 @@ class ConversationViewModel: ObservableObject {
             let page = try await apiClient.messages(conversationId: conversationId)
             self.currentPage = page
             self.messages = page.results.reversed() // API는 최신순, UI는 오래된순
+            
+            // 이미지 프리페칭
+            prefetchImages(from: page.results)
         } catch {
             print("[Conversation] Failed to load messages: \(error)")
         }
@@ -130,6 +133,9 @@ class ConversationViewModel: ObservableObject {
             }
             self.currentPage = page
             self.messages.insert(contentsOf: page.results.reversed(), at: 0)
+            
+            // 이미지 프리페칭
+            prefetchImages(from: page.results)
         } catch {
             print("[Conversation] Failed to load more messages: \(error)")
         }
@@ -218,6 +224,22 @@ class ConversationViewModel: ObservableObject {
     
     func isFromCurrentUser(_ message: DirectMessage) -> Bool {
         return message.sender == currentUserId
+    }
+    
+    private func prefetchImages(from messages: [DirectMessage]) {
+        let imageUrls = messages.compactMap { message -> URL? in
+            guard message.content.type == "attachment" else { return nil }
+            if let thumbnailUrl = message.content.thumbnail_url {
+                return URL(string: thumbnailUrl)
+            } else if let publicUrl = message.content.public_url {
+                return URL(string: publicUrl)
+            }
+            return nil
+        }
+        
+        if !imageUrls.isEmpty {
+            ImageCacheManager.shared.prefetchImages(urls: imageUrls)
+        }
     }
 }
 
