@@ -32,6 +32,7 @@ struct MessageBubble: View {
     let message: DirectMessage
     let isFromCurrentUser: Bool
     let isRead: Bool
+    var onAttachmentTap: ((String) -> Void)? = nil
     
     private var bubbleColor: Color {
         isFromCurrentUser ? Color.blue : Color.gray.opacity(0.2)
@@ -83,6 +84,11 @@ struct MessageBubble: View {
                     ThumbnailPreview(url: url, size: scaledSize)
                 }
                     .frame(width: scaledSize.width, height: scaledSize.height)
+                    .onTapGesture {
+                        if let attachmentId = message.content.attachment_id {
+                            onAttachmentTap?(attachmentId)
+                        }
+                    }
             }
         default:
             Text("Unsupported message type")

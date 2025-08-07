@@ -79,6 +79,11 @@ struct FZAPIEndpoint: RawRepresentable {
     static func attachments(conversationId: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/attachments/")
     }
+    
+    static func atttachment(conversationId: String, attachmentId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/attachments/\(attachmentId)/")
+    }
+    
     // messaging end
     
     func urlString(for server: String) -> String {

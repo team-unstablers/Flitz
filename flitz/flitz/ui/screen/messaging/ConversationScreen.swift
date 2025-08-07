@@ -303,7 +303,10 @@ struct ConversationScreen: View {
                                 isFromCurrentUser: viewModel.isFromCurrentUser(message),
                                 isRead: viewModel.opponentId != nil && viewModel.readState[viewModel.opponentId!] != nil 
                                     ? viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
-                                    : false
+                                    : false,
+                                onAttachmentTap: { attachmentId in
+                                    appState.navState.append(RootNavigationItem.attachment(conversationId: viewModel.conversationId, attachmentId: attachmentId))
+                                }
                             )
                             .drawingGroup()
                             .id(message.id)
@@ -316,6 +319,9 @@ struct ConversationScreen: View {
                                         Task {
                                             await viewModel.deleteMessage(id: message.id.uuidString)
                                         }
+                                    }
+                                } else {
+                                    Button("메시지 신고", role: .destructive) {
                                     }
                                 }
                             }
@@ -407,6 +413,7 @@ struct ConversationScreen: View {
         .onDisappear {
             viewModel.disconnectWebSocket()
         }
+        .environment(\.conversationId, viewModel.conversationId)
     }
 }
 

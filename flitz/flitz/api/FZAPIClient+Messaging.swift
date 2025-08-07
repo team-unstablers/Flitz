@@ -45,8 +45,13 @@ extension FZAPIClient {
             Self.streamClients.removeAll()
         }
     }
+    
     func conversations() async throws -> Paginated<DirectMessageConversation> {
         return try await self.request(to: .conversations, expects: Paginated<DirectMessageConversation>.self)
+    }
+    
+    func conversation(id: String) async throws -> DirectMessageConversation {
+        return try await self.request(to: .conversation(id: id), expects: DirectMessageConversation.self)
     }
     
     func createConversation(with participants: [String]) async throws -> DirectMessageConversation {
@@ -107,6 +112,10 @@ extension FZAPIClient {
         }
         
         return value
+    }
+    
+    func attachment(conversationId: String, id: String) async throws -> DirectMessageAttachment {
+        return try await self.request(to: .atttachment(conversationId: conversationId, attachmentId: id), expects: DirectMessageAttachment.self)
     }
 }
 

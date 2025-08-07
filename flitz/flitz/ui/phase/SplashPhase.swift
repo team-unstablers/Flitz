@@ -21,14 +21,12 @@ struct SplashPhase: View {
     func transitionToNextPhase() {
         let context = FZAPIContext.load()
         
-        withAnimation {
-            guard let _ = context.token else {
-                phase = .auth
-                return
-            }
-            
-            phase = .main
+        guard let _ = context.token else {
+            phase = .auth
+            return
         }
+        
+        phase = .main
     }
     
 }
