@@ -6,6 +6,17 @@
 //
 
 import SwiftUI
+import PhotosUI
+
+struct MessageRequest {
+    var text: String
+    var images: [UIImage]
+    
+    init(text: String, images: [UIImage]) {
+        self.text = text
+        self.images = images
+    }
+}
 
 struct MessageComposeArea: View {
     @State 
@@ -14,36 +25,74 @@ struct MessageComposeArea: View {
     @FocusState
     private var textFieldFocused: Bool
     
-    var onSend: ((String) -> Void)?
+    var onSend: ((MessageRequest) -> Void)?
     var onAttach: (() -> Void)?
     var isSending: Bool = false
     
+    @State
+    var selectedItems: [PhotosPickerItem] = []
+    
+    @State
+    var images: [UIImage] = []
+    
+    var isEmpty: Bool {
+        get {
+            text.isEmpty && images.isEmpty
+        }
+    }
+    
     var body: some View {
-        HStack(spacing: 8) {
-            Button {
-                onAttach?()
-            } label: {
+        HStack(alignment: .bottom, spacing: 8) {
+            PhotosPicker(selection: $selectedItems, maxSelectionCount: 4 - images.count, matching: .images) {
                 Image(systemName: "photo")
                     .font(.system(size: 16))
                     .foregroundStyle(.secondary)
                     .padding(12)
                     .background(Color(.systemGray6))
                     .clipShape(Circle())
+
             }
-            .buttonStyle(.plain)
-            .disabled(isSending)
+                .buttonStyle(.plain)
+                .disabled(images.count >= 4)
+                .onChange(of: selectedItems) { _, newValue in
+                    Task {
+                        await self.loadImages()
+                    }
+                }
             
-            TextField("메시지를 입력하세요", text: $text, axis: .vertical)
-                .lineLimit(1...3)
+            VStack(alignment: .leading) {
+                if !images.isEmpty {
+                    ScrollView(.horizontal) {
+                        HStack {
+                            ForEach(images, id: \.self) { image in
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 64, height: 64)
+                                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
+                                    .padding(4)
+                                    .background(Color(.systemGray5))
+                                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8)))
+                            }
+                        }
+                        
+                    }
+                    
+                    Divider()
+                }
+                TextField("메시지를 입력하세요", text: $text, axis: .vertical)
+                    .lineLimit(1...3)
+                // .disabled(isSending)
+                    .focused($textFieldFocused)
+                    .onSubmit {
+                        sendMessage()
+                }
+            }
                 .padding(12)
                 .background(Color(.systemGray6))
                 .cornerRadius(20)
-                // .disabled(isSending)
-                .focused($textFieldFocused)
-                .onSubmit {
-                    sendMessage()
-                }
-            
+
+           
             Button {
                 sendMessage()
             } label: {
@@ -59,25 +108,48 @@ struct MessageComposeArea: View {
                 }
             }
             .padding(12)
-            .background(text.isEmpty || isSending ? Color.gray : Color.blue)
+            .background(isEmpty || isSending ? Color.gray : Color.blue)
             .clipShape(Circle())
             .buttonStyle(.plain)
-            .disabled(text.isEmpty || isSending)
+            .disabled(isEmpty || isSending)
             .focusable(false)
+            .padding(.bottom, 2)
         }
         .padding(.vertical)
         .padding(.horizontal, 8)
     }
     
+    private func loadImages() async {
+        // images = []
+        
+        for item in selectedItems {
+            if let data = try? await item.loadTransferable(type: Data.self),
+               let image = UIImage(data: data) {
+                images.append(image)
+            }
+            
+            if images.count >= 4 {
+                break
+            }
+        }
+        
+        selectedItems = []
+    }
+    
     private func sendMessage() {
-        guard !text.isEmpty else { return }
+        guard !isEmpty else { return }
         let message = text
         text = ""
-        onSend?(message)
+        
+        let request = MessageRequest(text: message, images: images)
+        onSend?(request)
         
         DispatchQueue.main.async {
             textFieldFocused = true
         }
+        
+        selectedItems = []
+        images = []
     }
 }
 

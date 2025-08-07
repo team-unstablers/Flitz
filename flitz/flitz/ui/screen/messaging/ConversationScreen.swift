@@ -136,12 +136,31 @@ class ConversationViewModel: ObservableObject {
         isLoadingMore = false
     }
     
-    func sendMessage(text: String) async {
-        guard let apiClient = apiClient, !text.isEmpty, !isSending else { return }
+    func sendMessage(request: MessageRequest) async {
+        let isEmpty = request.text.isEmpty && request.images.isEmpty
+        
+        guard let apiClient = apiClient, !isEmpty, !isSending else { return }
         
         isSending = true
+        
         do {
-            let content = DirectMessageContent(type: "text", text: text)
+            for image in request.images {
+                guard let jpg = image.jpegData(compressionQuality: 0.9) else {
+                    continue
+                }
+                
+                _ = try await apiClient.uploadAttachment(conversationId: conversationId,
+                                                         file: jpg,
+                                                         fileName: "image.jpg",
+                                                         mimeType: "image/jpeg")
+            }
+            
+            guard !request.text.isEmpty else {
+                isSending = false
+                return
+            }
+            
+            let content = DirectMessageContent(type: "text", text: request.text)
             let message = try await apiClient.sendMessage(conversationId: conversationId, content: content)
             // WebSocket을 통해 메시지가 자동으로 수신되므로 여기서는 추가하지 않음
             // 만약 WebSocket이 연결되지 않았다면 수동으로 추가
@@ -266,9 +285,9 @@ struct ConversationScreen: View {
             Divider()
             
             MessageComposeArea(
-                onSend: { text in
+                onSend: { request in
                     Task {
-                        await viewModel.sendMessage(text: text)
+                        await viewModel.sendMessage(request: request)
                     }
                 },
                 onAttach: {
@@ -386,11 +405,11 @@ class ConversationPreviewViewModel: ConversationViewModel {
         )
     }
     
-    override func sendMessage(text: String) async {
+    override func sendMessage(request: MessageRequest) async {
         let newMessage = DirectMessage(
             id: UUID(),
             sender: "self",
-            content: DirectMessageContent(type: "text", text: text),
+            content: DirectMessageContent(type: "text", text: request.text),
             created_at: ISO8601DateFormatter().string(from: Date())
         )
         messages.append(newMessage)
