@@ -200,7 +200,7 @@ class FZMessagingStreamClient: NSObject {
             case "read_event":
                 guard let userId = json["user_id"] as? String,
                       let readAtString = json["read_at"] as? String,
-                      let readAt = ISO8601DateFormatter().date(from: readAtString) else {
+                      let readAt = readAtString.asISO8601Date else {
                     return
                 }
                 

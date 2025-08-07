@@ -30,12 +30,16 @@ struct DirectMessageContent: Codable {
     var thumbnail_url: String?
 }
 
-struct DirectMessage: Codable, Identifiable {
+struct DirectMessage: Codable, Identifiable, Equatable {
     var id: UUID
     var sender: String
     var content: DirectMessageContent
     
     var created_at: String
+    
+    static func == (lhs: DirectMessage, rhs: DirectMessage) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 
@@ -47,7 +51,7 @@ struct DirectMessageConversation: Codable, Identifiable {
 }
 
 struct DirectMessageAttachment: Codable, Identifiable {
-    var id: String
+    var id: UUID
     var type: String
     var public_url: String
     var mimetype: String

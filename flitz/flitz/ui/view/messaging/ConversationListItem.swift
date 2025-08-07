@@ -89,9 +89,7 @@ fileprivate extension DirectMessageConversation {
     }
     
     var displayRelativeTime: String {
-        guard let sentAtISO = latest_message?.created_at,
-              let sentAt = ISO8601DateFormatter().date(from: sentAtISO)
-        else {
+        guard let sentAt = latest_message?.created_at.asISO8601Date else {
             return ""
         }
         

@@ -79,6 +79,10 @@ class ConversationViewModel: ObservableObject {
                 messages.append(message)
             }
             
+            Task {
+                await self.markAsRead()
+            }
+            
         case .readEvent(let userId, let readAt):
             // 읽음 상태 업데이트
             print("[WebSocket] User \(userId) read messages at \(readAt)")
@@ -299,6 +303,7 @@ struct ConversationScreen: View {
                         
                         Spacer(minLength: 16)
                     }
+                    .environment(\.directMessageParticipants, viewModel.conversation?.participants ?? [])
                     .padding(.horizontal, 8)
                 }
                 .defaultScrollAnchor(.bottom)
