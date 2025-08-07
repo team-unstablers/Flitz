@@ -24,6 +24,9 @@ class ConversationViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     let conversationId: String
     
+    @Published var readState: [String: Date] = [:]
+    @Published var opponentId: String? = nil
+    
     init(conversationId: String) {
         self.conversationId = conversationId
     }
@@ -87,9 +90,7 @@ class ConversationViewModel: ObservableObject {
             // 읽음 상태 업데이트
             print("[WebSocket] User \(userId) read messages at \(readAt)")
             // 대화 참여자의 읽음 시간 업데이트
-            if let index = conversation?.participants.firstIndex(where: { $0.user.id == userId }) {
-                conversation?.participants[index].read_at = readAt.ISO8601Format()
-            }
+            self.readState[userId] = readAt
             
         case .error(let error):
             print("[WebSocket] Error: \(error)")
@@ -100,8 +101,18 @@ class ConversationViewModel: ObservableObject {
         guard let apiClient = apiClient else { return }
         
         do {
+            // ???? 이게뭐야??? 왜 list에서 가져오지??
             let conversations = try await apiClient.conversations()
             self.conversation = conversations.results.first { $0.id == conversationId }
+            
+            self.opponentId = self.conversation?.participants.first(where: { $0.user.id != currentUserId })?.user.id
+            self.readState = [:]
+            
+            for participant in self.conversation?.participants ?? [] {
+                if let readAt = participant.read_at?.asISO8601Date {
+                    self.readState[participant.user.id] = readAt
+                }
+            }
         } catch {
             print("[Conversation] Failed to load conversation info: \(error)")
         }
@@ -217,7 +228,7 @@ class ConversationViewModel: ObservableObject {
         do {
             try await apiClient.markAsRead(conversationId: conversationId)
             // WebSocket을 통해서도 읽음 확인 전송
-            streamClient?.sendReadReceipt()
+            // streamClient?.sendReadReceipt()
         } catch {
             print("[Conversation] Failed to mark as read: \(error)")
         }
@@ -257,6 +268,12 @@ struct ConversationScreen: View {
     @State
     private var selectedItem: PhotosPickerItem?
     
+    @State
+    private var shouldStickToBottom = true
+    
+    @FocusState
+    private var composeAreaFocused: Bool
+
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
     }
@@ -268,53 +285,92 @@ struct ConversationScreen: View {
                 ProgressView()
                 Spacer()
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 8) {
-                        // 로딩 인디케이터
-                        if viewModel.isLoadingMore {
-                            ProgressView()
-                                .padding()
-                        }
-                        
-                        ForEach(viewModel.messages) { message in
-                            MessageBubble(
-                                message: message,
-                                isFromCurrentUser: viewModel.isFromCurrentUser(message)
-                            )
-                            .id(message.id)
-                            .contextMenu {
-                                if viewModel.isFromCurrentUser(message) {
-                                    Button("메시지 삭제", role: .destructive) {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 8) {
+                            // 로딩 인디케이터
+                            if viewModel.isLoadingMore {
+                                ProgressView()
+                                    .padding()
+                            }
+                            
+                            ForEach(viewModel.messages) { message in
+                                MessageBubble(
+                                    message: message,
+                                    isFromCurrentUser: viewModel.isFromCurrentUser(message),
+                                    isRead: viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
+                                )
+                                .drawingGroup()
+                                .id(message.id)
+                                .contextMenu {
+                                    if viewModel.isFromCurrentUser(message) {
+                                        Button("메시지 삭제", role: .destructive) {
+                                            Task {
+                                                await viewModel.deleteMessage(id: message.id.uuidString)
+                                            }
+                                        }
+                                    }
+                                }
+                                .onAppear {
+                                    // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
+                                    if message.id == viewModel.messages[safe: 2]?.id {
                                         Task {
-                                            await viewModel.deleteMessage(id: message.id.uuidString)
+                                            await viewModel.loadPreviousMessages()
                                         }
                                     }
                                 }
                             }
-                            .onAppear {
-                                // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
-                                if message.id == viewModel.messages[safe: 2]?.id {
-                                    Task {
-                                        await viewModel.loadPreviousMessages()
-                                    }
+                            
+                            Spacer(minLength: 16)
+                            
+                            VStack {}
+                                .id("__CONVERSATION_BOTTOM__")
+                                .onAppear {
+                                    print("APPEARED")
+                                    shouldStickToBottom = true
                                 }
-                            }
+                                .onDisappear {
+                                    print("DISAPPEARED")
+                                    shouldStickToBottom = false
+                                }
+                        }
+                        .padding(.horizontal, 8)
+                    }
+                    .defaultScrollAnchor(.bottom)
+                    .onChange(of: viewModel.messages) { _, _ in
+                        // 스크롤을 가장 아래로 이동
+                        if !shouldStickToBottom && !composeAreaFocused {
+                            return
                         }
                         
-                        Spacer(minLength: 16)
+                        print("Scroll to bottom on new messages")
+                        DispatchQueue.main.async {
+                            proxy.scrollTo("__CONVERSATION_BOTTOM__", anchor: .bottom)
+                        }
                     }
-                    .environment(\.directMessageParticipants, viewModel.conversation?.participants ?? [])
-                    .padding(.horizontal, 8)
+                    .onChange(of: composeAreaFocused) { _, newValue in
+                        if (newValue && shouldStickToBottom) {
+                            print("composeAreaFocused")
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                proxy.scrollTo("__CONVERSATION_BOTTOM__", anchor: .bottom)
+                            }
+                        }
+                    }
                 }
-                .defaultScrollAnchor(.bottom)
             }
             
             Divider()
             
             MessageComposeArea(
+                focused: $composeAreaFocused,
                 onSend: { request in
                     Task {
                         await viewModel.sendMessage(request: request)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        composeAreaFocused = true
                     }
                 },
                 isSending: viewModel.isSending

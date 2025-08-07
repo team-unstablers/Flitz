@@ -11,36 +11,16 @@ struct MessageMetadataIndicator: View {
     @Environment(\.userId)
     var userId: String
 
-    @Environment(\.directMessageParticipants)
-    var participants: [DirectMessageParticipant]
-    
     let message: DirectMessage
     let isFromCurrentUser: Bool
-    
-    var createdAt: Date {
-        get {
-            return message.created_at.asISO8601Date ?? .init(timeIntervalSince1970: 0)
-        }
-    }
-    
-    var isRead: Bool {
-        get {
-            return participants.filter { $0.user.id != userId }.allSatisfy {
-                guard let readAt = $0.read_at?.asISO8601Date else {
-                    return false
-                }
-                
-                return readAt >= createdAt
-            }
-        }
-    }
+    let isRead: Bool
     
     var body: some View {
         VStack(alignment: isFromCurrentUser ? .trailing : .leading, spacing: 2) {
             if isFromCurrentUser && isRead {
                 Text("읽음")
             }
-            Text(self.createdAt.localeTimeString)
+            Text(self.message.created_at.asISO8601Date?.localeTimeString ?? "")
         }
             .font(.caption2)
             .foregroundStyle(Color.Grayscale.gray7)
@@ -51,6 +31,7 @@ struct MessageMetadataIndicator: View {
 struct MessageBubble: View {
     let message: DirectMessage
     let isFromCurrentUser: Bool
+    let isRead: Bool
     
     private var bubbleColor: Color {
         isFromCurrentUser ? Color.blue : Color.gray.opacity(0.2)
@@ -64,7 +45,7 @@ struct MessageBubble: View {
         HStack(alignment: .bottom) {
             if isFromCurrentUser {
                 Spacer()
-                MessageMetadataIndicator(message: message, isFromCurrentUser: isFromCurrentUser)
+                MessageMetadataIndicator(message: message, isFromCurrentUser: isFromCurrentUser, isRead: isRead)
             }
             
             VStack(alignment: isFromCurrentUser ? .trailing : .leading) {
@@ -76,7 +57,7 @@ struct MessageBubble: View {
             }
             
             if !isFromCurrentUser {
-                MessageMetadataIndicator(message: message, isFromCurrentUser: isFromCurrentUser)
+                MessageMetadataIndicator(message: message, isFromCurrentUser: isFromCurrentUser, isRead: isRead)
                 Spacer()
             }
         }
@@ -147,7 +128,8 @@ struct ThumbnailPreview: View {
                 ),
                 created_at: "1970-01-01T00:00:00Z"
             ),
-            isFromCurrentUser: true
+            isFromCurrentUser: true,
+            isRead: true,
         )
         
         // 상대방이 보낸 텍스트 메시지
@@ -161,7 +143,8 @@ struct ThumbnailPreview: View {
                 ),
                 created_at: "1970-01-01T00:00:00Z"
             ),
-            isFromCurrentUser: false
+            isFromCurrentUser: false,
+            isRead: true
         )
         
         // 첨부파일이 있는 메시지
@@ -176,7 +159,8 @@ struct ThumbnailPreview: View {
                 ),
                 created_at: "1970-01-01T00:00:00Z"
             ),
-            isFromCurrentUser: false
+            isFromCurrentUser: false,
+            isRead: false
         )
     }
     .padding()

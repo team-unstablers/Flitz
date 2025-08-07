@@ -77,10 +77,9 @@ struct MessageComposeArea: View {
     @State
     private var text: String = ""
     
-    @FocusState
-    private var textFieldFocused: Bool
-    
+    var focused: FocusState<Bool>.Binding
     var onSend: ((MessageRequest) -> Void)?
+    
     var isSending: Bool = false
     
     @State
@@ -141,7 +140,7 @@ struct MessageComposeArea: View {
                 TextField("메시지를 입력하세요", text: $text, axis: .vertical)
                     .lineLimit(1...3)
                 // .disabled(isSending)
-                    .focused($textFieldFocused)
+                    .focused(focused)
                     .onSubmit {
                         sendMessage()
                 }
@@ -206,10 +205,6 @@ struct MessageComposeArea: View {
         let request = MessageRequest(text: message, images: renderedImages)
         onSend?(request)
         
-        DispatchQueue.main.async {
-            textFieldFocused = true
-        }
-        
         selectedItems = []
         editorContexts = []
     }
@@ -232,5 +227,5 @@ struct MessageComposeArea: View {
 }
 
 #Preview {
-    MessageComposeArea()
+    MessageComposeArea(focused: FocusState<Bool>().projectedValue)
 }
