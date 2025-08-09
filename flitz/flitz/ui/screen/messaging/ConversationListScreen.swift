@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// TODO: SQLite를 도입해야 한다...!
 @MainActor
 class ConversationListViewModel: ObservableObject {
     @Published var conversations: [DirectMessageConversation] = []
@@ -146,6 +147,12 @@ struct ConversationListScreen: View {
         }
         .onAppear {
             viewModel.configure(with: appState.client)
+        }
+        .onReceive(appState.conversationUpdated) {
+            Task {
+                // FIXME
+                await viewModel.loadConversations()
+            }
         }
     }
 }

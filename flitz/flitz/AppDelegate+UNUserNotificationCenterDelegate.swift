@@ -19,6 +19,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // This function allows us to view notifications in the app even with it in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         let appState = RootAppState.shared
+        let currentTab = appState.currentTab
         let navState = appState.navState
         
         let currentScreen = navState.last
@@ -29,7 +30,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         if type == "message" {
             let conversationId = userInfo["conversation_id"] as? String ?? "__UNKNOWN__"
             
-            if currentScreen == .conversation(conversationId: conversationId) {
+            let shouldNotDisplay = (
+                (currentTab == .messages && currentScreen == nil) ||
+                currentScreen == .conversation(conversationId: conversationId)
+            )
+            
+            if shouldNotDisplay {
+                appState.conversationUpdated.send()
                 return .none
             }
         }
