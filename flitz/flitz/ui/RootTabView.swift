@@ -39,7 +39,7 @@ struct RootTabView: View {
                         Image(systemName: "house")
                         Text("스토어")
                     }
-                ProfileScreen()
+                MyPageScreen()
                     .tag(RootTab.profile)
                     .tabItem {
                         Image(systemName: "person")

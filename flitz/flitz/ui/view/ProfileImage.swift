@@ -37,6 +37,8 @@ struct ProfileImage: View {
 
 
 #Preview {
+    ProfileImage(url: nil, size: 60)
+    
     ProfileImage(
         url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg",
         size: 36

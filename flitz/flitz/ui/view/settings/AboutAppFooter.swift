@@ -31,25 +31,22 @@ struct AboutAppFooter: View {
                 .padding(.bottom, 4)
             
             Group {
-                Text("아웃팅은 심각한 범죄 행위입니다. 다른 사람들의 프라이버시를 존중해 주세요.")
-                Text("또한, 리버스 엔지니어링 등을 통하여 이 소프트웨어를 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다.")
+                Text("**아웃팅**은 심각한 **범죄 행위**입니다. 다른 사람들의 프라이버시를 존중해 주세요.")
+                Text("리버스 엔지니어링, 패킷 덤프 등을 통하여 이 소프트웨어 및 통신 내용을 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다.")
             }
                 .font(.small)
-                .bold()
                 .foregroundStyle(.black.opacity(0.8))
 
             Group {
-                Text("이 App을 포함하여 Flitz 서비스의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 작성되었습니다.")
-                Text("Flitz 서비스에서 사용된 자유 소프트웨어와 각 라이선스는 여기서 확인할 수 있습니다.")
+                Text("Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다.")
+                Text("Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://google.com)에서 확인할 수 있습니다.")
             }
                 .font(.small)
                 .foregroundStyle(.black.opacity(0.8))
         }
         .padding(16)
         .frame(maxWidth: .infinity)
-        .background {
-            AboutAppFooterBackground()
-        }
+        .background(Color.Grayscale.gray0.opacity(0.6))
     }
 }
 

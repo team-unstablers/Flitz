@@ -26,6 +26,9 @@ class RootAppState: ObservableObject {
     @Published
     var profile: FZUser?
     
+    @Published
+    var assertionFailureReason: AssertionFailureReason? = nil
+    
     init() {
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
     }

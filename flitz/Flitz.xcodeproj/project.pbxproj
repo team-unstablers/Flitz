@@ -14,6 +14,7 @@
 		F699D0E22D0039DF00761976 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E12D0039DF00761976 /* Alamofire */; };
 		F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E42D0039E700761976 /* AlamofireImage */; };
 		F699D0E82D0039F400761976 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E72D0039F400761976 /* Collections */; };
+		F6DA51EB2E477A140061155D /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA51EA2E477A140061155D /* SwiftUIX */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 				F699D0E82D0039F400761976 /* Collections in Frameworks */,
 				F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */,
 				F699D0E22D0039DF00761976 /* Alamofire in Frameworks */,
+				F6DA51EB2E477A140061155D /* SwiftUIX in Frameworks */,
 				F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */,
 				F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */,
 				F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */,
@@ -153,6 +155,7 @@
 				F689AB562E44D9B200BB1E6F /* BrightroomEngine */,
 				F689AB582E44D9B200BB1E6F /* BrightroomUI */,
 				F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */,
+				F6DA51EA2E477A140061155D /* SwiftUIX */,
 			);
 			productName = flitz;
 			productReference = F699D0882D00325300761976 /* Flitz.app */;
@@ -242,6 +245,7 @@
 				F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */,
 				F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */,
+				F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F699D0892D00325300761976 /* Products */;
@@ -672,6 +676,14 @@
 				minimumVersion = 1.1.4;
 			};
 		};
+		F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -709,6 +721,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = Collections;
+		};
+		F6DA51EA2E477A140061155D /* SwiftUIX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */;
+			productName = SwiftUIX;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
