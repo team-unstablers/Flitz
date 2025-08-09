@@ -194,16 +194,15 @@ struct UserProfileModalBody: View {
                 }
 
             }
-            .padding(.bottom, 16)
-            .safeAreaPadding(.bottom)
+            .padding(.bottom, 32)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 16)
+            .safeAreaPadding(.bottom)
             .background(.white)
             .clipShape(PartRoundedRectangle(corners: [.topLeading, .topTrailing], cornerRadii: 20))
             .compositingGroup()
             .shadow(radius: 16)
         }
-        .background(.red)
     }
 }
 
@@ -236,6 +235,7 @@ struct UserProfileModal: View {
                 UserProfileModalBody(profile: profile)
             }
         }
+        .ignoresSafeArea(.all)
         .onAppear {
             viewModel.configure(with: appState.client)
             
