@@ -33,19 +33,3 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    
-    // This function allows us to view notifications in the app even with it in the foreground
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        // These options are the options that will be used when displaying a notification with the app in the foreground
-        // for example, we will be able to display a badge on the app a banner alert will appear and we could play a sound
-        return [.badge, .banner, .list, .sound]
-    }
-    
-    
-    // This function lets us do something when the user interacts with a notification
-    // like log that they clicked it, or navigate to a specific screen
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        // FIXME
-    }
-}
