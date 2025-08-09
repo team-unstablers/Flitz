@@ -6,6 +6,10 @@
 //
 
 import SwiftUI
+import PhotosUI
+
+import BrightroomEngine
+import BrightroomUI
 
 enum FZIntermediateGenderSelection: FZChipSelection {
     case man
@@ -26,10 +30,13 @@ enum FZIntermediateGenderSelection: FZChipSelection {
 
 class FZIntermediateUser: ObservableObject {
     @Published
-    var display_name: String = ""
+    var displayName: String = ""
     
     @Published
-    var profile_image_url: String? = nil
+    var profileImageUrl: String? = nil
+    
+    @Published
+    var pendingProfileImage: UIImage? = nil
 
     @Published
     var gender: FZIntermediateGenderSelection = .nonBinary
@@ -63,14 +70,11 @@ class FZIntermediateUser: ObservableObject {
     static func from(_ profile: FZUser) -> FZIntermediateUser {
         let intermediate = FZIntermediateUser()
         
-        intermediate.display_name = profile.display_name
-        intermediate.profile_image_url = profile.profile_image_url
+        intermediate.displayName = profile.display_name
+        intermediate.profileImageUrl = profile.profile_image_url
         
         return intermediate
     }
-    
-    
-    
 }
 
 @MainActor
@@ -164,6 +168,150 @@ fileprivate struct ProfileEditSectionDivider: View {
     }
 }
 
+struct ProfileEditImage: View {
+    let url: String?
+    let image: UIImage?
+    
+    let size: CGFloat
+    var action: ((UIImage) -> Void)? = nil
+    
+    @State
+    var selectedItems: [PhotosPickerItem] = []
+    
+    @State
+    var editorContext: ImageEditorContext? = nil
+    
+    @State
+    var editorVisible: Bool = false
+    
+    init(url: String?, size: CGFloat = 120, action: ((UIImage) -> Void)? = nil) {
+        self.url = url
+        self.image = nil
+        
+        self.size = size
+        self.action = action
+    }
+    
+    init(image: UIImage, size: CGFloat = 120, action: ((UIImage) -> Void)? = nil) {
+        self.image = image
+        self.url = nil
+        
+        self.size = size
+        self.action = action
+    }
+    
+    var body: some View {
+        PhotosPicker(selection: $selectedItems, maxSelectionCount: 1, matching: .images) {
+            ZStack {
+                if let url = url, let imageUrl = URL(string: url) {
+                    CachedAsyncImage(url: imageUrl) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: size, height: size)
+                            .clipShape(Circle())
+                    } placeholder: {
+                        ProgressView()
+                            .frame(width: size, height: size)
+                            .clipShape(Circle())
+                    }
+                } else if let image = image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: size, height: size)
+                        .clipShape(Circle())
+                } else {
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: size, height: size)
+                        .clipShape(Circle())
+                }
+                
+                Image("ProfileImageEditIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 36, height: 36)
+                    .foregroundStyle(.white)
+                    .clipShape(Circle())
+                    .padding(4)
+                    .offset(x: size / 2 - 18, y: size / 2 - 18)
+                
+            }
+            .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .onChange(of: selectedItems) { _, newValue in
+            Task {
+                await self.loadImage()
+            }
+        }
+        .sheet(isPresented: $editorVisible) {
+            if let editorContext = editorContext {
+                NavigationStack {
+                    VStack {
+                        SwiftUICropView(editingStack: editorContext.editingStack, isAutoApplyEditingStackEnabled: true)
+                            .croppingAspectRatio(PixelAspectRatio(width: 1, height: 1))
+                    }
+                    .navigationTitle("이미지 자르기")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button("취소") {
+                                editorVisible = false
+                                self.editorContext = nil
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("저장") {
+                                defer {
+                                    editorVisible = false
+                                    self.editorContext = nil
+                                }
+                                
+                                do {
+                                    try editorContext.render()
+                                    guard let image = editorContext.rendered?.uiImage else {
+                                        // TODO: Sentry.catch
+                                        return
+                                    }
+                                    
+                                    action?(image)
+                                } catch {
+                                    // TODO: Sentry.catch
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                EmptyView()
+            }
+        }
+    }
+    
+    private func loadImage() async {
+        guard let selectedItem = self.selectedItems.first else {
+            return
+        }
+        
+        
+        guard let data = try? await selectedItem.loadTransferable(type: Data.self),
+              let editorContext = try? await ImageEditorContext(from: data)
+        else {
+            return
+        }
+        
+        self.editorContext = editorContext
+        self.editorVisible = true
+        
+        selectedItems = []
+    }
+    
+    
+}
+
 struct ProfileEditScreen: View {
     @EnvironmentObject
     var appState: RootAppState
@@ -175,22 +323,32 @@ struct ProfileEditScreen: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
-                ProfileImage(url: viewModel.intermediate.profile_image_url, size: 120)
-                    .padding(.top, 20)
-                    .padding(.bottom, 16)
+                if let pendingImage = viewModel.intermediate.pendingProfileImage {
+                    ProfileEditImage(image: pendingImage, size: 120) { newImage in
+                        viewModel.intermediate.pendingProfileImage = newImage
+                    }
+                        .padding(.top, 20)
+                        .padding(.bottom, 16)
+                } else {
+                    ProfileEditImage(url: viewModel.intermediate.profileImageUrl, size: 120) { newImage in
+                        viewModel.intermediate.pendingProfileImage = newImage
+                    }
+                        .padding(.top, 20)
+                        .padding(.bottom, 16)
+                }
                 
                 VStack(alignment: .leading) {
                     ProfileEditSectionTitle("기본 정보")
                     ProfileEditSection {
                         ProfileEditSectionEntity(title: "닉네임") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.display_name)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "해시태그") {
-                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.display_name, axis: .vertical)
+                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.displayName, axis: .vertical)
                                 .lineLimit(2...3)
                                 .font(.fzHeading3)
                         }
@@ -198,7 +356,7 @@ struct ProfileEditScreen: View {
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "자기소개") {
-                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.display_name, axis: .vertical)
+                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.displayName, axis: .vertical)
                                 .lineLimit(3...5)
                                 .font(.fzHeading3)
                         }
@@ -207,21 +365,21 @@ struct ProfileEditScreen: View {
                     ProfileEditSectionTitle("중요 정보")
                     ProfileEditSection {
                         ProfileEditSectionEntity(title: "생년월일") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.display_name)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "이메일 주소") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.display_name)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "휴대폰 번호") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.display_name)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                     }
