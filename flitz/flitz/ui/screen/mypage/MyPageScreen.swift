@@ -98,7 +98,7 @@ struct MyPageScreen: View {
                         // FIXME: 프로필 정도는 캐싱해 두어야 하지 않을까요?
                         if let profile = appState.profile {
                             ProfileButton(profile: profile) {
-                                print("TODO: navigate to profile edit screen")
+                                appState.navState.append(.editProfile)
                             }
                         } else {
                             ProgressView()

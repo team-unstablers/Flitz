@@ -14,6 +14,7 @@ enum RootNavigationItem: Hashable {
     case attachment(conversationId: String, attachmentId: String)
     
     case settings
+    case editProfile
     case protectionSettings
 }
 
@@ -37,6 +38,8 @@ struct RootNavigation: View {
                             
                         case .settings:
                             SettingsScreen()
+                        case .editProfile:
+                            ProfileEditScreen()
                         case .protectionSettings:
                             ProtectionSettingsScreen()
                             
