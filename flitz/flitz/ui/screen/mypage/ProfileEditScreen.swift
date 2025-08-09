@@ -7,18 +7,54 @@
 
 import SwiftUI
 
+enum FZIntermediateGenderSelection: FZChipSelection {
+    case man
+    case woman
+    case nonBinary
+    
+    var asLocalizedString: String {
+        switch self {
+        case .man:
+            return "남성"
+        case .woman:
+            return "여성"
+        case .nonBinary:
+            return "논바이너리"
+        }
+    }
+}
+
 class FZIntermediateUser: ObservableObject {
     @Published
     var display_name: String = ""
     
     @Published
     var profile_image_url: String? = nil
+
+    @Published
+    var gender: FZIntermediateGenderSelection = .nonBinary
     
+    @Published
+    var preferredGender: Set<FZIntermediateGenderSelection> = [.man, .nonBinary, .woman]
+    
+    @Published
+    var isTransgender: Bool = false
+    
+    @Published
+    var comeOutOfCloset: Bool = false
+    
+    @Published
+    var isTransgenderPreferred: Bool = false
+    
+    @Published
+    var enableTransSafeMatching: Bool = false
+
     @Published
     var identifyValue: Double = 0.0
     
     @Published
     var preferredIdentifyRange: ClosedRange<Double> = -2...2
+    
     
     init() {
         
@@ -191,71 +227,56 @@ struct ProfileEditScreen: View {
                     }
                     
                     ProfileEditSectionTitle("정체성 및 선호도")
-                    
-                    VStack {
-                        Text("저는 제 자신을 다음과 같이 정의합니다:")
-                        Slider(value: $viewModel.intermediate.identifyValue, in: -2...2, step: 1)
-                        HStack {
-                            switch( viewModel.intermediate.identifyValue) {
-                            case -2:
-                                Text("여성")
-                            case -1:
-                                Text("여성에 가까움")
-                            case 0:
-                                Text("중립")
-                            case 1:
-                                Text("남성에 가까움")
-                            case 2:
-                                Text("남성")
-                            default:
-                                Text("중립")
+                    ProfileEditSection {
+                        ProfileEditSectionEntity(title: "정체성") {
+                            FZSingleChipSelector(selectedChip: $viewModel.intermediate.gender)
+                                .padding(.bottom, 8)
+                            
+                            Group {
+                                Toggle(isOn: $viewModel.intermediate.isTransgender) {
+                                    Text("트랜스젠더예요" + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
+                                        .font(.fzMain)
+                                }
+                                .tint(Color.Pride.trans1)
+                                
+                                if viewModel.intermediate.isTransgender {
+                                    Toggle(isOn: $viewModel.intermediate.comeOutOfCloset) {
+                                        Text("트랜스젠더 여부를 프로필에 표시할래요")
+                                            .font(.fzMain)
+                                    }
+                                    .tint(Color.Pride.trans2)
+                                }
                             }
+                                .padding(.vertical, 4)
                         }
                         
                         ProfileEditSectionDivider()
-                            .padding(.vertical, 8)
-                        
-                        Text("저는 아래 범위의 사람들과 연결되고 싶습니다:")
-                            .padding(.bottom, 8)
-                        ItsukiSlider(value: $viewModel.intermediate.preferredIdentifyRange, in: -2...2, step: 1, barStyle: (4, 8))
-                        
-                        HStack {
-                            switch (viewModel.intermediate.preferredIdentifyRange.lowerBound) {
-                            case -2:
-                                Text("여성")
-                            case -1:
-                                Text("여성에 가까움")
-                            case 0:
-                                Text("중립")
-                            case 1:
-                                Text("남성에 가까움")
-                            case 2:
-                                Text("남성")
-                            default:
-                                Text("중립")
-                            }
+
+                        ProfileEditSectionEntity(title: "선호하는 사람들") {
+                            FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
                             
-                            Text("~")
-                            
-                            switch (viewModel.intermediate.preferredIdentifyRange.upperBound) {
-                            case -2:
-                                Text("여성")
-                            case -1:
-                                Text("여성에 가까움")
-                            case 0:
-                                Text("중립")
-                            case 1:
-                                Text("남성에 가까움")
-                            case 2:
-                                Text("남성")
-                            default:
-                                Text("중립")
+                            if (viewModel.intermediate.isTransgender) {
+                                 Toggle(isOn: $viewModel.intermediate.enableTransSafeMatching) {
+                                    Text("안전한 사람들하고만 매칭할래요")
+                                        .font(.fzMain)
+                                }
+                                .tint(Color.Pride.trans1)
+                                .padding(.vertical, 4)
+                                
+                                if (viewModel.intermediate.enableTransSafeMatching) {
+                                    Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
+                                        .font(.fzSmall)
+                                }
+                            } else {
+                                Toggle(isOn: $viewModel.intermediate.isTransgenderPreferred) {
+                                    Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransgenderPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
+                                        .font(.fzMain)
+                                }
+                                .tint(Color.Pride.trans1)
+                                .padding(.vertical, 4)
                             }
                         }
                     }
-                    .font(.fzMain)
-                    .padding(.vertical, 20)
-                    .padding(.horizontal, 16)
                 }
                 .padding(.horizontal, 16)
                 
@@ -267,7 +288,10 @@ struct ProfileEditScreen: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 4)
                     
-                    Text("당신의 성 정체성이나 선호도에 대한 정보는 다른 사용자에게 공개되지 않습니다. 이 정보는 당신과 매칭되는 사람들을 찾기 위해 사용됩니다. 또한, 이 정보는 언제든지 수정할 수 있습니다.")
+                    Group {
+                        Text("입력하신 정체성과 선호도는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요.")
+                        Text("트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요.")
+                    }
                     .font(.small)
                     .foregroundStyle(.black.opacity(0.8))
                 }
@@ -278,6 +302,7 @@ struct ProfileEditScreen: View {
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 32)
+
             }
             
         }
