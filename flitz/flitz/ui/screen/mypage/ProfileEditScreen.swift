@@ -33,6 +33,12 @@ class FZIntermediateUser: ObservableObject {
     var displayName: String = ""
     
     @Published
+    var bio: String = ""
+    
+    @Published
+    var birthDate: Date = Date()
+    
+    @Published
     var profileImageUrl: String? = nil
     
     @Published
@@ -40,6 +46,12 @@ class FZIntermediateUser: ObservableObject {
     
     @Published
     var hashtags: [String] = []
+    
+    @Published
+    var email: String = ""
+    
+    @Published
+    var phoneNumber: String = ""
 
     @Published
     var gender: FZIntermediateGenderSelection = .nonBinary
@@ -51,13 +63,13 @@ class FZIntermediateUser: ObservableObject {
     var isTransgender: Bool = false
     
     @Published
-    var comeOutOfCloset: Bool = false
+    var transVisibleToOthers: Bool = false
     
     @Published
-    var isTransgenderPreferred: Bool = false
+    var isTransPreferred: Bool = false
     
     @Published
-    var enableTransSafeMatching: Bool = false
+    var enableTransSafeMatch: Bool = false
 
     @Published
     var identifyValue: Double = 0.0
@@ -70,11 +82,20 @@ class FZIntermediateUser: ObservableObject {
         
     }
     
-    static func from(_ profile: FZUser) -> FZIntermediateUser {
+    static func from(_ profile: FZSelfUser) -> FZIntermediateUser {
         let intermediate = FZIntermediateUser()
         
         intermediate.displayName = profile.display_name
         intermediate.profileImageUrl = profile.profile_image_url
+        
+        intermediate.bio = profile.bio
+        intermediate.hashtags = profile.hashtags
+        
+        // FIXME
+        intermediate.birthDate = Date()
+        
+        intermediate.email = profile.email ?? ""
+        intermediate.phoneNumber = profile.phone_number ?? ""
         
         return intermediate
     }
@@ -100,7 +121,7 @@ class ProfileEditViewModel: ObservableObject {
     
     func loadProfile() async {
         do {
-            guard let profile = try await apiClient?.fetchUser(id: "self") else {
+            guard let profile = try await apiClient?.fetchSelf() else {
                 // ?
                 return
             }
@@ -131,7 +152,9 @@ class ProfileEditViewModel: ObservableObject {
         }
         
         let args = PatchSelfArgs(
-            display_name: intermediate.displayName
+            display_name: intermediate.displayName,
+            bio: intermediate.bio,
+            hashtags: intermediate.hashtags
         )
         
         _ = try await apiClient.patchSelf(args)
@@ -385,7 +408,7 @@ struct ProfileEditScreen: View {
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "자기소개") {
-                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.displayName, axis: .vertical)
+                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.bio, axis: .vertical)
                                 .lineLimit(3...5)
                                 .font(.fzHeading3)
                         }
@@ -401,14 +424,14 @@ struct ProfileEditScreen: View {
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "이메일 주소") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.email)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "휴대폰 번호") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
+                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.phoneNumber)
                                 .font(.fzHeading3)
                         }
                     }
@@ -427,7 +450,7 @@ struct ProfileEditScreen: View {
                                 .tint(Color.Pride.trans1)
                                 
                                 if viewModel.intermediate.isTransgender {
-                                    Toggle(isOn: $viewModel.intermediate.comeOutOfCloset) {
+                                    Toggle(isOn: $viewModel.intermediate.transVisibleToOthers) {
                                         Text("트랜스젠더 여부를 프로필에 표시할래요")
                                             .font(.fzMain)
                                     }
@@ -443,20 +466,20 @@ struct ProfileEditScreen: View {
                             FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
                             
                             if (viewModel.intermediate.isTransgender) {
-                                 Toggle(isOn: $viewModel.intermediate.enableTransSafeMatching) {
+                                 Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
                                     Text("안전한 사람들하고만 매칭할래요")
                                         .font(.fzMain)
                                 }
                                 .tint(Color.Pride.trans1)
                                 .padding(.vertical, 4)
                                 
-                                if (viewModel.intermediate.enableTransSafeMatching) {
+                                if (viewModel.intermediate.enableTransSafeMatch) {
                                     Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
                                         .font(.fzSmall)
                                 }
                             } else {
-                                Toggle(isOn: $viewModel.intermediate.isTransgenderPreferred) {
-                                    Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransgenderPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
+                                Toggle(isOn: $viewModel.intermediate.isTransPreferred) {
+                                    Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
                                         .font(.fzMain)
                                 }
                                 .tint(Color.Pride.trans1)
@@ -521,10 +544,7 @@ struct ProfileEditScreen: View {
 #if DEBUG
 class MockProfileEditViewModel: ProfileEditViewModel {
     override func loadProfile() async {
-        let profile = FZUser(id: "test",
-                             username: "cheesekun",
-                             display_name: "cheesekun",
-                             profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4")
+        let profile = FZSelfUser.mock1
         
         self.intermediate = FZIntermediateUser.from(profile)
     }

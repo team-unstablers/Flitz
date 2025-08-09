@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileButton: View {
-    var profile: FZUser
+    var profile: FZSelfUser
     var handler: (() -> Void)? = nil
     
     var body: some View {
@@ -36,10 +36,7 @@ struct ProfileButton: View {
 }
 
 #Preview {
-    let profile = FZUser(id: "test",
-                         username: "cheesekun",
-                         display_name: "cheesekun",
-                         profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4")
+    let profile = FZSelfUser.mock1
     
     VStack {
         ProfileButton(profile: profile)

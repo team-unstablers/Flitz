@@ -49,6 +49,12 @@ struct RootNavigation: View {
                     }
             }
             
+            if let userModalProfileId = appState.userModalProfileId {
+                UserProfileModal(userId: userModalProfileId) {
+                    appState.userModalProfileId = nil
+                }
+            }
+            
             if let assertionFailureReason = appState.assertionFailureReason {
                 AssertionFailureDialog(reason: assertionFailureReason)
             }

@@ -14,6 +14,10 @@ extension FZAPIClient {
         return try await self.request(to: .user(id: id), expects: FZUser.self)
     }
     
+    func fetchSelf() async throws -> FZSelfUser {
+        return try await self.request(to: .user(id: "self"), expects: FZSelfUser.self)
+    }
+    
     func patchSelf(_ args: PatchSelfArgs) async throws -> FZUser {
         return try await self.request(to: .user(id: "self"),
                                       expects: FZUser.self,
