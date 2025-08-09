@@ -16,6 +16,8 @@ class ConversationViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isLoadingMore = false
     @Published var isSending = false
+    @Published var isReconnecting = false
+    @Published var connectionState: ConnectionState = .disconnected
     
     private var currentPage: Paginated<DirectMessage>?
     private var apiClient: FZAPIClient?
@@ -24,8 +26,32 @@ class ConversationViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     let conversationId: String
     
+    // 재연결 관련 변수
+    private var reconnectAttempts = 0
+    private var reconnectTask: Task<Void, Never>?
+    private var lastMessageDate: Date?
+    
     @Published var readState: [String: Date] = [:]
     @Published var opponentId: String? = nil
+    
+    enum ConnectionState: Equatable {
+        case connected
+        case disconnected
+        case reconnecting(attempt: Int)
+        
+        static func == (lhs: ConnectionState, rhs: ConnectionState) -> Bool {
+            switch (lhs, rhs) {
+            case (.connected, .connected):
+                return true
+            case (.disconnected, .disconnected):
+                return true
+            case (.reconnecting(let a), .reconnecting(let b)):
+                return a == b
+            default:
+                return false
+            }
+        }
+    }
     
     init(conversationId: String) {
         self.conversationId = conversationId
@@ -45,7 +71,7 @@ class ConversationViewModel: ObservableObject {
         }
     }
     
-    private func connectWebSocket() {
+    func connectWebSocket() {
         guard let apiClient = apiClient else { return }
         
         // WebSocket 연결
@@ -60,26 +86,64 @@ class ConversationViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    private func reconnectWebSocket() async {
+        reconnectAttempts += 1
+        connectionState = .reconnecting(attempt: reconnectAttempts)
+        isReconnecting = true
+        
+        // 지수 백오프: max(5, 2^n) 초 (최대 32초)
+        print("[WebSocket] Reconnecting in 2 seconds (attempt \(reconnectAttempts))")
+        
+        try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000))
+        
+        // 재연결 시도
+        connectWebSocket()
+    }
+    
     func disconnectWebSocket() {
+        reconnectTask?.cancel()
+        reconnectTask = nil
+        
         if let apiClient = apiClient {
             apiClient.disconnectMessagingStream(conversationId: conversationId)
         }
         streamClient = nil
         cancellables.removeAll()
+        connectionState = .disconnected
+        isReconnecting = false
     }
     
     private func handleStreamEvent(_ event: FZMessagingStreamClient.StreamEvent) {
         switch event {
         case .connected:
             print("[WebSocket] Connected to conversation: \(conversationId)")
+            connectionState = .connected
+            isReconnecting = false
+            reconnectAttempts = 0
+            
+            // 재연결 성공 시 놓친 메시지 가져오기
+            if let lastDate = lastMessageDate {
+                Task {
+                    await fetchMissedMessages(since: lastDate)
+                }
+            }
             
         case .disconnected(let error):
             print("[WebSocket] Disconnected: \(error?.localizedDescription ?? "Unknown")")
+            connectionState = .disconnected
+            
+            // 자동 재연결 시작
+            reconnectTask?.cancel()
+            reconnectTask = Task {
+                await reconnectWebSocket()
+            }
             
         case .message(let message):
             // 중복 메시지 체크 후 추가
             if !messages.contains(where: { $0.id == message.id }) {
                 messages.append(message)
+                // 마지막 메시지 날짜 업데이트
+                lastMessageDate = message.created_at.asISO8601Date
             }
             
             Task {
@@ -94,6 +158,43 @@ class ConversationViewModel: ObservableObject {
             
         case .error(let error):
             print("[WebSocket] Error: \(error)")
+            // 에러 발생 시에도 재연결 시도
+            if connectionState == .connected {
+                connectionState = .disconnected
+                reconnectTask?.cancel()
+                reconnectTask = Task {
+                    await reconnectWebSocket()
+                }
+            }
+        }
+    }
+    
+    private func fetchMissedMessages(since date: Date) async {
+        guard let apiClient = apiClient else { return }
+        
+        print("[WebSocket] Fetching missed messages since \(date)")
+        
+        do {
+            // 최신 메시지들을 가져옴
+            let page = try await apiClient.messages(conversationId: conversationId)
+            let newMessages = page.results.filter { message in
+                guard let messageDate = message.created_at.asISO8601Date else { return false }
+                return messageDate > date
+            }
+            
+            // 중복 제거하고 추가
+            for message in newMessages.reversed() {
+                if !messages.contains(where: { $0.id == message.id }) {
+                    messages.append(message)
+                }
+            }
+            
+            // 이미지 프리페칭
+            if !newMessages.isEmpty {
+                prefetchImages(from: newMessages)
+            }
+        } catch {
+            print("[WebSocket] Failed to fetch missed messages: \(error)")
         }
     }
     
@@ -127,6 +228,11 @@ class ConversationViewModel: ObservableObject {
             let page = try await apiClient.messages(conversationId: conversationId)
             self.currentPage = page
             self.messages = page.results.reversed() // API는 최신순, UI는 오래된순
+            
+            // 마지막 메시지 날짜 저장
+            if let lastMessage = page.results.first {
+                lastMessageDate = lastMessage.created_at.asISO8601Date
+            }
             
             // 이미지 프리페칭
             prefetchImages(from: page.results)
@@ -259,6 +365,9 @@ class ConversationViewModel: ObservableObject {
 struct ConversationScreen: View {
     @EnvironmentObject
     var appState: RootAppState
+    
+    @Environment(\.scenePhase)
+    var scenePhase
     
     @StateObject
     var viewModel: ConversationViewModel
@@ -412,6 +521,30 @@ struct ConversationScreen: View {
         }
         .onDisappear {
             viewModel.disconnectWebSocket()
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            switch newPhase {
+            case .active:
+                // 앱이 포그라운드로 돌아왔을 때
+                print("[ConversationScreen] App became active, reconnecting...")
+                // WebSocket 재연결 및 메시지 갱신
+                if viewModel.connectionState == .disconnected {
+                    viewModel.connectWebSocket()
+                }
+                Task {
+                    await viewModel.loadMessages()
+                    await viewModel.markAsRead()
+                }
+            case .background:
+                // 앱이 백그라운드로 갔을 때
+                print("[ConversationScreen] App went to background, disconnecting...")
+                viewModel.disconnectWebSocket()
+            case .inactive:
+                // 중간 상태 (앱 스위처 등)
+                break
+            @unknown default:
+                break
+            }
         }
         .environment(\.conversationId, viewModel.conversationId)
     }
