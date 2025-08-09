@@ -107,6 +107,32 @@ class ProfileEditViewModel: ObservableObject {
             // Handle error appropriately
         }
     }
+    
+    func saveProfileImage() async throws {
+        guard let apiClient = apiClient,
+              let pendingImage = intermediate.pendingProfileImage else {
+            return
+        }
+        
+        let imageData = pendingImage.jpegData(compressionQuality: 0.9)
+        guard let data = imageData else {
+            throw NSError(domain: "ProfileEditViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to JPEG data"])
+        }
+        
+        _ = try await apiClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
+    }
+    
+    func saveProfile() async throws {
+        guard let apiClient = apiClient else {
+            return
+        }
+        
+        let args = PatchSelfArgs(
+            display_name: intermediate.displayName
+        )
+        
+        _ = try await apiClient.patchSelf(args)
+    }
 }
 
 struct ProfileEditSectionTitle: View {
@@ -277,7 +303,7 @@ struct ProfileEditImage: View {
                                         return
                                     }
                                     
-                                    action?(image)
+                                    action?(image.resize(maxWidth: 768, maxHeight: 768))
                                 } catch {
                                     // TODO: Sentry.catch
                                 }
@@ -326,12 +352,14 @@ struct ProfileEditScreen: View {
                 if let pendingImage = viewModel.intermediate.pendingProfileImage {
                     ProfileEditImage(image: pendingImage, size: 120) { newImage in
                         viewModel.intermediate.pendingProfileImage = newImage
+                        viewModel.objectWillChange.send()
                     }
                         .padding(.top, 20)
                         .padding(.bottom, 16)
                 } else {
                     ProfileEditImage(url: viewModel.intermediate.profileImageUrl, size: 120) { newImage in
                         viewModel.intermediate.pendingProfileImage = newImage
+                        viewModel.objectWillChange.send()
                     }
                         .padding(.top, 20)
                         .padding(.bottom, 16)
@@ -469,7 +497,16 @@ struct ProfileEditScreen: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("저장") {
-                    print("TODO: save profile")
+                    Task {
+                        try? await viewModel.saveProfileImage()
+                        try? await viewModel.saveProfile()
+                        
+                        appState.loadProfile()
+                        
+                        DispatchQueue.main.async {
+                            appState.navState = []
+                        }
+                    }
                 }
             }
         }
