@@ -7,12 +7,16 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 class RootAppState: ObservableObject {
     static let shared = RootAppState()
     
     @Published
     var client: FZAPIClient = FZAPIClient(context: .load())
+    
+    @Published
+    var currentTab: RootTab = .wave
     
     @Published
     var navState: [RootNavigationItem] = []
@@ -28,6 +32,8 @@ class RootAppState: ObservableObject {
     
     @Published
     var assertionFailureReason: AssertionFailureReason? = nil
+    
+    var conversationUpdated = PassthroughSubject<Void, Never>()
     
     init() {
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
