@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = F63BE5142E3CF33B0086DAF4 /* Starscream */; };
+		F689AB572E44D9B200BB1E6F /* BrightroomEngine in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB562E44D9B200BB1E6F /* BrightroomEngine */; };
+		F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB582E44D9B200BB1E6F /* BrightroomUI */; };
+		F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */; };
 		F699D0E22D0039DF00761976 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E12D0039DF00761976 /* Alamofire */; };
 		F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E42D0039E700761976 /* AlamofireImage */; };
 		F699D0E82D0039F400761976 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E72D0039F400761976 /* Collections */; };
@@ -75,9 +78,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F699D0E82D0039F400761976 /* Collections in Frameworks */,
+				F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */,
 				F699D0E22D0039DF00761976 /* Alamofire in Frameworks */,
 				F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */,
+				F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */,
 				F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */,
+				F689AB572E44D9B200BB1E6F /* BrightroomEngine in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +150,9 @@
 				F699D0E42D0039E700761976 /* AlamofireImage */,
 				F699D0E72D0039F400761976 /* Collections */,
 				F63BE5142E3CF33B0086DAF4 /* Starscream */,
+				F689AB562E44D9B200BB1E6F /* BrightroomEngine */,
+				F689AB582E44D9B200BB1E6F /* BrightroomUI */,
+				F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */,
 			);
 			productName = flitz;
 			productReference = F699D0882D00325300761976 /* Flitz.app */;
@@ -232,6 +241,7 @@
 				F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */,
 				F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */,
+				F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F699D0892D00325300761976 /* Products */;
@@ -630,6 +640,14 @@
 				minimumVersion = 4.0.8;
 			};
 		};
+		F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muukii/Brightroom.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.1;
+			};
+		};
 		F699D0E02D0039DF00761976 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -661,6 +679,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */;
 			productName = Starscream;
+		};
+		F689AB562E44D9B200BB1E6F /* BrightroomEngine */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */;
+			productName = BrightroomEngine;
+		};
+		F689AB582E44D9B200BB1E6F /* BrightroomUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */;
+			productName = BrightroomUI;
+		};
+		F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */;
+			productName = BrightroomUIPhotosCrop;
 		};
 		F699D0E12D0039DF00761976 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

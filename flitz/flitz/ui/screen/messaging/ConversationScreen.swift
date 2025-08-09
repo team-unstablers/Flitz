@@ -24,6 +24,9 @@ class ConversationViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     let conversationId: String
     
+    @Published var readState: [String: Date] = [:]
+    @Published var opponentId: String? = nil
+    
     init(conversationId: String) {
         self.conversationId = conversationId
     }
@@ -79,13 +82,15 @@ class ConversationViewModel: ObservableObject {
                 messages.append(message)
             }
             
+            Task {
+                await self.markAsRead()
+            }
+            
         case .readEvent(let userId, let readAt):
             // 읽음 상태 업데이트
             print("[WebSocket] User \(userId) read messages at \(readAt)")
             // 대화 참여자의 읽음 시간 업데이트
-            if let index = conversation?.participants.firstIndex(where: { $0.user.id == userId }) {
-                conversation?.participants[index].read_at = readAt.ISO8601Format()
-            }
+            self.readState[userId] = readAt
             
         case .error(let error):
             print("[WebSocket] Error: \(error)")
@@ -96,8 +101,19 @@ class ConversationViewModel: ObservableObject {
         guard let apiClient = apiClient else { return }
         
         do {
+            // TODO: 단일 conversation을 가져오는 API 엔드포인트가 필요함
+            // 현재는 전체 리스트를 가져와서 필터링하는 비효율적인 방식
             let conversations = try await apiClient.conversations()
             self.conversation = conversations.results.first { $0.id == conversationId }
+            
+            self.opponentId = self.conversation?.participants.first(where: { $0.user.id != currentUserId })?.user.id
+            self.readState = [:]
+            
+            for participant in self.conversation?.participants ?? [] {
+                if let readAt = participant.read_at?.asISO8601Date {
+                    self.readState[participant.user.id] = readAt
+                }
+            }
         } catch {
             print("[Conversation] Failed to load conversation info: \(error)")
         }
@@ -111,6 +127,9 @@ class ConversationViewModel: ObservableObject {
             let page = try await apiClient.messages(conversationId: conversationId)
             self.currentPage = page
             self.messages = page.results.reversed() // API는 최신순, UI는 오래된순
+            
+            // 이미지 프리페칭
+            prefetchImages(from: page.results)
         } catch {
             print("[Conversation] Failed to load messages: \(error)")
         }
@@ -130,18 +149,40 @@ class ConversationViewModel: ObservableObject {
             }
             self.currentPage = page
             self.messages.insert(contentsOf: page.results.reversed(), at: 0)
+            
+            // 이미지 프리페칭
+            prefetchImages(from: page.results)
         } catch {
             print("[Conversation] Failed to load more messages: \(error)")
         }
         isLoadingMore = false
     }
     
-    func sendMessage(text: String) async {
-        guard let apiClient = apiClient, !text.isEmpty, !isSending else { return }
+    func sendMessage(request: MessageRequest) async {
+        let isEmpty = request.text.isEmpty && request.images.isEmpty
+        
+        guard let apiClient = apiClient, !isEmpty, !isSending else { return }
         
         isSending = true
+        
         do {
-            let content = DirectMessageContent(type: "text", text: text)
+            for image in request.images {
+                guard let jpg = image.jpegData(compressionQuality: 0.9) else {
+                    continue
+                }
+                
+                _ = try await apiClient.uploadAttachment(conversationId: conversationId,
+                                                         file: jpg,
+                                                         fileName: "image.jpg",
+                                                         mimeType: "image/jpeg")
+            }
+            
+            guard !request.text.isEmpty else {
+                isSending = false
+                return
+            }
+            
+            let content = DirectMessageContent(type: "text", text: request.text)
             let message = try await apiClient.sendMessage(conversationId: conversationId, content: content)
             // WebSocket을 통해 메시지가 자동으로 수신되므로 여기서는 추가하지 않음
             // 만약 WebSocket이 연결되지 않았다면 수동으로 추가
@@ -188,17 +229,30 @@ class ConversationViewModel: ObservableObject {
         do {
             try await apiClient.markAsRead(conversationId: conversationId)
             // WebSocket을 통해서도 읽음 확인 전송
-            streamClient?.sendReadReceipt()
+            // streamClient?.sendReadReceipt()
         } catch {
             print("[Conversation] Failed to mark as read: \(error)")
         }
     }
     
-    deinit {
-    }
-    
     func isFromCurrentUser(_ message: DirectMessage) -> Bool {
         return message.sender == currentUserId
+    }
+    
+    private func prefetchImages(from messages: [DirectMessage]) {
+        let imageUrls = messages.compactMap { message -> URL? in
+            guard message.content.type == "attachment" else { return nil }
+            if let thumbnailUrl = message.content.thumbnail_url {
+                return URL(string: thumbnailUrl)
+            } else if let publicUrl = message.content.public_url {
+                return URL(string: publicUrl)
+            }
+            return nil
+        }
+        
+        if !imageUrls.isEmpty {
+            ImageCacheManager.shared.prefetchImages(urls: imageUrls)
+        }
     }
 }
 
@@ -212,6 +266,12 @@ struct ConversationScreen: View {
     @State
     private var selectedItem: PhotosPickerItem?
     
+    @State
+    private var shouldStickToBottom = true
+    
+    @FocusState
+    private var composeAreaFocused: Bool
+
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
     }
@@ -223,26 +283,45 @@ struct ConversationScreen: View {
                 ProgressView()
                 Spacer()
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 8) {
+                ScrollViewReader { proxy in
+                    List {
                         // 로딩 인디케이터
                         if viewModel.isLoadingMore {
-                            ProgressView()
-                                .padding()
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                Spacer()
+                            }
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
                         }
                         
                         ForEach(viewModel.messages) { message in
                             MessageBubble(
                                 message: message,
-                                isFromCurrentUser: viewModel.isFromCurrentUser(message)
+                                isFromCurrentUser: viewModel.isFromCurrentUser(message),
+                                isRead: viewModel.opponentId != nil && viewModel.readState[viewModel.opponentId!] != nil 
+                                    ? viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
+                                    : false,
+                                onAttachmentTap: { attachmentId in
+                                    appState.navState.append(RootNavigationItem.attachment(conversationId: viewModel.conversationId, attachmentId: attachmentId))
+                                }
                             )
+                            .drawingGroup()
                             .id(message.id)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                            .listRowBackground(Color.clear)
                             .contextMenu {
                                 if viewModel.isFromCurrentUser(message) {
                                     Button("메시지 삭제", role: .destructive) {
                                         Task {
                                             await viewModel.deleteMessage(id: message.id.uuidString)
                                         }
+                                    }
+                                } else {
+                                    Button("메시지 신고", role: .destructive) {
                                     }
                                 }
                             }
@@ -256,23 +335,57 @@ struct ConversationScreen: View {
                             }
                         }
                         
-                        Spacer(minLength: 16)
+                        // 하단 패딩용 빈 뷰
+                        Color.clear
+                            .frame(height: 0)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                            .id("bottomAnchor")
+                            .onAppear {
+                                shouldStickToBottom = true
+                            }
+                            .onDisappear {
+                                shouldStickToBottom = false
+                            }
                     }
-                    .padding(.horizontal, 8)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.visible)
+                    .scrollDismissesKeyboard(.interactively)
+                    .defaultScrollAnchor(.bottom)
+                    .onChange(of: viewModel.messages.count) { oldCount, newCount in
+                        // 새 메시지가 추가되었을 때만 스크롤
+                        if shouldStickToBottom || composeAreaFocused {
+                            proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                        }
+                    }
+                    .onChange(of: composeAreaFocused) { _, newValue in
+                        if newValue && shouldStickToBottom {
+                            // 키보드가 나타날 때 스크롤
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                // 약간의 지연을 주어 키보드가 나타난 후 스크롤
+                                proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                            }
+                        }
+                    }
+                    .onAppear {
+                        proxy.scrollTo("bottomAnchor", anchor: .bottom)
+                    }
                 }
-                .defaultScrollAnchor(.bottom)
             }
             
             Divider()
             
             MessageComposeArea(
-                onSend: { text in
+                focused: $composeAreaFocused,
+                onSend: { request in
                     Task {
-                        await viewModel.sendMessage(text: text)
+                        await viewModel.sendMessage(request: request)
                     }
-                },
-                onAttach: {
-                    // PhotosPicker 표시는 나중에 구현
+                    
+                    DispatchQueue.main.async {
+                        composeAreaFocused = true
+                    }
                 },
                 isSending: viewModel.isSending
             )
@@ -300,6 +413,7 @@ struct ConversationScreen: View {
         .onDisappear {
             viewModel.disconnectWebSocket()
         }
+        .environment(\.conversationId, viewModel.conversationId)
     }
 }
 
@@ -386,11 +500,11 @@ class ConversationPreviewViewModel: ConversationViewModel {
         )
     }
     
-    override func sendMessage(text: String) async {
+    override func sendMessage(request: MessageRequest) async {
         let newMessage = DirectMessage(
             id: UUID(),
             sender: "self",
-            content: DirectMessageContent(type: "text", text: text),
+            content: DirectMessageContent(type: "text", text: request.text),
             created_at: ISO8601DateFormatter().string(from: Date())
         )
         messages.append(newMessage)
