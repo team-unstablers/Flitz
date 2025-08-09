@@ -360,6 +360,18 @@ class ConversationViewModel: ObservableObject {
             ImageCacheManager.shared.prefetchImages(urls: imageUrls)
         }
     }
+    
+    func removeThreadNotifications() {
+        let center = UNUserNotificationCenter.current()
+        
+        center.getDeliveredNotifications { delivered in
+            let ids = delivered
+                .filter { $0.request.content.threadIdentifier == self.conversationId }
+                .map { $0.request.identifier }
+            
+            center.removeDeliveredNotifications(withIdentifiers: ids)
+        }
+    }
 }
 
 struct ConversationScreen: View {
@@ -546,8 +558,12 @@ struct ConversationScreen: View {
                 break
             }
         }
+        .onScenePhase(.active, immediate: true) {
+            viewModel.removeThreadNotifications()
+        }
         .environment(\.conversationId, viewModel.conversationId)
     }
+    
 }
 
 // Array 안전 접근을 위한 Extension
