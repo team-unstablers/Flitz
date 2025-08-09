@@ -216,6 +216,9 @@ struct UserProfileModal: View {
     @StateObject
     var viewModel: UserProfileModalViewModel
     
+    @GestureState private var dragOffset: CGSize = .zero
+    @State private var opacity: Double = 1.0
+    
     init(userId: String, onDismiss: (() -> Void)? = nil, viewModel: UserProfileModalViewModel? = nil) {
         self.userId = userId
         self.onDismiss = onDismiss
@@ -227,12 +230,36 @@ struct UserProfileModal: View {
         ZStack(alignment: .bottom) {
             UserProfileModalBackdrop()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .opacity(opacity)
                 .onTapGesture {
                     onDismiss?()
                 }
             
             if let profile = viewModel.profile {
                 UserProfileModalBody(profile: profile)
+                    .offset(y: max(0, dragOffset.height))
+                    .opacity(opacity)
+                    .gesture(
+                        DragGesture()
+                            .updating($dragOffset) { value, state, _ in
+                                if value.translation.height > 0 {
+                                    state = value.translation
+                                }
+                            }
+                            .onChanged { value in
+                                let progress = min(1.0, max(0, value.translation.height / 300))
+                                opacity = 1.0 - (progress * 0.5)
+                            }
+                            .onEnded { value in
+                                withAnimation(.spring()) {
+                                    opacity = 1.0
+                                }
+                                
+                                if value.translation.height > 150 {
+                                    onDismiss?()
+                                }
+                            }
+                    )
             }
         }
         .ignoresSafeArea(.all)
