@@ -37,6 +37,9 @@ class FZIntermediateUser: ObservableObject {
     
     @Published
     var pendingProfileImage: UIImage? = nil
+    
+    @Published
+    var hashtags: [String] = []
 
     @Published
     var gender: FZIntermediateGenderSelection = .nonBinary
@@ -376,9 +379,7 @@ struct ProfileEditScreen: View {
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "해시태그") {
-                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.displayName, axis: .vertical)
-                                .lineLimit(2...3)
-                                .font(.fzHeading3)
+                            FZHashtagField(hashtags: $viewModel.intermediate.hashtags)
                         }
 
                         ProfileEditSectionDivider()
@@ -510,6 +511,7 @@ struct ProfileEditScreen: View {
                 }
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .onAppear {
             viewModel.configure(with: appState.client)
         }
