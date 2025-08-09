@@ -37,7 +37,11 @@ class UserProfileModalViewModel: ObservableObject {
 
 struct UserProfileModalBackdrop: View {
     var body: some View {
-        BlurEffectView(style: .regular)
+        ZStack {
+            Rectangle()
+                .fill(Color.black.opacity(0.25))
+            BlurEffectView(style: .regular)
+        }
             .edgesIgnoringSafeArea(.all)
     }
 }
@@ -77,6 +81,7 @@ struct UserProfileModalDivider: View {
         Divider()
             .background(Color.Grayscale.gray2)
             .padding(.vertical, 16)
+            .background(.white) // BUG: safearea쯤으로 offset 내려가면 부모 배경이 투명해지는 문제 발생
     }
 
 }
@@ -98,6 +103,7 @@ struct UserProfileModalSection<Content: View>: View {
             content()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white) // BUG: safearea쯤으로 offset 내려가면 부모 배경이 투명해지는 문제 발생
     }
     
 }
@@ -132,6 +138,7 @@ struct UserProfileModalProfileHeader: View {
             }
             
         }
+        .background(.white) // BUG: safearea쯤으로 offset 내려가면 부모 배경이 투명해지는 문제 발생
     }
 }
 
@@ -160,6 +167,7 @@ struct UserProfileModalProfileImage: View {
 
 struct UserProfileModalBody: View {
     var profile: FZUser
+    var extraSpacing: CGFloat = 0
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -195,6 +203,7 @@ struct UserProfileModalBody: View {
 
             }
             .padding(.bottom, 32)
+            .padding(.bottom, extraSpacing)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 16)
             .safeAreaPadding(.bottom)
@@ -216,8 +225,8 @@ struct UserProfileModal: View {
     @StateObject
     var viewModel: UserProfileModalViewModel
     
-    @GestureState private var dragOffset: CGSize = .zero
-    @State private var opacity: Double = 1.0
+    @State private var dragOffset: CGSize = CGSize(width: 0, height: 300)
+    @State private var opacity: Double = 0.0
     
     init(userId: String, onDismiss: (() -> Void)? = nil, viewModel: UserProfileModalViewModel? = nil) {
         self.userId = userId
@@ -232,34 +241,52 @@ struct UserProfileModal: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .opacity(opacity)
                 .onTapGesture {
-                    onDismiss?()
+                    withAnimation {
+                        self.dismiss()
+                    }
                 }
             
             if let profile = viewModel.profile {
-                UserProfileModalBody(profile: profile)
+                UserProfileModalBody(profile: profile, extraSpacing: max(0, -dragOffset.height))
                     .offset(y: max(0, dragOffset.height))
                     .opacity(opacity)
                     .gesture(
                         DragGesture()
-                            .updating($dragOffset) { value, state, _ in
+                            /*
+                            .updating($dragOffset) { value, state, txn in
                                 if value.translation.height > 0 {
                                     state = value.translation
                                 }
                             }
+                             */
                             .onChanged { value in
+                                if (value.translation.height > 0) {
+                                    dragOffset = value.translation
+                                } else {
+                                    dragOffset = CGSize(width: 0, height: value.translation.height * 0.25)
+                                }
+                                
                                 let progress = min(1.0, max(0, value.translation.height / 300))
                                 opacity = 1.0 - (progress * 0.5)
                             }
                             .onEnded { value in
-                                withAnimation(.spring()) {
-                                    opacity = 1.0
-                                }
-                                
                                 if value.translation.height > 150 {
-                                    onDismiss?()
+                                    self.dismiss()
+                                } else {
+                                    withAnimation(.spring()) {
+                                        opacity = 1.0
+                                        dragOffset = .zero
+                                    }
                                 }
                             }
                     )
+                    .onAppear {
+                        withAnimation(.spring()) {
+                            opacity = 1.0
+                            dragOffset = .zero
+                        }
+                    }
+
             }
         }
         .ignoresSafeArea(.all)
@@ -269,6 +296,15 @@ struct UserProfileModal: View {
             Task {
                 await viewModel.loadProfile()
             }
+        }
+    }
+    
+    func dismiss() {
+        withAnimation(.spring()) {
+            opacity = 0
+            dragOffset = CGSize(width: 0, height: 300)
+        } completion: {
+            onDismiss?()
         }
     }
 }
