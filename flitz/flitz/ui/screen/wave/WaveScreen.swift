@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct WaveScreen: View {
+    static let tabs: [FZTab] = [
+        FZTab(id: "exchanged", title: "교환된 카드"),
+        FZTab(id: "my-cards", title: "내 카드"),
+    ]
+    
     @EnvironmentObject
     var appState: RootAppState
+    
+    @State
+    var selectedTabId: String = Self.tabs.first!.id
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,8 +31,19 @@ struct WaveScreen: View {
                 }
             }
             
-            ExchangedCards()
+            FZInlineTab(tabs: Self.tabs, selectedTabId: $selectedTabId)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
             
+            VStack(spacing: 0) {
+                if selectedTabId == "exchanged" {
+                    ExchangedCards()
+                } else if selectedTabId == "my-cards" {
+                    EmptyView()
+                }
+            }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .animation(.easeInOut(duration: 0.2), value: selectedTabId)
         }
     }
     
