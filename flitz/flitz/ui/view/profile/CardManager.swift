@@ -10,23 +10,46 @@ import SwiftUI
 @MainActor
 class CardManagerViewModel: ObservableObject {
     @Published
-    var cards: [FZSimpleCard] = []
+    var cardMetas: [FZSimpleCard] = []
     
     @Published
-    var selection: String?
+    var renderCaches: [String: UIImage] = [:]
     
     var client: FZAPIClient = RootAppState.shared.client
     
     /// 내 카드 목록을 가져옵니다.
     func fetchCards() async {
         do {
-            let cards = try await self.client.cards()
+            let cardMetas = try await self.client.cards()
             
-            self.cards = cards.results
-            self.selection = cards.results.first?.id
+            self.cardMetas = cardMetas.results
+            await prerenderCard()
         } catch {
-            // FIXME
             print(error)
+        }
+    }
+    
+    func prerenderCard() async {
+        let assetsLoader = AssetsLoader.global
+        let renderer = FZCardViewSwiftUICardRenderer()
+        
+        for cardMeta in self.cardMetas {
+            do {
+                let card = try await self.client.card(by: cardMeta.id)
+                
+                do {
+                    try await assetsLoader.resolveAll(from: card.content)
+                } catch {
+                    print(error)
+                }
+                
+                let mainTexture = try renderer.render(card: card.content)
+                
+                
+                renderCaches[cardMeta.id] = mainTexture
+            } catch {
+                print("[CardManagerViewModel] Failed to prerender card \(cardMeta.id): \(error)")
+            }
         }
     }
     
@@ -43,6 +66,7 @@ class CardManagerViewModel: ObservableObject {
 
 
 struct CardManagerView: View {
+
     @StateObject
     var viewModel = CardManagerViewModel()
     
@@ -51,17 +75,30 @@ struct CardManagerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FZButton(size: .large) {
-                
+                Task {
+                    await viewModel.newCard()
+                }
             } label: {
                 Text("새 카드 만들기")
             }
             
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(viewModel.cards) { card in
+                    ForEach(viewModel.cardMetas) { card in
                         VStack {
-                            CardPreview(client: $viewModel.client, cardId: card.id)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            if let renderedCardImage = viewModel.renderCaches[card.id] {
+                                // Rendered card image is available
+                                Image(uiImage: renderedCardImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    .padding()
+                                    .shadow(color: .black.opacity(0.25), radius: 8)
+                            } else {
+                                // Placeholder while rendering
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
                         }
                         .tag(card.id)
                         .cornerRadius(15)
@@ -79,23 +116,6 @@ struct CardManagerView: View {
                     await viewModel.fetchCards()
                 }
             }
-
-        /*
-        TabView(selection: $viewModel.selection) {
-            NewCardPreview {
-                Task {
-                    await viewModel.newCard()
-                }
-            }
-                .tag("__NEW_CARD__")
-            
-            ForEach(viewModel.cards) { card in
-                CardPreview(client: $viewModel.client, cardId: card.id)
-                    .tag(card.id)
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-         */
     }
     
 }
