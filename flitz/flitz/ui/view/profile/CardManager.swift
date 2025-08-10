@@ -66,6 +66,8 @@ class CardManagerViewModel: ObservableObject {
 
 
 struct CardManagerView: View {
+    @EnvironmentObject
+    var appState: RootAppState
 
     @StateObject
     var viewModel = CardManagerViewModel()
@@ -85,7 +87,9 @@ struct CardManagerView: View {
             ScrollView {
                 LazyVGrid(columns: columns) {
                     ForEach(viewModel.cardMetas) { card in
-                        VStack {
+                        Button {
+                            appState.currentModal = .cardDetail(cardId: card.id)
+                        } label: {
                             if let renderedCardImage = viewModel.renderCaches[card.id] {
                                 // Rendered card image is available
                                 Image(uiImage: renderedCardImage)
@@ -100,6 +104,7 @@ struct CardManagerView: View {
                                     .progressViewStyle(CircularProgressViewStyle())
                             }
                         }
+                        .buttonStyle(.plain)
                         .tag(card.id)
                         .cornerRadius(15)
                         .frame(width: 150, height: 200)

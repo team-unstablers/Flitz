@@ -22,7 +22,7 @@ class RootAppState: ObservableObject {
     var navState: [RootNavigationItem] = []
     
     @Published
-    var userModalProfileId: String? = nil
+    var currentModal: RootModalItem? = nil
     
     @Published
     var waveCommunicator: FlitzWaveCommunicator!
@@ -32,6 +32,7 @@ class RootAppState: ObservableObject {
     
     @Published
     var profile: FZSelfUser?
+    
     
     @Published
     var assertionFailureReason: AssertionFailureReason? = nil
