@@ -14,6 +14,10 @@
 		F699D0E22D0039DF00761976 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E12D0039DF00761976 /* Alamofire */; };
 		F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E42D0039E700761976 /* AlamofireImage */; };
 		F699D0E82D0039F400761976 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E72D0039F400761976 /* Collections */; };
+		F6DA51EB2E477A140061155D /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA51EA2E477A140061155D /* SwiftUIX */; };
+		F6DA52082E47C0710061155D /* FlitzNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6DA52012E47C0710061155D /* FlitzNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F6DA52102E47C09D0061155D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA520F2E47C09D0061155D /* Alamofire */; };
+		F6DA52122E47C09D0061155D /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA52112E47C09D0061155D /* AlamofireImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +35,28 @@
 			remoteGlobalIDString = F699D0872D00325300761976;
 			remoteInfo = flitz;
 		};
+		F6DA52062E47C0710061155D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F699D0802D00325300761976 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F6DA52002E47C0710061155D;
+			remoteInfo = FlitzNotificationService;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F6DA520D2E47C0710061155D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F6DA52082E47C0710061155D /* FlitzNotificationService.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F64996F42D2A87740090E3F6 /* Flitz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Flitz.entitlements; path = Flitz/Flitz.entitlements; sourceTree = "<group>"; };
@@ -39,6 +64,7 @@
 		F699D0982D00325500761976 /* flitzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D0A22D00325500761976 /* flitzUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D20F2D005B1A00761976 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Flitz/Info.plist; sourceTree = "<group>"; };
+		F6DA52012E47C0710061155D /* FlitzNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FlitzNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -49,6 +75,20 @@
 			);
 			target = F699D0872D00325300761976 /* Flitz */;
 		};
+		F6DA520C2E47C0710061155D /* Exceptions for "FlitzNotificationService" folder in "FlitzNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F6DA52002E47C0710061155D /* FlitzNotificationService */;
+		};
+		F6DA52142E47C5970061155D /* Exceptions for "flitz" folder in "FlitzNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				utils/ImageCacheManager.swift,
+			);
+			target = F6DA52002E47C0710061155D /* FlitzNotificationService */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +96,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F699D2122D005B5600761976 /* Exceptions for "flitz" folder in "Flitz" target */,
+				F6DA52142E47C5970061155D /* Exceptions for "flitz" folder in "FlitzNotificationService" target */,
 			);
 			path = flitz;
 			sourceTree = "<group>";
@@ -70,6 +111,14 @@
 			path = flitzUITests;
 			sourceTree = "<group>";
 		};
+		F6DA52022E47C0710061155D /* FlitzNotificationService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F6DA520C2E47C0710061155D /* Exceptions for "FlitzNotificationService" folder in "FlitzNotificationService" target */,
+			);
+			path = FlitzNotificationService;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +129,7 @@
 				F699D0E82D0039F400761976 /* Collections in Frameworks */,
 				F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */,
 				F699D0E22D0039DF00761976 /* Alamofire in Frameworks */,
+				F6DA51EB2E477A140061155D /* SwiftUIX in Frameworks */,
 				F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */,
 				F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */,
 				F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */,
@@ -101,6 +151,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6DA51FE2E47C0710061155D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6DA52102E47C09D0061155D /* Alamofire in Frameworks */,
+				F6DA52122E47C09D0061155D /* AlamofireImage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -112,6 +171,8 @@
 				F699D08A2D00325300761976 /* flitz */,
 				F699D09B2D00325500761976 /* flitzTests */,
 				F699D0A52D00325500761976 /* flitzUITests */,
+				F6DA52022E47C0710061155D /* FlitzNotificationService */,
+				F6DA520E2E47C09D0061155D /* Frameworks */,
 				F699D0892D00325300761976 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,8 +183,16 @@
 				F699D0882D00325300761976 /* Flitz.app */,
 				F699D0982D00325500761976 /* flitzTests.xctest */,
 				F699D0A22D00325500761976 /* flitzUITests.xctest */,
+				F6DA52012E47C0710061155D /* FlitzNotificationService.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F6DA520E2E47C09D0061155D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,10 +205,12 @@
 				F699D0842D00325300761976 /* Sources */,
 				F699D0852D00325300761976 /* Frameworks */,
 				F699D0862D00325300761976 /* Resources */,
+				F6DA520D2E47C0710061155D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F6DA52072E47C0710061155D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F699D08A2D00325300761976 /* flitz */,
@@ -153,6 +224,7 @@
 				F689AB562E44D9B200BB1E6F /* BrightroomEngine */,
 				F689AB582E44D9B200BB1E6F /* BrightroomUI */,
 				F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */,
+				F6DA51EA2E477A140061155D /* SwiftUIX */,
 			);
 			productName = flitz;
 			productReference = F699D0882D00325300761976 /* Flitz.app */;
@@ -204,6 +276,30 @@
 			productReference = F699D0A22D00325500761976 /* flitzUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		F6DA52002E47C0710061155D /* FlitzNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6DA52092E47C0710061155D /* Build configuration list for PBXNativeTarget "FlitzNotificationService" */;
+			buildPhases = (
+				F6DA51FD2E47C0710061155D /* Sources */,
+				F6DA51FE2E47C0710061155D /* Frameworks */,
+				F6DA51FF2E47C0710061155D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F6DA52022E47C0710061155D /* FlitzNotificationService */,
+			);
+			name = FlitzNotificationService;
+			packageProductDependencies = (
+				F6DA520F2E47C09D0061155D /* Alamofire */,
+				F6DA52112E47C09D0061155D /* AlamofireImage */,
+			);
+			productName = FlitzNotificationService;
+			productReference = F6DA52012E47C0710061155D /* FlitzNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -211,7 +307,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					F699D0872D00325300761976 = {
@@ -224,6 +320,9 @@
 					F699D0A12D00325500761976 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = F699D0872D00325300761976;
+					};
+					F6DA52002E47C0710061155D = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -242,6 +341,7 @@
 				F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */,
 				F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */,
 				F689AB552E44D9B200BB1E6F /* XCRemoteSwiftPackageReference "Brightroom" */,
+				F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F699D0892D00325300761976 /* Products */;
@@ -251,6 +351,7 @@
 				F699D0872D00325300761976 /* Flitz */,
 				F699D0972D00325500761976 /* flitzTests */,
 				F699D0A12D00325500761976 /* flitzUITests */,
+				F6DA52002E47C0710061155D /* FlitzNotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -271,6 +372,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F699D0A02D00325500761976 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6DA51FF2E47C0710061155D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -301,6 +409,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F6DA51FD2E47C0710061155D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -313,6 +428,11 @@
 			isa = PBXTargetDependency;
 			target = F699D0872D00325300761976 /* Flitz */;
 			targetProxy = F699D0A32D00325500761976 /* PBXContainerItemProxy */;
+		};
+		F6DA52072E47C0710061155D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F6DA52002E47C0710061155D /* FlitzNotificationService */;
+			targetProxy = F6DA52062E47C0710061155D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -590,6 +710,58 @@
 			};
 			name = Release;
 		};
+		F6DA520A2E47C0710061155D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlitzNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FlitzNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz.FlitzNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F6DA520B2E47C0710061155D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlitzNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FlitzNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz.FlitzNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -625,6 +797,15 @@
 			buildConfigurations = (
 				F699D0B32D00325500761976 /* Debug */,
 				F699D0B42D00325500761976 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F6DA52092E47C0710061155D /* Build configuration list for PBXNativeTarget "FlitzNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F6DA520A2E47C0710061155D /* Debug */,
+				F6DA520B2E47C0710061155D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -672,6 +853,14 @@
 				minimumVersion = 1.1.4;
 			};
 		};
+		F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -709,6 +898,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F699D0E62D0039F400761976 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = Collections;
+		};
+		F6DA51EA2E477A140061155D /* SwiftUIX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F6DA51E92E477A140061155D /* XCRemoteSwiftPackageReference "SwiftUIX" */;
+			productName = SwiftUIX;
+		};
+		F6DA520F2E47C09D0061155D /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F699D0E02D0039DF00761976 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		F6DA52112E47C09D0061155D /* AlamofireImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */;
+			productName = AlamofireImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

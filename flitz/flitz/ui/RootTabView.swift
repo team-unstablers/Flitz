@@ -15,12 +15,12 @@ enum RootTab: Hashable {
 }
 
 struct RootTabView: View {
-    @State
-    var currentTab: RootTab = .wave
+    @EnvironmentObject
+    var appState: RootAppState
     
     var body: some View {
         ZStack {
-            TabView(selection: $currentTab) {
+            TabView(selection: $appState.currentTab) {
                 WaveScreen()
                     .tag(RootTab.wave)
                     .tabItem {
@@ -39,7 +39,7 @@ struct RootTabView: View {
                         Image(systemName: "house")
                         Text("스토어")
                     }
-                ProfileScreen()
+                MyPageScreen()
                     .tag(RootTab.profile)
                     .tabItem {
                         Image(systemName: "person")

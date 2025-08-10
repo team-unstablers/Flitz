@@ -14,6 +14,7 @@ enum RootNavigationItem: Hashable {
     case attachment(conversationId: String, attachmentId: String)
     
     case settings
+    case editProfile
     case protectionSettings
 }
 
@@ -22,27 +23,41 @@ struct RootNavigation: View {
     var appState: RootAppState
     
     var body: some View {
-        NavigationStack(path: $appState.navState) {
-            RootTabView()
-                .navigationDestination(for: RootNavigationItem.self) { item in
-                    switch (item) {
-                    case .cardEditor(let cardId):
-                        CardEditor(cardId: cardId, client: $appState.client)
-                    
-                    case .conversation(let conversationId):
-                        ConversationScreen(conversationId: conversationId)
-                    case .attachment(let conversationId, let attachmentId):
-                        AttachmentScreen(conversationId: conversationId, attachmentId: attachmentId)
-                        
-                    case .settings:
-                        SettingsScreen()
-                    case .protectionSettings:
-                        ProtectionSettingsScreen()
-                        
-                    default:
-                        EmptyView()
+        ZStack {
+            NavigationStack(path: $appState.navState) {
+                RootTabView()
+                    .navigationDestination(for: RootNavigationItem.self) { item in
+                        switch (item) {
+                        case .cardEditor(let cardId):
+                            CardEditor(cardId: cardId, client: $appState.client)
+                            
+                        case .conversation(let conversationId):
+                            ConversationScreen(conversationId: conversationId)
+                        case .attachment(let conversationId, let attachmentId):
+                            AttachmentScreen(conversationId: conversationId, attachmentId: attachmentId)
+                            
+                        case .settings:
+                            SettingsScreen()
+                        case .editProfile:
+                            ProfileEditScreen()
+                        case .protectionSettings:
+                            ProtectionSettingsScreen()
+                            
+                        default:
+                            EmptyView()
+                        }
                     }
+            }
+            
+            if let userModalProfileId = appState.userModalProfileId {
+                UserProfileModal(userId: userModalProfileId) {
+                    appState.userModalProfileId = nil
                 }
+            }
+            
+            if let assertionFailureReason = appState.assertionFailureReason {
+                AssertionFailureDialog(reason: assertionFailureReason)
+            }
         }
     }
 }

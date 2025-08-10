@@ -100,16 +100,11 @@ fileprivate extension DirectMessageConversation {
 }
 
 #Preview {
-    let userSelf = DirectMessageParticipant(user: FZUser(id: "self",
-                                                         username: "self",
-                                                         display_name: "Flitz User"),
+    let userSelf = DirectMessageParticipant(user: .mock1,
                                             read_at: "2020-04-01T00:00:00Z",
                                             unread_count: 3)
     
-    let userOther = DirectMessageParticipant(user: FZUser(id: "other",
-                                                          username: "other",
-                                                          display_name: "Other User",
-                                                          profile_image_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"),
+    let userOther = DirectMessageParticipant(user: .mock0,
                                              read_at: "2020-04-01T00:00:00Z")
     
     

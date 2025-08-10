@@ -7,31 +7,6 @@
 
 import SwiftUI
 
-fileprivate struct ProfileButton: View {
-    var profile: FZUser
-    
-    var body: some View {
-        Button {} label: {
-            HStack {
-                ProfileImage(
-                    url: profile.profile_image_url,
-                    size: 72
-                )
-                
-                VStack(alignment: .leading) {
-                    Text(profile.display_name)
-                        .font(.heading2)
-                        .bold()
-                    
-                    Text("프로필 편집하기")
-                        .font(.main)
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 struct SettingsScreen: View {
     @EnvironmentObject
     var appState: RootAppState

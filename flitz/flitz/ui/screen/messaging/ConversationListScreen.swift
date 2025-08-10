@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// TODO: SQLite를 도입해야 한다...!
 @MainActor
 class ConversationListViewModel: ObservableObject {
     @Published var conversations: [DirectMessageConversation] = []
@@ -147,6 +148,12 @@ struct ConversationListScreen: View {
         .onAppear {
             viewModel.configure(with: appState.client)
         }
+        .onReceive(appState.conversationUpdated) {
+            Task {
+                // FIXME
+                await viewModel.loadConversations()
+            }
+        }
     }
 }
 
@@ -155,16 +162,11 @@ class ConversationListPreviewViewModel: ConversationListViewModel {
     override init() {
         super.init()
         
-        let userSelf = DirectMessageParticipant(user: FZUser(id: "self",
-                                                             username: "self",
-                                                             display_name: "Flitz User"),
+        let userSelf = DirectMessageParticipant(user: .mock1,
                                                 read_at: "2020-04-01T00:00:00Z",
                                                 unread_count: 3)
         
-        let userOther = DirectMessageParticipant(user: FZUser(id: "other",
-                                                              username: "other",
-                                                              display_name: "Other User",
-                                                              profile_image_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"),
+        let userOther = DirectMessageParticipant(user: .mock0,
                                                  read_at: "2020-04-01T00:00:00Z")
         
         

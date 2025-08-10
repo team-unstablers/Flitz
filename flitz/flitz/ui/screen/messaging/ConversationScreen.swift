@@ -360,6 +360,18 @@ class ConversationViewModel: ObservableObject {
             ImageCacheManager.shared.prefetchImages(urls: imageUrls)
         }
     }
+    
+    func removeThreadNotifications() {
+        let center = UNUserNotificationCenter.current()
+        
+        center.getDeliveredNotifications { delivered in
+            let ids = delivered
+                .filter { $0.request.content.threadIdentifier == self.conversationId }
+                .map { $0.request.identifier }
+            
+            center.removeDeliveredNotifications(withIdentifiers: ids)
+        }
+    }
 }
 
 struct ConversationScreen: View {
@@ -511,6 +523,9 @@ struct ConversationScreen: View {
                         )
                         Text(opponent.user.display_name).bold()
                     }
+                        .onTapGesture {
+                            appState.userModalProfileId = opponent.user.id
+                        }
                 } else {
                     Text("대화")
                 }
@@ -546,8 +561,12 @@ struct ConversationScreen: View {
                 break
             }
         }
+        .onScenePhase(.active, immediate: true) {
+            viewModel.removeThreadNotifications()
+        }
         .environment(\.conversationId, viewModel.conversationId)
     }
+    
 }
 
 // Array 안전 접근을 위한 Extension
@@ -613,16 +632,11 @@ class ConversationPreviewViewModel: ConversationViewModel {
         
         // Preview용 대화 정보
         let userSelf = DirectMessageParticipant(
-            user: FZUser(id: "self", username: "self", display_name: "나"),
+            user: .mock0,
             read_at: nil
         )
         let userOther = DirectMessageParticipant(
-            user: FZUser(
-                id: "other",
-                username: "other",
-                display_name: "Gyuhwan Park",
-                profile_image_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"
-            ),
+            user: .mock1,
             read_at: nil
         )
         

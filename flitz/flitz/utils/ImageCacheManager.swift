@@ -38,7 +38,23 @@ class ImageCacheManager {
     }
     
     func prefetchImages(urls: [URL]) {
-        let requests = urls.map { URLRequest(url: $0) }
-        imageDownloader.download(requests)
+        prefetchImages(urls: urls) {}
     }
+    
+    func prefetchImagesAsync(urls: [URL]) async {
+        return await withCheckedContinuation { continuation in
+            prefetchImages(urls: urls) {
+                continuation.resume()
+            }
+        }
+    }
+    
+    func prefetchImages(urls: [URL], completion: @escaping () -> Void) {
+        let requests = urls.map { URLRequest(url: $0) }
+        
+        imageDownloader.download(requests, completion:  { _ in
+            completion()
+        })
+    }
+
 }
