@@ -12,83 +12,45 @@ struct SettingsScreen: View {
     var appState: RootAppState
     
     var body: some View {
-        Form {
-            Section {
-                if let profile = appState.profile {
-                    ProfileButton(profile: profile)
-                } else {
-                    ProgressView()
-                        .onAppear {
-                            appState.loadProfile()
-                        }
+        ScrollView {
+            VStack(spacing: 0) {
+                VStack(spacing: 0) {
+                    FZPageSectionTitle(title: "알림 설정")
+                    FZPageSectionItem("채팅 알림 받기") {
+                        Toggle("", isOn: .constant(false))
+                    }
+                    FZPageSectionItem("매칭 알림 받기") {
+                        Toggle("", isOn: .constant(true))
+                    }
+                    FZPageSectionItem("중요한 공지 알림 받기") {
+                        Toggle("", isOn: .constant(true))
+                    }
+                    FZPageSectionItem("쓸데없는 알림 받기") {
+                        Toggle("", isOn: .constant(true))
+                    }
                 }
-            }
-            
-            Section(header: Text("개인 정보 보호")) {
-                Button(action: {
-                    appState.navState.append(.protectionSettings)
-                }) {
-                    Text("사용자 보호 기능")
-                }
+                .padding(.horizontal, 16)
                 
-                Button(action: {
-                    print("Sign out")
-                }) {
-                    Text("차단된 사용자")
-                }
-            }
-            
-            Section(header: Text("계정 관리")) {
-                Button(role: .destructive, action: {
-                    print("Sign out")
-                }) {
-                    Text("로그아웃하기")
-                }
-                Button(role: .destructive, action: {
-                    print("Sign out")
-                }) {
-                    Text("Flitz 계정 삭제하기")
-                }
-            }
-            
-            Section(header: Text("고객 지원 및 도움말")) {
-                Button(action: {
-                    print("Terms of service")
-                }) {
-                    Text("Flitz 도움말 보기")
-                }
+                FZPageSectionDivider()
                 
-                Button(action: {
-                    print("Contact us")
-                }) {
-                    Text("고객 지원에 문의하기")
+                VStack(spacing: 0) {
+                    FZPageSectionTitle(title: "계정 관리")
+                    FZPageSectionActionItem("비밀번호 변경") {
+                        
+                    }
+                    
+                    FZPageSectionActionItem("로그아웃") {
+                        
+                    }
+                    
+                    FZPageSectionActionItem("Flitz 계정 삭제하기") {
+                        
+                    }
                 }
-                
-                Button(action: {
-                    print("Privacy policy")
-                }) {
-                    Text("개인정보 보호정책")
-                }
-                
-                Button(action: {
-                    print("Terms of service")
-                }) {
-                    Text("서비스 약관")
-                }
+                .padding(.horizontal, 16)
             }
-            
-            AboutAppFooter()
-                .listRowInsets(EdgeInsets())
-            
-            Section {
-                
-            } footer: {
-                Text("Flitz v1.0.0\n" +
-                     "© 2025 team unstablers Inc. All rights reserved.")
-            }
-            
-            
         }
+        .navigationTitle("설정")
     }
 }
 

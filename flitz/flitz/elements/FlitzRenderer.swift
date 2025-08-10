@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Flitz {
+extension Flitz {
     struct Renderer {
         @ViewBuilder
         static func renderer(for element: any Element) -> some View {

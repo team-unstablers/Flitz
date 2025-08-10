@@ -35,58 +35,12 @@ struct MyPageHeaderButton: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
-
-struct MyPageSectionDivider: View {
-    var body: some View {
-        Rectangle()
-            .fill(Color.Grayscale.gray1)
-            .frame(maxWidth: .infinity, maxHeight: 12)
-    }
-}
-
-struct MyPageSectionHeader: View {
-    var title: String
-    
-    var body: some View {
-        VStack {
-            Text(title)
-                .foregroundStyle(Color.Grayscale.gray6)
-                .font(.fzMain)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .frame(minHeight: 44)
-    }
-}
-
-struct MyPageSectionItem: View {
-    var title: String
-    var action: () -> Void
-    
-    init(_ title: String, action: @escaping () -> Void) {
-        self.title = title
-        self.action = action
-    }
-    
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            VStack {
-                Text(title)
-                    .foregroundStyle(Color.Brand.black0)
-                    .font(.fzHeading3)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(minHeight: 48)
-            .contentShape(Rectangle())
-        }
-            .buttonStyle(PlainButtonStyle())
-    }
-}
-    
-    
+   
 
 struct MyPageScreen: View {
+    @Environment(\.openURL)
+    var openURL
+    
     @EnvironmentObject
     var appState: RootAppState
     
@@ -134,48 +88,81 @@ struct MyPageScreen: View {
                     }
                     .padding(.horizontal, 16)
                     
-                    MyPageSectionDivider()
+                    FZPageSectionLargeDivider()
                     
                     VStack(spacing: 0) {
-                        MyPageSectionHeader(title: "개인 정보 보호")
-                        MyPageSectionItem("사용자 보호 기능") {
+                        FZPageSectionTitle(title: "개인 정보 보호")
+                        FZPageSectionActionItem("사용자 보호 기능") {
                             print("TODO: navigate to change password screen")
                         }
-                        MyPageSectionItem("차단된 사용자") {
+                        FZPageSectionActionItem("차단된 사용자") {
                             
                         }
                     }
                     .padding(.horizontal, 16)
                     
-                    Rectangle()
-                        .fill(Color.Grayscale.gray2)
-                        .frame(maxWidth: .infinity, maxHeight: 1)
-                        .padding(.vertical, 12)
+                    FZPageSectionDivider()
                     
                     VStack(spacing: 0) {
-                        MyPageSectionHeader(title: "고객 지원 및 도움말")
-                        MyPageSectionItem("Flitz 도움말 보기") {
+                        FZPageSectionTitle(title: "고객 지원 및 도움말")
+                        FZPageSectionActionItem("Flitz 도움말 보기") {
                             print("TODO: navigate to change password screen")
                         }
-                        MyPageSectionItem("고객 지원에 문의하기") {
+                        FZPageSectionActionItem("고객 지원에 문의하기") {
                             
                         }
-                        MyPageSectionItem("개인정보 보호정책") {
+                        FZPageSectionActionItem("개인정보 보호정책") {
                             
                         }
-                        MyPageSectionItem("서비스 약관") {
+                        FZPageSectionActionItem("서비스 약관") {
                             
                         }
                     }
                     .padding(.horizontal, 16)
                     
+                    FZPageSectionDivider()
+                    
+                    VStack(spacing: 0) {
+                        FZPageSectionTitle(title: "안전을 위한 리소스")
+                        ForEach(SafetyResources.Korean.allCases, id: \.self) { resource in
+                            FZPageSectionActionItemWithSubtitle(resource.name, subtitle: resource.description) {
+                                if let importantNote = resource.importantNote {
+                                    let notificationCenter = UNUserNotificationCenter.current()
+                                    notificationCenter.removeDeliveredNotifications(withIdentifiers: [resource.id])
+                                    
+                                    let notificationContent = UNMutableNotificationContent()
+                                    
+                                    notificationContent.title = importantNote.title
+                                    if let subtitle = importantNote.subtitle {
+                                        notificationContent.subtitle = subtitle
+                                    }
+                                    notificationContent.body = importantNote.message
+                                    
+                                    notificationContent.sound = .default
+                                    notificationContent.interruptionLevel = .critical
+                                    notificationContent.categoryIdentifier = "SafetyResourceNotification"
+
+                                    let notificationRequest = UNNotificationRequest(identifier: resource.id,
+                                                                                    content: notificationContent,
+                                                                                    trigger: nil)
+                                    
+                                    
+                                    notificationCenter.add(notificationRequest)
+                                }
+                                
+                                openURL(resource.url)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+
                     AboutAppFooter()
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .padding(.top, 12)
                         .padding(.horizontal, 16)
                     
                     VStack(alignment: .center) {
-                        Text("Flitz version vX.Y.Z\nCopyright © 2025 team unstablers Inc.\nAll rights reserved.")
+                        Text("Flitz version \(Flitz.version)\nCopyright © 2025 team unstablers Inc.\nAll rights reserved.")
                             .foregroundStyle(Color.Grayscale.gray6)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
