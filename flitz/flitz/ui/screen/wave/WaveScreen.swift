@@ -17,7 +17,7 @@ struct WaveScreen: View {
     var appState: RootAppState
     
     @State
-    var selectedTabId: String = Self.tabs.first!.id
+    var selectedTabId: String = Self.tabs.last!.id
     
     var body: some View {
         VStack(spacing: 0) {
@@ -39,7 +39,7 @@ struct WaveScreen: View {
                 if selectedTabId == "exchanged" {
                     ExchangedCards()
                 } else if selectedTabId == "my-cards" {
-                    EmptyView()
+                    CardManagerView()
                 }
             }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

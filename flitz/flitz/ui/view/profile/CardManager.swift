@@ -41,11 +41,46 @@ class CardManagerViewModel: ObservableObject {
     }
 }
 
+
 struct CardManagerView: View {
     @StateObject
     var viewModel = CardManagerViewModel()
     
+    var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
+    
     var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            FZButton(size: .large) {
+                
+            } label: {
+                Text("새 카드 만들기")
+            }
+            
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    ForEach(viewModel.cards) { card in
+                        VStack {
+                            CardPreview(client: $viewModel.client, cardId: card.id)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                        .tag(card.id)
+                        .cornerRadius(15)
+                        .frame(width: 150, height: 200)
+                        // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
+                        .padding()
+                    }
+                }
+            }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                Task {
+                    await viewModel.fetchCards()
+                }
+            }
+
+        /*
         TabView(selection: $viewModel.selection) {
             NewCardPreview {
                 Task {
@@ -60,11 +95,7 @@ struct CardManagerView: View {
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .onAppear {
-            Task {
-                await viewModel.fetchCards()
-            }
-        }
+         */
     }
     
 }
