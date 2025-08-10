@@ -39,8 +39,8 @@ struct UserProfileModalBackdrop: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(Color.black.opacity(0.25))
-            BlurEffectView(style: .regular)
+                .fill(Color.black.opacity(0.4))
+            // BlurEffectView(style: .regular)
         }
             .edgesIgnoringSafeArea(.all)
     }
@@ -78,8 +78,9 @@ struct UserProfileModalDistanceIndicator: View {
 struct UserProfileModalDivider: View {
     
     var body: some View {
-        Divider()
-            .background(Color.Grayscale.gray2)
+        Rectangle()
+            .fill(Color.Grayscale.gray2)
+            .frame(maxWidth: .infinity, maxHeight: 1)
             .padding(.vertical, 16)
             .background(.white) // BUG: safearea쯤으로 offset 내려가면 부모 배경이 투명해지는 문제 발생
     }
@@ -126,13 +127,13 @@ struct UserProfileModalProfileHeader: View {
                 .padding(.bottom, 8)
             
             HStack(alignment: .center, spacing: 0) {
-                Text("즐거운 여행자")
+                Text(profile.title)
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray6)
                 
                 Spacer()
                 
-                Text("2시간 전 온라인")
+                Text("지금 온라인")
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray6)
             }
@@ -180,7 +181,8 @@ struct UserProfileModalBody: View {
                 }
                 .padding(16)
             }
-            
+            .zIndex(2)
+
             VStack(spacing: 0) {
                 UserProfileModalDragArea()
                 
@@ -195,9 +197,9 @@ struct UserProfileModalBody: View {
                 }
 
                 UserProfileModalDivider()
-                
+
                 UserProfileModalSection(title: "자기 소개") {
-                    Text("아마미 하루카 17살입니다! 노래와 과자를 좋아하는 것으로는, 누구한테도 지지 않아요♪ 아이돌로서는, 지금 좀 부족한 느낌이지만요… 진심으로 열심히 할 테니 잘 부탁드립니다!")
+                    Text(profile.bio)
                         .font(.fzMain)
                 }
 

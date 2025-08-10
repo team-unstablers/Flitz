@@ -33,6 +33,9 @@ class FZIntermediateUser: ObservableObject {
     var displayName: String = ""
     
     @Published
+    var title: String = ""
+    
+    @Published
     var bio: String = ""
     
     @Published
@@ -88,6 +91,7 @@ class FZIntermediateUser: ObservableObject {
         intermediate.displayName = profile.display_name
         intermediate.profileImageUrl = profile.profile_image_url
         
+        intermediate.title = profile.title
         intermediate.bio = profile.bio
         intermediate.hashtags = profile.hashtags
         
@@ -153,6 +157,7 @@ class ProfileEditViewModel: ObservableObject {
         
         let args = PatchSelfArgs(
             display_name: intermediate.displayName,
+            title: intermediate.title,
             bio: intermediate.bio,
             hashtags: intermediate.hashtags
         )
@@ -400,6 +405,13 @@ struct ProfileEditScreen: View {
                         }
                         
                         ProfileEditSectionDivider()
+
+                        ProfileEditSectionEntity(title: "한줄 칭호") {
+                            TextField("당신을 나타내는 한줄 칭호!", text: $viewModel.intermediate.title)
+                                .font(.fzHeading3)
+                        }
+                        
+                        ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "해시태그") {
                             FZHashtagField(hashtags: $viewModel.intermediate.hashtags)
@@ -408,7 +420,7 @@ struct ProfileEditScreen: View {
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "자기소개") {
-                            TextField("자기소개를 입력하세요", text: $viewModel.intermediate.bio, axis: .vertical)
+                            TextField("멋진 자기 소개를 입력해 보세요!", text: $viewModel.intermediate.bio, axis: .vertical)
                                 .lineLimit(3...5)
                                 .font(.fzHeading3)
                         }
@@ -417,21 +429,21 @@ struct ProfileEditScreen: View {
                     ProfileEditSectionTitle("중요 정보")
                     ProfileEditSection {
                         ProfileEditSectionEntity(title: "생년월일") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
+                            TextField("TODO: date selector", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "이메일 주소") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.email)
+                            TextField("이메일 주소를 입력해 주세요", text: $viewModel.intermediate.email)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "휴대폰 번호") {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.phoneNumber)
+                            TextField("휴대폰 번호를 입력해 주세요", text: $viewModel.intermediate.phoneNumber)
                                 .font(.fzHeading3)
                         }
                     }

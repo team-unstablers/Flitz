@@ -24,6 +24,7 @@ struct FZUser: Codable, Identifiable {
     var username: String
     var display_name: String
     
+    var title: String
     var bio: String
     var hashtags: [String]
     
@@ -34,6 +35,7 @@ struct FZUser: Codable, Identifiable {
                               username: "cheesekun2",
                               display_name: "cheesekun2",
                               
+                              title: "Flitz 개발자",
                               bio: "안녕하세요! Flitz 개발자입니다.",
                               hashtags: ["Flitz", "SwiftUI"],
                               
@@ -44,6 +46,7 @@ struct FZUser: Codable, Identifiable {
                               username: "cheesekun",
                               display_name: "cheesekun",
                               
+                              title: "Flitz 개발자",
                               bio: "안녕하세요! Flitz 개발자입니다.",
                               hashtags: ["Flitz", "SwiftUI"],
                               
@@ -60,6 +63,7 @@ struct FZSelfUser: Codable, Identifiable {
     
     var email: String?
     
+    var title: String
     var bio: String
     var hashtags: [String]
     
@@ -76,6 +80,7 @@ struct FZSelfUser: Codable, Identifiable {
                                   username: "cheesekun",
                                   display_name: "cheesekun",
                                   
+                                  title: "Flitz 개발자",
                                   bio: "안녕하세요! Flitz 개발자입니다.",
                                   hashtags: ["Flitz", "SwiftUI"],
                                   

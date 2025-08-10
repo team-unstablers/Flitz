@@ -7,6 +7,8 @@
 
 struct PatchSelfArgs: Codable {
     let display_name: String
+    let title: String
     let bio: String
+    
     let hashtags: [String]
 }
