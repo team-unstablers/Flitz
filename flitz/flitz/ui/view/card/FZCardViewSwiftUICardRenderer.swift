@@ -23,7 +23,7 @@ class FZCardViewSwiftUICardRenderer: FZCardViewCardRenderer {
     }
     
     func renderNormalMap(card: Flitz.Card) throws -> UIImage {
-        let view = CardCanvas(background: nil, elements: .constant(card.elements), asNormalMap: true)
+        let view = CardCanvas(background: card.background, elements: .constant(card.elements), asNormalMap: true)
         let renderer = ImageRenderer(content: view)
         renderer.scale = 2.0
         

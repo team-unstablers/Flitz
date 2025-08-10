@@ -26,7 +26,7 @@ struct CardCanvas: View {
         ZStack {
             if asNormalMap {
                 ZStack {
-                    Rectangle().fill(.black)
+                    // Rectangle().fill(.black)
                     GeometryReader { innerGeom in
                         ForEach(0..<elements.count, id: \.self) { index in
                             Flitz.Renderer.renderer(for: elements[index])
@@ -51,11 +51,17 @@ struct CardCanvas: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
+                        .if(asNormalMap) { view in
+                            view.applyNormalMapShader()
+                        }
                 case .origin(let id, _):
                     if let image = assetsLoader.images[id] {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
+                            .if(asNormalMap) { view in
+                                view.applyNormalMapShader()
+                            }
                     } else {
                         Rectangle().fill(.white)
                     }
