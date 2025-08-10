@@ -57,11 +57,10 @@ struct FZPageSectionItem<Content: View>: View {
                 .font(.fzHeading3)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            Spacer()
-            
             VStack(spacing: 0) {
                 content()
             }
+                .fixedSize()
         }
         .frame(minHeight: 48)
         .contentShape(Rectangle())
@@ -129,4 +128,23 @@ struct FZPageSectionActionItemWithSubtitle: View {
     }
 }
     
- 
+struct FZPageSectionNote<Content: View>: View {
+    @ViewBuilder
+    var content: () -> Content
+    
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            content()
+        }
+            .font(.fzMain)
+            .foregroundStyle(.black.opacity(0.8))
+            .padding(16)
+            .frame(maxWidth: .infinity)
+            .background(Color.Grayscale.gray0.opacity(0.6))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}

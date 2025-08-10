@@ -93,7 +93,7 @@ struct MyPageScreen: View {
                     VStack(spacing: 0) {
                         FZPageSectionTitle(title: "개인 정보 보호")
                         FZPageSectionActionItem("사용자 보호 기능") {
-                            print("TODO: navigate to change password screen")
+                            appState.navState.append(.protectionSettings)
                         }
                         FZPageSectionActionItem("차단된 사용자") {
                             
