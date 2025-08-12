@@ -29,7 +29,9 @@ struct CardCanvas: View {
                     // Rectangle().fill(.black)
                     GeometryReader { innerGeom in
                         ForEach(0..<elements.count, id: \.self) { index in
-                            Flitz.Renderer.renderer(for: elements[index])
+                            Flitz.Renderer.renderer(for: elements[index]) { event in
+                                handleTransformEvent(event, elementIndex: index)
+                            }
                                 .mode(.normalMap)
                         }
                     }
@@ -38,7 +40,9 @@ struct CardCanvas: View {
             } else {
                 GeometryReader { innerGeom in
                     ForEach(0..<elements.count, id: \.self) { index in
-                        Flitz.Renderer.renderer(for: elements[index])
+                        Flitz.Renderer.renderer(for: elements[index]) { event in
+                            handleTransformEvent(event, elementIndex: index)
+                        }
                     }
                 }
             }
@@ -72,5 +76,19 @@ struct CardCanvas: View {
         }
         .fixedSize()
         .clipped()
+    }
+    
+    func handleTransformEvent(_ event: FZTransformEvent, elementIndex: Int) {
+        if event == .delete {
+            elements.remove(at: elementIndex)
+        }
+        
+        if event == .zIndexChange {
+            // move element to the end of the array
+            let max = elements.map { $0.zIndex }.max() ?? 0
+            elements[elementIndex].zIndex = max + 1
+            
+            print("Element \(elementIndex) zIndex changed to \(elements[elementIndex].zIndex)")
+        }
     }
 }

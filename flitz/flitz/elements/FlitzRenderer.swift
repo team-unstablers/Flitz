@@ -10,12 +10,12 @@ import SwiftUI
 extension Flitz {
     struct Renderer {
         @ViewBuilder
-        static func renderer(for element: any Element) -> some View {
+        static func renderer(for element: any Element, eventHandler: @escaping (FZTransformEvent) -> Void) -> some View {
             switch element {
             case let text as Flitz.Text:
-                TextElementView(element: text)
+                TextElementView(element: text, eventHandler: eventHandler)
             case let image as Flitz.Image:
-                ImageElementView(element: image)
+                ImageElementView(element: image, eventHandler: eventHandler)
             default:
                 EmptyView()
             }

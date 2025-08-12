@@ -95,6 +95,7 @@ extension Flitz {
     protocol Element: Codable, ObservableObject, Hashable {
         var type: ElementType { get }
         var transform: Transform { get set }
+        var zIndex: Int { get set }
     }
     
 

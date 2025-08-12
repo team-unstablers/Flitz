@@ -48,7 +48,7 @@ extension Flitz {
     
     class Image: Element, ObservableObject {
         enum CodingKeys: String, CodingKey {
-            case type, source, size, transform
+            case type, source, size, transform, zIndex
         }
 
         var type: ElementType { .image }
@@ -61,11 +61,15 @@ extension Flitz {
 
         @Published
         var transform: Transform
+        
+        @Published
+        var zIndex: Int
 
         init(_ source: ImageSource, size: ElementSize) {
             self.source = source
             self.size = size
             self.transform = Transform()
+            self.zIndex = 0
         }
         
         required init(from decoder: Decoder) throws {
@@ -73,6 +77,7 @@ extension Flitz {
             source = try container.decode(ImageSource.self, forKey: .source)
             size = try container.decode(ElementSize.self, forKey: .size)
             transform = try container.decode(Transform.self, forKey: .transform)
+            zIndex = try container.decodeIfPresent(Int.self, forKey: .zIndex) ?? 0
         }
         
         func encode(to encoder: Encoder) throws {
@@ -81,18 +86,21 @@ extension Flitz {
             try container.encode(source, forKey: .source)
             try container.encode(size, forKey: .size)
             try container.encode(transform, forKey: .transform)
+            try container.encode(zIndex, forKey: .zIndex)
         }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(source)
             hasher.combine(size)
             hasher.combine(transform)
+            hasher.combine(zIndex)
         }
 
         static func == (lhs: Flitz.Image, rhs: Flitz.Image) -> Bool {
             lhs.source == rhs.source &&
             lhs.size == rhs.size &&
-            lhs.transform == rhs.transform
+            lhs.transform == rhs.transform &&
+            lhs.zIndex == rhs.zIndex
         }
         
     }

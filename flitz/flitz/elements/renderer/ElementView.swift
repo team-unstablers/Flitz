@@ -54,6 +54,8 @@ extension Flitz.Renderer {
         @ObservedObject
         var element: Element
         
+        var eventHandler: (FZTransformEvent) -> Void
+        
         @State
         var delta: Flitz.Transform = .zero
         
@@ -65,13 +67,13 @@ extension Flitz.Renderer {
                 switch displayMode {
                 case .default:
                     Renderer(element: element)
-                        .applyFZTransform(element.transform, delta: delta, editable: true)
+                        .applyFZTransform(element.transform, delta: delta, editable: true, eventHandler: eventHandler)
                         .onTapGesture {
                             isEditing = true
                         }
                 case .normalMap:
                     NormalMapRenderer(element: element)
-                        .applyFZTransform(element.transform, delta: delta)
+                        .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
                 }
                 
                 if isEditing {
@@ -90,7 +92,7 @@ extension Flitz.Renderer {
                     }
                 }
             }
-            
+            .zIndex(Double(element.zIndex))
         }
     }
 }

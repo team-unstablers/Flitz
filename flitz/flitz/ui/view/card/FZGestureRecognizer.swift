@@ -78,7 +78,7 @@ struct FZRotationGestureRecognizer: UIGestureRecognizerRepresentable {
 }
 
 struct FZDragGestureRecognizer: UIGestureRecognizerRepresentable {
-    var handler: FZGestureHandler<CGPoint>
+    var handler: FZGestureHandler<(CGPoint, CGRect)>
     
     func makeUIGestureRecognizer(context: Context) -> UIPanGestureRecognizer {
         let recognizer = UIPanGestureRecognizer()
@@ -89,6 +89,6 @@ struct FZDragGestureRecognizer: UIGestureRecognizerRepresentable {
     }
     
     func handleUIGestureRecognizerAction(_ recognizer: UIPanGestureRecognizer, context: Context) {
-        handler(recognizer.state, recognizer.translation(in: recognizer.view))
+        handler(recognizer.state, (recognizer.translation(in: recognizer.view), recognizer.view!.frame))
     }
 }
