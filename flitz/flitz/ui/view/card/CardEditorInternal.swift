@@ -128,6 +128,7 @@ struct CardEditorInternal: View {
                     .background(.black)
             }
         }
+        // .font(.none)
         .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showImagePicker, onDismiss: {
             if let image = selectedImage {
