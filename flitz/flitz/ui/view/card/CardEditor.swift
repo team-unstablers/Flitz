@@ -27,13 +27,18 @@ struct CardEditor: View {
             } else {
                 EmptyView()
             }
-            
-            HStack {
-                Button("save") {
+        }
+        .background(.black)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarColor(.black)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("저장") {
                     self.saveCard()
                 }
             }
-        }.onAppear {
+        }
+        .onAppear {
             self.fetchCard()
         }
     }
