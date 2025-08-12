@@ -33,6 +33,17 @@ class MyCardDetailModalViewModel: ObservableObject {
             print("[MyCardDetailModalViewModel] Failed to load card: \(error)")
         }
     }
+    
+    func deleteCard() async {
+        guard let apiClient = apiClient else { return }
+        
+        do {
+            try await apiClient.deleteCard(by: cardId)
+            // Optionally, handle post-deletion logic
+        } catch {
+            print("[MyCardDetailModalViewModel] Failed to delete card: \(error)")
+        }
+    }
 }
 
 struct MyCardDetailModalBackdrop: View {
@@ -121,6 +132,46 @@ struct MyCardDetailModal: View {
                                 dragOffset = .zero
                             }
                         }
+                    
+                    VStack(spacing: 8) {
+                        Text(card.title.isEmpty ? "(제목 없음)" : card.title)
+                            .font(.fzHeading2)
+                            .foregroundStyle(.white)
+                            .bold()
+                            .shadow(color: .black.opacity(0.25), radius: 8)
+                        
+                        HStack(spacing: 16) {
+                            FZButton(size: .normal) {
+                                withAnimation {
+                                    self.dismiss()
+                                } completion: {
+                                    appState.navState.append(.cardEditor(cardId: card.id))
+                                }
+                            } label: {
+                                Text("편집하기")
+                            }
+                            
+                            FZButton(size: .normal) {
+                                // Implement delete card functionality
+                                Task {
+                                    await viewModel.deleteCard()
+                                    
+                                    DispatchQueue.main.async {
+                                        withAnimation {
+                                            self.dismiss()
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Text("삭제하기")
+                                    .foregroundColor(.red)
+                            }
+                        }
+                        .padding(16)
+                    }
+                    .opacity(opacity)
+                    // fixed to bottom
+                    .position(x: geom.size.width / 2, y: geom.size.height - 50)
                 }
             }
         }

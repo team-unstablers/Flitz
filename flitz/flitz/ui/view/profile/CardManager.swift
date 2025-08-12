@@ -83,6 +83,7 @@ struct CardManagerView: View {
             } label: {
                 Text("새 카드 만들기")
             }
+                .padding(16)
             
             ScrollView {
                 LazyVGrid(columns: columns) {
@@ -98,10 +99,15 @@ struct CardManagerView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 6))
                                     .padding()
                                     .shadow(color: .black.opacity(0.25), radius: 8)
+                                    .contentShape(RoundedRectangle(cornerRadius: 6))
                             } else {
                                 // Placeholder while rendering
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
+                                VStack {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle())
+                                }
+                                    .frame(width: 150, height: 200)
+                                    .contentShape(RoundedRectangle(cornerRadius: 6))
                             }
                         }
                         .buttonStyle(.plain)
@@ -110,6 +116,33 @@ struct CardManagerView: View {
                         .frame(width: 150, height: 200)
                         // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
                         .padding()
+                        .contextMenu {
+                            Button("카드 편집하기") {
+                                appState.navState.append(.cardEditor(cardId: card.id))
+                            }
+                            
+                            Button("메인 카드로 설정") {
+                                Task {
+                                    do {
+                                        try await viewModel.client.setCardAsMain(which: card.id)
+                                        await viewModel.fetchCards()
+                                    } catch {
+                                        print("Failed to set main card: \(error)")
+                                    }
+                                }
+                            }
+                            
+                            Button("카드 삭제하기") {
+                                Task {
+                                    do {
+                                        try await viewModel.client.deleteCard(by: card.id)
+                                        await viewModel.fetchCards()
+                                    } catch {
+                                        print("Failed to delete card: \(error)")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -51,7 +51,7 @@ struct FZButton<Content: View>: View {
             .background(isDisabled ? palette.disabledBackground : backgroundColor)
             .foregroundStyle(isDisabled ? foregroundColor.opacity(0.75) : foregroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 6))
-            .padding(16)
+            // .padding(16)
             
         }
         .disabled(isDisabled)

@@ -9,7 +9,8 @@ import SwiftUI
 
 struct WaveScreen: View {
     static let tabs: [FZTab] = [
-        FZTab(id: "exchanged", title: "교환된 카드"),
+        FZTab(id: "exchanged", title: "최근"),
+        FZTab(id: "liked-cards", title: "보관함"),
         FZTab(id: "my-cards", title: "내 카드"),
     ]
     
@@ -38,6 +39,8 @@ struct WaveScreen: View {
             VStack(spacing: 0) {
                 if selectedTabId == "exchanged" {
                     ExchangedCards()
+                } else if selectedTabId == "liked-cards" {
+                    EmptyView()
                 } else if selectedTabId == "my-cards" {
                     CardManagerView()
                 }

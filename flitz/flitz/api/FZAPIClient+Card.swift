@@ -37,6 +37,10 @@ extension FZAPIClient {
         return try await self.request(to: .cards, expects: FZCard.self, method: .post)
     }
     
+    func deleteCard(by id: String) async throws {
+        _ = try await self.request(to: .card(id: id), expects: Ditch.self, method: .delete)
+    }
+    
     func patchCard(which card: FZCard) async throws -> FZCard {
         guard card.content.isReadyToPublish else {
             throw FZAPIError.assertionFailure(message: "퍼블리싱 가능 상태가 아닌 카드를 업로드하려 했습니다")
