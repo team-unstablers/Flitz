@@ -94,8 +94,6 @@ struct CardCanvas: View {
             elements.forEach {
                 if let index = indices.firstIndex(of: $0.zIndex) {
                     $0.zIndex = index
-                    
-                    print(index)
                 }
             }
         }

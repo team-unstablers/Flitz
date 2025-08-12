@@ -226,10 +226,10 @@ struct FZTransformModifier: ViewModifier {
         
         // print(x, y)
         
-        let x1 = self.viewportSize.width / 2 - 36
-        let x2 = self.viewportSize.width / 2 + 36
-        let y1 = self.viewportSize.height - 64 - 36
-        let y2 = self.viewportSize.height - 64 + 36
+        let x1 = self.viewportSize.width / 2 - 32 // 28 + padding 4px
+        let x2 = self.viewportSize.width / 2 + 32
+        let y1 = self.viewportSize.height - 64 - 32
+        let y2 = self.viewportSize.height - 64 + 32
         
         return x >= x1 && x <= x2 && y >= y1 && y <= y2
     }
