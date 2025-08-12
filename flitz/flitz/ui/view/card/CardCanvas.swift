@@ -28,11 +28,12 @@ struct CardCanvas: View {
                 ZStack {
                     // Rectangle().fill(.black)
                     GeometryReader { innerGeom in
-                        ForEach(0..<elements.count, id: \.self) { index in
+                        ForEach(0..<elements.count) { index in
                             Flitz.Renderer.renderer(for: elements[index]) { event in
                                 handleTransformEvent(event, elementIndex: index)
                             }
                                 .mode(.normalMap)
+                                .id(elements[index].id)
                         }
                     }
                 }
@@ -43,6 +44,7 @@ struct CardCanvas: View {
                         Flitz.Renderer.renderer(for: elements[index]) { event in
                             handleTransformEvent(event, elementIndex: index)
                         }
+                            .id(elements[index].id)
                     }
                 }
             }
@@ -88,7 +90,14 @@ struct CardCanvas: View {
             let max = elements.map { $0.zIndex }.max() ?? 0
             elements[elementIndex].zIndex = max + 1
             
-            print("Element \(elementIndex) zIndex changed to \(elements[elementIndex].zIndex)")
+            let indices = elements.map { $0.zIndex }.sorted()
+            elements.forEach {
+                if let index = indices.firstIndex(of: $0.zIndex) {
+                    $0.zIndex = index
+                    
+                    print(index)
+                }
+            }
         }
     }
 }

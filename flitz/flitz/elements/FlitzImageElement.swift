@@ -48,10 +48,13 @@ extension Flitz {
     
     class Image: Element, ObservableObject {
         enum CodingKeys: String, CodingKey {
-            case type, source, size, transform, zIndex
+            case id, type, source, size, transform, zIndex
         }
 
         var type: ElementType { .image }
+        
+        @Published
+        var id: UUID
         
         @Published
         var source: ImageSource
@@ -66,6 +69,8 @@ extension Flitz {
         var zIndex: Int
 
         init(_ source: ImageSource, size: ElementSize) {
+            self.id = UUID()
+            
             self.source = source
             self.size = size
             self.transform = Transform()
@@ -74,6 +79,7 @@ extension Flitz {
         
         required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
             source = try container.decode(ImageSource.self, forKey: .source)
             size = try container.decode(ElementSize.self, forKey: .size)
             transform = try container.decode(Transform.self, forKey: .transform)
@@ -82,6 +88,7 @@ extension Flitz {
         
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(id, forKey: .id)
             try container.encode(type, forKey: .type)
             try container.encode(source, forKey: .source)
             try container.encode(size, forKey: .size)
@@ -90,6 +97,7 @@ extension Flitz {
         }
         
         func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
             hasher.combine(source)
             hasher.combine(size)
             hasher.combine(transform)
@@ -97,6 +105,7 @@ extension Flitz {
         }
 
         static func == (lhs: Flitz.Image, rhs: Flitz.Image) -> Bool {
+            lhs.id == rhs.id &&
             lhs.source == rhs.source &&
             lhs.size == rhs.size &&
             lhs.transform == rhs.transform &&

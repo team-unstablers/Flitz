@@ -73,7 +73,7 @@ struct FZTransformModifier: ViewModifier {
         didSet {
             didGestureStateChanged()
             
-            if (isDragging) {
+            if (isDragging && oldValue != isDragging) {
                 eventHandler?(.zIndexChange)
             }
         }
@@ -181,7 +181,7 @@ struct FZTransformModifier: ViewModifier {
                             }
                         })
                         .gesture(FZMagnifyGestureRecognizer { state, scale in
-                            print(scale)
+                            // print(scale)
                             if state == .changed {
                                 isScaling = true
                                 
@@ -216,6 +216,7 @@ struct FZTransformModifier: ViewModifier {
         }
     }
     
+    /// FIXME: 이거 손가락의 위치를 기준으로 계산해야 하는데 지금은 element의 중심점 기준으로 계산하고 있음!!!
     func hitTestForDeleteButton(at position: Flitz.Position) -> Bool {
         // 아잇 염병할 좌표계 왜이래
         let actualPos = transform.position + position
@@ -223,13 +224,12 @@ struct FZTransformModifier: ViewModifier {
         let x = actualPos.x * viewportSize.width
         let y = actualPos.y * viewportSize.height
         
-        // print(position.x, position.y)
-        print(x, y)
+        // print(x, y)
         
-        let x1 = self.viewportSize.width / 2 - 24
-        let x2 = self.viewportSize.width / 2 + 24
-        let y1 = self.viewportSize.height - 64 - 24
-        let y2 = self.viewportSize.height - 64 + 24
+        let x1 = self.viewportSize.width / 2 - 36
+        let x2 = self.viewportSize.width / 2 + 36
+        let y1 = self.viewportSize.height - 64 - 36
+        let y2 = self.viewportSize.height - 64 + 36
         
         return x >= x1 && x <= x2 && y >= y1 && y <= y2
     }
