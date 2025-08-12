@@ -20,6 +20,16 @@ extension Flitz {
                 EmptyView()
             }
         }
+        
+        @ViewBuilder
+        static func editor(for element: any Element) -> some View {
+            switch element {
+            case let text as Flitz.Text:
+                TextElementEditorView(element: text, dismissHandler: {})
+            default:
+                EmptyView()
+            }
+        }
     }
 }
 

@@ -73,6 +73,33 @@ struct CardEditorInternal: View {
     @State
     var selectedImage: UIImage?
     
+    @State
+    var currentElementIndex: Int? = nil
+    
+    
+    var toolbar: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                HStack {
+                    CardEditorButton(icon: "CardEditorFrameButtonIcon", description: "배경 이미지") {
+                        showBackgroundImagePicker = true
+                    }
+                }
+                Spacer()
+                HStack {
+                    CardEditorButton(icon: "CardEditorTextButtonIcon", description: "텍스트 추가") {
+                        card.elements.append(Flitz.Text("텍스트 입력"))
+                    }
+                    CardEditorButton(icon: "CardEditorStickerButtonIcon", description: "스티커 추가") {
+                        showImagePicker = true
+                    }
+                }
+            }
+            .padding(16)
+            
+            Spacer()
+        }
+    }
     
     var body: some View {
         VStack {
@@ -81,36 +108,27 @@ struct CardEditorInternal: View {
                                           height: (FlitzCard.size.height * geom.size.width) / FlitzCard.size.width)
                 
                 ZStack {
-                    CardCanvas(background: card.background, elements: $card.elements)
+                    CardCanvas(background: card.background, elements: $card.elements, attachEditorHandler: { index in
+                        currentElementIndex = index
+                    })
                         .aspectScale(basedOn: FlitzCard.size, to: geom.size)
+
                     
-                    VStack(spacing: 0) {
-                        HStack(spacing: 0) {
-                            HStack {
-                                CardEditorButton(icon: "CardEditorFrameButtonIcon", description: "배경 이미지") {
-                                    showBackgroundImagePicker = true
-                                }
-                            }
-                            Spacer()
-                            HStack {
-                                CardEditorButton(icon: "CardEditorTextButtonIcon", description: "텍스트 추가") {
-                                    card.elements.append(Flitz.Text("텍스트 입력"))
-                                }
-                                CardEditorButton(icon: "CardEditorStickerButtonIcon", description: "스티커 추가") {
-                                    showImagePicker = true
-                                }
-                            }
-                        }
-                        .padding(16)
+                    if let index = currentElementIndex {
+                        let element = card.elements[index]
                         
-                        Spacer()
+                        Flitz.Renderer.editor(for: element)
+                            .keyboardPadding()
+                    } else {
+                        self.toolbar
+                            .frame(width: viewportSize.width, height: viewportSize.height)
                     }
-                    .frame(width: viewportSize.width, height: viewportSize.height)
                 }
                     .frame(width: geom.size.width, height: geom.size.height)
                     .background(.black)
             }
         }
+        .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showImagePicker, onDismiss: {
             if let image = selectedImage {
                 card.elements.append(

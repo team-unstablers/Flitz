@@ -147,8 +147,11 @@ extension Flitz.Renderer {
     
     typealias TextElementView = ElementView<Flitz.Text,
                                             Text.TextRendererView,
-                                            Text.TextNormalMapRendererView,
-                                            Text.TextEditorView>
+                                            Text.TextNormalMapRendererView>
+    
+    typealias TextElementEditorView = ElementEditorView<Flitz.Text,
+                                                        Text.TextEditorView>
+    
 }
 
 #Preview {

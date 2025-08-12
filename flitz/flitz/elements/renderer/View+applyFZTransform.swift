@@ -45,6 +45,7 @@ struct CardEditorDeleteElementButton: View {
 }
 
 enum FZTransformEvent {
+    case edit
     case delete
     case zIndexChange
 }

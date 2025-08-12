@@ -22,6 +22,8 @@ struct CardCanvas: View {
     
     var asNormalMap: Bool = false
     
+    var attachEditorHandler: ((Int) -> Void)? = nil
+    
     var body: some View {
         ZStack {
             if asNormalMap {
@@ -81,11 +83,11 @@ struct CardCanvas: View {
     }
     
     func handleTransformEvent(_ event: FZTransformEvent, elementIndex: Int) {
-        if event == .delete {
+        if event == .edit {
+            attachEditorHandler?(elementIndex)
+        } else if event == .delete {
             elements.remove(at: elementIndex)
-        }
-        
-        if event == .zIndexChange {
+        } else if event == .zIndexChange {
             // move element to the end of the array
             let max = elements.map { $0.zIndex }.max() ?? 0
             elements[elementIndex].zIndex = max + 1
