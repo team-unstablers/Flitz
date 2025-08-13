@@ -18,7 +18,7 @@ struct WaveScreen: View {
     var appState: RootAppState
     
     @State
-    var selectedTabId: String = Self.tabs.last!.id
+    var selectedTabId: String = Self.tabs.first!.id
     
     var body: some View {
         VStack(spacing: 0) {

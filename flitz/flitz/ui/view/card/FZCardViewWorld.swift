@@ -96,7 +96,7 @@ class FZCardViewWorld {
 
 
 class FZCardViewCardInstance: Identifiable, Hashable {
-    private static let MODEL_USDZ_NAME = "card_base_2_tmp"
+    private static let MODEL_USDZ_NAME = "fzcard"
     
     private static var baseModel: SCNReferenceNode? = loadBaseModel()
     
@@ -200,7 +200,8 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         guard let cube = modelNode.childNode(withName: "Cube", recursively: true),
               let geometry = cube.childNodes.first?.geometry,
-              let material = geometry.materials.first
+              let material = geometry.materials.first,
+              let material2 = geometry.materials.last
         else {
             print("Failed to get material")
             return
@@ -226,6 +227,24 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         material.diffuse.magnificationFilter = .linear
         material.normal.magnificationFilter = .linear
+        
+        //
+        material2.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
+        material2.diffuse.contents = UIColor.white
+        
+        material2.lightingModel = .physicallyBased
+        
+        // 반사율 및 금속성 조정
+        material2.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
+        material2.roughness.contents = 0.3  // 약간 매끄러운 표면 (0.0-1.0)
+        
+        // 광택 효과 강화
+        material2.specular.contents = UIColor.white
+        material2.specular.intensity = 0.8
+        
+        material2.diffuse.magnificationFilter = .linear
+        material2.normal.magnificationFilter = .linear
+        
         
         SCNTransaction.commit()
     }

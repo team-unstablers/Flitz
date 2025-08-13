@@ -14,12 +14,18 @@ enum FZCardViewError: Error {
     case renderFailed
 }
 
+enum FZCardViewCardSide {
+    case front
+    case back
+}
+
 struct FZCardView: UIViewRepresentable, Equatable {
     
     @Binding
     var world: FZCardViewWorld
     
     var enableGesture: Bool = true
+    var cardSideChangeHandler: ((FZCardViewCardSide) -> Void)? = nil
     
     @State
     var gestureRecognizer: UIGestureRecognizer!
@@ -76,6 +82,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
         var world: FZCardViewWorld
         var gestureRecognizer: UIGestureRecognizer!
         
+        private var cardSideChangeHandler: (FZCardViewCardSide) -> Void
+        private var currentSide: FZCardViewCardSide = .front
+
         private var lastPanTranslation: CGPoint = .zero
         private var lastPanUpdateTime: Date = Date()
         private var velocity: CGFloat = 0
@@ -84,8 +93,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
         // motionManager를 Coordinator로 이동
         private let motionManager = CMMotionManager()
         
-        init(world: FZCardViewWorld) {
+        init(world: FZCardViewWorld, cardSideChangeHandler: @escaping (FZCardViewCardSide) -> Void) {
             self.world = world
+            self.cardSideChangeHandler = cardSideChangeHandler
             
             super.init()
             
@@ -139,6 +149,27 @@ struct FZCardView: UIViewRepresentable, Equatable {
                 let deltaY = Float(translation.x - lastPanTranslation.x) * rotationSpeed
                 modelNode.eulerAngles.y += deltaY
                 velocity = translation.x - lastPanTranslation.x
+                
+                let deg = rad2deg(modelNode.eulerAngles.y).truncatingRemainder(dividingBy: 360)
+                
+                
+                if deg > 90 && deg < 270 {
+                    if currentSide == .front {
+                        cardSideChangeHandler(.back)
+                    }
+                    
+                    currentSide = .back
+                } else {
+                    if currentSide == .back {
+                        cardSideChangeHandler(.front)
+                    }
+                    
+                    currentSide = .front
+                }
+                
+                // print(deg)
+                
+                
                 lastPanTranslation = translation
                 lastPanUpdateTime = currentTime
             } else if gesture.state == .ended || gesture.state == .cancelled {
@@ -185,7 +216,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
 
     // makeCoordinator 메서드 구현
     func makeCoordinator() -> Coordinator {
-        return Coordinator(world: world)
+        return Coordinator(world: world) { side in
+            self.cardSideChangeHandler?(side)
+        }
     }
     
 }

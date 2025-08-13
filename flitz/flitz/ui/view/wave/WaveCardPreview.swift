@@ -42,10 +42,20 @@ struct WaveCardPreview: View {
     var cardMeta: FZCard?
     
     var body: some View {
-        VStack {
+        ZStack(alignment: .bottom) {
             FZCardView(world: $world, enableGesture: true)
                 .displayCard($card, to: $world, showNormalMap: $showNormalMap)
                 .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
+                .onTapGesture {
+                    guard let cardMeta = self.cardMeta,
+                          let user = cardMeta.user
+                    else {
+                        return
+                    }
+                    
+                    appState.currentModal = .userProfile(userId: user.id)
+                }
+                
             ECController(distributionId: distributionId) { _ in
                 dismissHandler()
             }

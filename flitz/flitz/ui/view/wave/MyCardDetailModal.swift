@@ -44,6 +44,16 @@ class MyCardDetailModalViewModel: ObservableObject {
             print("[MyCardDetailModalViewModel] Failed to delete card: \(error)")
         }
     }
+    
+    func setCardAsMain() async {
+        guard let apiClient = apiClient else { return }
+        
+        do {
+            try await apiClient.setCardAsMain(which: cardId)
+        } catch {
+            print("[MyCardDetailModalViewModel] Failed to set card as main: \(error)")
+        }
+    }
 }
 
 struct MyCardDetailModalBackdrop: View {
@@ -139,6 +149,16 @@ struct MyCardDetailModal: View {
                             .foregroundStyle(.white)
                             .bold()
                             .shadow(color: .black.opacity(0.25), radius: 8)
+                        
+                        HStack {
+                            FZButton(size: .normal) {
+                                Task {
+                                    await viewModel.setCardAsMain()
+                                }   
+                             } label: {
+                                Text("메인 카드로 설정하기")
+                            }
+                        }
                         
                         HStack(spacing: 16) {
                             FZButton(size: .normal) {
