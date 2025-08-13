@@ -6,7 +6,7 @@
 //
 
 extension FZAPIClient {
-    func signup(with credentials: FZCredentials) async throws {
+    func signup(with credentials: UserRegistrationArgs) async throws {
         try await self.request(to: .register,
                                expects: Ditch.self,
                                method: .post,

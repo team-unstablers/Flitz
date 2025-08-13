@@ -36,7 +36,7 @@ extension FZAPIClient {
                                       parameters: args)
     }
 
-    func setProfileImage(file: Data, fileName: String, mimeType: String) async throws -> DirectMessage {
+    func setProfileImage(file: Data, fileName: String, mimeType: String) async throws -> Void {
         let url = FZAPIEndpoint.selfProfileImage.url(for: context.host.rawValue)
         
         let headers: HTTPHeaders = [
@@ -47,14 +47,13 @@ extension FZAPIClient {
             multipartFormData.append(file, withName: "file", fileName: fileName, mimeType: mimeType)
         }, to: url, method: .post, headers: headers)
             .validate()
-            .serializingDecodable(DirectMessage.self)
+            .serializingDecodable(Ditch.self)
             .response
         
         guard let value = response.value else {
             throw response.error!
         }
         
-        return value
     }
     
     func updateAPNSToken(_ token: String) async throws {

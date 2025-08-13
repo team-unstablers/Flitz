@@ -187,7 +187,7 @@ class ProfileEditViewModel: ObservableObject {
             throw NSError(domain: "ProfileEditViewModel", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to JPEG data"])
         }
         
-        _ = try await apiClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
+        try await apiClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
     }
     
     func saveProfile() async throws {
@@ -269,11 +269,36 @@ struct ProfileEditSectionEntity<Content: View>: View {
     }
 }
 
-fileprivate struct ProfileEditSectionDivider: View {
+struct ProfileEditSectionDivider: View {
     var body: some View {
         Divider()
             .background(Color.Grayscale.gray3)
     }
+}
+
+struct ProfileIdentityNote: View {
+    var body: some View {
+        VStack(alignment: .leading) {
+            (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text("안내"))
+                .font(.heading3)
+                .bold()
+                .foregroundStyle(.black.opacity(0.9))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 4)
+            
+            Group {
+                Text("입력하신 정체성과 선호하는 사람들에 대한 정보는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요.")
+                Text("트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요.")
+            }
+            .font(.small)
+            .foregroundStyle(.black.opacity(0.8))
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity)
+        .background(Color.Grayscale.gray0.opacity(0.6))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+    
 }
 
 struct ProfileEditImage: View {
@@ -553,25 +578,7 @@ struct ProfileEditScreen: View {
                 }
                 .padding(.horizontal, 16)
                 
-                VStack(alignment: .leading) {
-                    (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text("안내"))
-                        .font(.heading3)
-                        .bold()
-                        .foregroundStyle(.black.opacity(0.9))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.bottom, 4)
-                    
-                    Group {
-                        Text("입력하신 정체성과 선호도는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요.")
-                        Text("트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요.")
-                    }
-                    .font(.small)
-                    .foregroundStyle(.black.opacity(0.8))
-                }
-                .padding(16)
-                .frame(maxWidth: .infinity)
-                .background(Color.Grayscale.gray0.opacity(0.6))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
+                ProfileIdentityNote()
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 32)

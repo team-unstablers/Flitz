@@ -21,7 +21,7 @@ struct AppIntroScreen: View {
             
             VStack {
                 FZButton(size: .large) {
-                    
+                    authPhaseState.navState.append(.signUp)
                 } label: {
                     Text("회원가입")
                         .font(.fzMain)

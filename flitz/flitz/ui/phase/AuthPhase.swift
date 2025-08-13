@@ -21,26 +21,34 @@ struct AuthPhase: View {
     var authPhaseState = AuthPhaseState()
     
     var body: some View {
-        NavigationStack(path: $authPhaseState.navState) {
-            AppIntroScreen()
-                .navigationDestination(for: AuthNavigationItem.self) { item in
-                    switch item {
-                    case .signIn:
-                        SignInScreen { context in
-                            context.save()
-                            
-                            withAnimation {
-                                phase = .main
+        if authPhaseState.navState.last == .signUp {
+            SignUpScreen {
+                phase = .main
+            }
+                .environmentObject(authPhaseState)
+        } else {
+            NavigationStack(path: $authPhaseState.navState) {
+                AppIntroScreen()
+                    .navigationDestination(for: AuthNavigationItem.self) { item in
+                        switch item {
+                        case .signIn:
+                            SignInScreen { context in
+                                context.save()
+                                RootAppState.shared.reloadContext()
+                                
+                                withAnimation {
+                                    phase = .main
+                                }
                             }
+                        case .signUp:
+                            EmptyView()
+                        default:
+                            EmptyView()
                         }
-                    case .signUp:
-                        EmptyView()
-                    default:
-                        EmptyView()
                     }
-                }
+            }
+            .environmentObject(authPhaseState)
         }
-        .environmentObject(authPhaseState)
         /*
          */
     }

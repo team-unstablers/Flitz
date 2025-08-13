@@ -152,6 +152,7 @@ struct SignInScreen: View {
     }
     
     func performSignUp() {
+        /*
         var context = FZAPIContext()
 #if DEBUG
         context.host = host
@@ -174,6 +175,7 @@ struct SignInScreen: View {
                 print(error)
             }
         }
+         */
     }
 }
 

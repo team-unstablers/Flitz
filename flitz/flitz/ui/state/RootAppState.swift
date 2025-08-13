@@ -43,6 +43,19 @@ class RootAppState: ObservableObject {
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
     }
     
+    func reloadContext() {
+        self.client = FZAPIClient(context: .load())
+        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        
+        // Reset the profile
+        self.profile = nil
+        
+        // Reload the profile
+        loadProfile()
+        
+        // Update APNS token if available
+        updateAPNSToken()
+    }
     
     func loadProfile() {
         Task {
