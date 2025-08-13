@@ -25,16 +25,6 @@ extension Flitz.Renderer {
         init(element: Element)
     }
     
-    public protocol EditorView: View {
-        associatedtype Element: Flitz.Element
-        
-        var element: Element { get }
-        
-        var submitHandler: () -> Void { get }
-        
-        init(element: Element, submitHandler: @escaping () -> Void)
-    }
-    
     enum DisplayMode {
         case `default`
         case normalMap
@@ -42,11 +32,9 @@ extension Flitz.Renderer {
     
     public struct ElementView<Element: Flitz.Element,
                               Renderer: RendererView,
-                              NormalMapRenderer: NormalMapRendererView,
-                              Editor: EditorView>: View
+                              NormalMapRenderer: NormalMapRendererView>: View
     where Renderer.Element == Element,
-          NormalMapRenderer.Element == Element,
-          Editor.Element == Element
+          NormalMapRenderer.Element == Element
     {
         @Environment(\.fzDisplayMode)
         private var displayMode: DisplayMode
@@ -54,43 +42,26 @@ extension Flitz.Renderer {
         @ObservedObject
         var element: Element
         
-        @State
-        var delta: Flitz.Transform = .zero
+        var eventHandler: (FZTransformEvent) -> Void
         
         @State
-        var isEditing: Bool = false
+        var delta: Flitz.Transform = .zero
         
         var body: some View {
             ZStack {
                 switch displayMode {
                 case .default:
                     Renderer(element: element)
-                        .applyFZTransform(element.transform, delta: delta, editable: true)
                         .onTapGesture {
-                            isEditing = true
+                            eventHandler(.edit)
                         }
+                        .applyFZTransform(element.transform, delta: delta, editable: true, eventHandler: eventHandler)
                 case .normalMap:
                     NormalMapRenderer(element: element)
-                        .applyFZTransform(element.transform, delta: delta)
-                }
-                
-                if isEditing {
-                    GeometryReader { geom in
-                        Rectangle()
-                            .fill(.black.opacity(0.5))
-                            .frame(width: geom.size.width, height: geom.size.height)
-                            .onTapGesture {
-                                isEditing = false
-                            }
-                        Editor(element: element) {
-                            isEditing = false
-                        }
-                            .position(x: geom.size.width / 2,
-                                      y: geom.size.height / 2)
-                    }
+                        .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
                 }
             }
-            
+            .zIndex(Double(element.zIndex))
         }
     }
 }

@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum RootModalItem: Hashable {
+    case cardDetail(cardId: String)
+    case userProfile(userId: String)
+}
+
 enum RootNavigationItem: Hashable {
     case cardEditor(cardId: String)
     
@@ -49,12 +54,20 @@ struct RootNavigation: View {
                     }
             }
             
-            if let userModalProfileId = appState.userModalProfileId {
-                UserProfileModal(userId: userModalProfileId) {
-                    appState.userModalProfileId = nil
+
+            if let modalItem = appState.currentModal {
+                switch modalItem {
+                case .cardDetail(let cardId):
+                    MyCardDetailModal(cardId: cardId) {
+                        appState.currentModal = nil
+                    }
+                case .userProfile(let userId):
+                    UserProfileModal(userId: userId) {
+                        appState.currentModal = nil
+                    }
                 }
             }
-            
+           
             if let assertionFailureReason = appState.assertionFailureReason {
                 AssertionFailureDialog(reason: assertionFailureReason)
             }

@@ -23,6 +23,7 @@ struct FZSimpleCard: Codable, Identifiable {
 struct FZCard: Codable, Identifiable {
     var id: String
     var title: String
+    var user: FZUser?
     var content: Flitz.Card
     var created_at: String
     var updated_at: String

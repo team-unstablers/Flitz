@@ -58,6 +58,14 @@ struct VertexOut {
     half3 colorRight = layer.sample(offsetRight).rgb;
     half3 colorUp = layer.sample(offsetUp).rgb;
     
+    // alpha
+    half alphaCenter = layer.sample(position).a;
+    
+    if (alphaCenter < 0.05) {
+        // alpha가 낮으면 노멀 맵을 투명하게 설정
+        return half4(0.0, 0.0, 0.0, 0.0);
+    }
+    
     // half alpha = layer.sample(position).a;
 
     // 명도 계산 (RGB를 활용하여 명도 값 추출)
@@ -83,5 +91,5 @@ struct VertexOut {
     half3 normalRGB = normal * 0.5 + 0.5;
 
     // 노멀 맵 출력
-    return half4(normalRGB, 1.0);
+    return half4(normalRGB, alphaCenter);
 }

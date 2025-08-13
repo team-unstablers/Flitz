@@ -91,6 +91,9 @@ extension Flitz.Renderer {
             @State
             var splitText: [String] = []
             
+            @FocusState
+            var isFocused: Bool
+            
             init(element: Flitz.Text, submitHandler: @escaping () -> Void) {
                 self.element = element
                 self.submitHandler = submitHandler
@@ -101,6 +104,7 @@ extension Flitz.Renderer {
                     VStack(spacing: 0) {
                         ForEach(0..<splitText.count, id: \.self) { line in
                             SwiftUI.Text(splitText[line] == "" ? "  " : splitText[line])
+                                .fixedSize(horizontal: true, vertical: false)
                                 .multilineTextAlignment(.center)
                                 .bold()
                                 .foregroundStyle(.clear)
@@ -124,6 +128,7 @@ extension Flitz.Renderer {
                     }
                     
                     SwiftUI.TextField(text: $text, axis: .vertical) {}
+                        .focused($isFocused)
                         .multilineTextAlignment(.center)
                         .bold()
                         .padding(0)
@@ -136,9 +141,12 @@ extension Flitz.Renderer {
                 }
                 .onAppear {
                     self.text = element.text
+                    self.isFocused = true
                 }
                 .onChange(of: text) {
-                    splitText = text.split(separator: "\n", omittingEmptySubsequences:false).map { String($0) }
+                    splitText = text
+                        .split(separator: "\n", omittingEmptySubsequences: false)
+                        .map { String($0) }
                     element.text = text
                 }
             }
@@ -147,17 +155,33 @@ extension Flitz.Renderer {
     
     typealias TextElementView = ElementView<Flitz.Text,
                                             Text.TextRendererView,
-                                            Text.TextNormalMapRendererView,
-                                            Text.TextEditorView>
+                                            Text.TextNormalMapRendererView>
+    
+    typealias TextElementEditorView = ElementEditorView<Flitz.Text,
+                                                        Text.TextEditorView>
+    
 }
 
 #Preview {
+    @State
+    @Previewable
+    var text: String = "asdf"
+    
     var element: Flitz.Text = Flitz.Text("Hello, World!\n\n\n나는 여기에 살아있다")
+    
     
     VStack {
         Flitz.Renderer.Text.TextEditorView(element: element) {
             
         }
+        
+        TextField(text: $text, axis: .vertical) {
+            Text("Type here")
+        }
+        
+        .background(.white)
+        .foregroundStyle(.black)
+        .multilineTextAlignment(.center)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background(.black)

@@ -86,8 +86,11 @@ extension Flitz.Renderer {
     
     typealias ImageElementView = ElementView<Flitz.Image,
                                              Image.ImageRendererView,
-                                             Image.ImageNormalMapRendererView,
-                                             Image.ImageEditorView>
+                                             Image.ImageNormalMapRendererView>
+    
+    typealias ImageElementEditorView = ElementEditorView<Flitz.Image,
+                                                         Image.ImageEditorView>
+    
 }
 
 

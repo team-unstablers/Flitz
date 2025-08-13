@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct CardEditor: View {
+    @EnvironmentObject
+    var appState: RootAppState
+    
     var cardId: String
     
     @Binding
@@ -19,21 +22,32 @@ struct CardEditor: View {
     @State
     var assetsLoader: AssetsLoader = AssetsLoader()
     
+    @State
+    var isElementEditorPresented: Bool = false
+    
     var body: some View {
         VStack {
             if let card = card {
-                CardEditorInternal(card: card.content)
+                CardEditorInternal(card: card.content,
+                                   isElementEditorPresented: $isElementEditorPresented)
                     .environment(\.fzAssetsLoader, assetsLoader)
             } else {
                 EmptyView()
             }
-            
-            HStack {
-                Button("save") {
+        }
+        .background(.black)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarColor(.black)
+        .animation(.default, value: isElementEditorPresented)
+        .toolbarVisibility(isElementEditorPresented ? .hidden : .visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("저장") {
                     self.saveCard()
                 }
             }
-        }.onAppear {
+        }
+        .onAppear {
             self.fetchCard()
         }
     }
@@ -66,6 +80,7 @@ struct CardEditor: View {
 
                 DispatchQueue.main.async {
                     self.card = card
+                    appState.navState = []
                 }
             } catch {
                 print(error)

@@ -19,6 +19,7 @@ struct CardPreview: View {
     
     var cardId: String
     
+    /*
     @State
     var world: FZCardViewWorld = {
         let world = FZCardViewWorld()
@@ -26,7 +27,7 @@ struct CardPreview: View {
         
         return world
     }()
-    
+    */
     
     @State
     var showNormalMap: Bool = false
@@ -37,11 +38,28 @@ struct CardPreview: View {
     @State
     var cardMeta: FZCard?
     
+    @State
+    var renderedCardImage: UIImage? = nil
+    
     var body: some View {
         VStack {
+            if let renderedCardImage = renderedCardImage {
+                Image(uiImage: renderedCardImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .frame(maxWidth: 400, maxHeight: 400)
+                    .padding()
+                    .shadow(color: .black.opacity(0.25), radius: 8)
+            } else {
+                ProgressView()
+            }
+            /*
             FZCardView(world: $world, enableGesture: false)
                 .displayCard($card, to: $world, showNormalMap: $showNormalMap)
                 .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
+             */
+            /*
             
             VStack {
                 Text(cardMeta?.title ?? "")
@@ -68,6 +86,7 @@ struct CardPreview: View {
                 }
             }
             .padding(.bottom, 32)
+             */
         }
         .onAppear {
             self.fetchCard()
@@ -87,6 +106,8 @@ struct CardPreview: View {
                 DispatchQueue.main.async {
                     self.card = card.content
                     self.cardMeta = card
+                    
+                    self.renderContent()
                 }
             } catch {
                 print(error)
@@ -102,5 +123,18 @@ struct CardPreview: View {
                 print(error)
             }
         }
+    }
+    
+    @MainActor
+    func renderContent() {
+        let renderer = FZCardViewSwiftUICardRenderer()
+        
+        guard let card = self.card,
+              let mainTexture = try? renderer.render(card: card) else {
+            print("Failed to render card")
+            return
+        }
+        
+        self.renderedCardImage = mainTexture
     }
 }

@@ -524,7 +524,7 @@ struct ConversationScreen: View {
                         Text(opponent.user.display_name).bold()
                     }
                         .onTapGesture {
-                            appState.userModalProfileId = opponent.user.id
+                            appState.currentModal = .userProfile(userId: opponent.user.id)
                         }
                 } else {
                     Text("대화")

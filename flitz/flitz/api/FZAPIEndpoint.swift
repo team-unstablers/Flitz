@@ -25,6 +25,7 @@ struct FZAPIEndpoint: RawRepresentable {
     }
     
     static let selfProfileImage = FZAPIEndpoint(rawValue: "/users/self/profile-image/")
+    static let selfIdentity = FZAPIEndpoint(rawValue: "/users/self/identity/")
     // user end
     
     // card start

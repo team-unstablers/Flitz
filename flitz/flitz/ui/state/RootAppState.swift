@@ -22,7 +22,7 @@ class RootAppState: ObservableObject {
     var navState: [RootNavigationItem] = []
     
     @Published
-    var userModalProfileId: String? = nil
+    var currentModal: RootModalItem? = nil
     
     @Published
     var waveCommunicator: FlitzWaveCommunicator!
@@ -33,6 +33,7 @@ class RootAppState: ObservableObject {
     @Published
     var profile: FZSelfUser?
     
+    
     @Published
     var assertionFailureReason: AssertionFailureReason? = nil
     
@@ -42,6 +43,19 @@ class RootAppState: ObservableObject {
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
     }
     
+    func reloadContext() {
+        self.client = FZAPIClient(context: .load())
+        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        
+        // Reset the profile
+        self.profile = nil
+        
+        // Reload the profile
+        loadProfile()
+        
+        // Update APNS token if available
+        updateAPNSToken()
+    }
     
     func loadProfile() {
         Task {

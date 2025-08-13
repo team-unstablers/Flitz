@@ -22,15 +22,20 @@ struct CardCanvas: View {
     
     var asNormalMap: Bool = false
     
+    var attachEditorHandler: ((Int) -> Void)? = nil
+    
     var body: some View {
         ZStack {
             if asNormalMap {
                 ZStack {
-                    Rectangle().fill(.black)
+                    // Rectangle().fill(.black)
                     GeometryReader { innerGeom in
-                        ForEach(0..<elements.count, id: \.self) { index in
-                            Flitz.Renderer.renderer(for: elements[index])
+                        ForEach(0..<elements.count) { index in
+                            Flitz.Renderer.renderer(for: elements[index]) { event in
+                                handleTransformEvent(event, elementIndex: index)
+                            }
                                 .mode(.normalMap)
+                                .id(elements[index].id)
                         }
                     }
                 }
@@ -38,7 +43,10 @@ struct CardCanvas: View {
             } else {
                 GeometryReader { innerGeom in
                     ForEach(0..<elements.count, id: \.self) { index in
-                        Flitz.Renderer.renderer(for: elements[index])
+                        Flitz.Renderer.renderer(for: elements[index]) { event in
+                            handleTransformEvent(event, elementIndex: index)
+                        }
+                            .id(elements[index].id)
                     }
                 }
             }
@@ -51,11 +59,17 @@ struct CardCanvas: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
+                        .if(asNormalMap) { view in
+                            view.applyNormalMapShader()
+                        }
                 case .origin(let id, _):
                     if let image = assetsLoader.images[id] {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
+                            .if(asNormalMap) { view in
+                                view.applyNormalMapShader()
+                            }
                     } else {
                         Rectangle().fill(.white)
                     }
@@ -66,5 +80,24 @@ struct CardCanvas: View {
         }
         .fixedSize()
         .clipped()
+    }
+    
+    func handleTransformEvent(_ event: FZTransformEvent, elementIndex: Int) {
+        if event == .edit {
+            attachEditorHandler?(elementIndex)
+        } else if event == .delete {
+            elements.remove(at: elementIndex)
+        } else if event == .zIndexChange {
+            // move element to the end of the array
+            let max = elements.map { $0.zIndex }.max() ?? 0
+            elements[elementIndex].zIndex = max + 1
+            
+            let indices = elements.map { $0.zIndex }.sorted()
+            elements.forEach {
+                if let index = indices.firstIndex(of: $0.zIndex) {
+                    $0.zIndex = index
+                }
+            }
+        }
     }
 }

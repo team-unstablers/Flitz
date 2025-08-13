@@ -24,11 +24,11 @@ class AssetsLoader: ObservableObject {
     
     func resolveAll(from card: Flitz.Card) async throws {
         if let background = card.background {
-            try? await self.resolve(image: background)
+            try await self.resolve(image: background)
         }
         
         for asset in card.collectImageAssets() {
-            try? await self.resolve(image: asset)
+            try await self.resolve(image: asset)
         }
     }
     

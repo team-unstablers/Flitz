@@ -7,15 +7,47 @@
 
 
 import Foundation
+
+import CoreGraphics
 import SwiftUI
 
 extension View {
     @ViewBuilder
-    func applyFZTransform(_ transform: Flitz.Transform, delta: Flitz.Transform = .zero, editable: Bool = false) -> some View {
+    func applyFZTransform(_ transform: Flitz.Transform, delta: Flitz.Transform = .zero, editable: Bool = false, eventHandler: @escaping (FZTransformEvent) -> Void) -> some View {
         self.modifier(FZTransformModifier(transform: transform,
                                           delta: delta,
-                                          editable: editable))
+                                          editable: editable,
+                                          eventHandler: eventHandler))
     }
+}
+
+struct CardEditorDeleteElementButton: View {
+    let willBeDeleted: Bool
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            Image("CardEditorCancelButtonIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 48, height: 48)
+        }
+        .padding(8)
+        .background(.black.opacity(0.6))
+        .cornerRadius(14)
+        
+        .overlay {
+            if willBeDeleted {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.red.opacity(0.4))
+            }
+        }
+    }
+}
+
+enum FZTransformEvent {
+    case edit
+    case delete
+    case zIndexChange
 }
 
 struct FZTransformModifier: ViewModifier {
@@ -26,6 +58,7 @@ struct FZTransformModifier: ViewModifier {
     var delta: Flitz.Transform
     
     var editable: Bool
+    var eventHandler: ((FZTransformEvent) -> Void)? = nil
 
     @GestureState
     private var gestureState: Bool = false
@@ -38,7 +71,13 @@ struct FZTransformModifier: ViewModifier {
     
     @State
     var isDragging: Bool = false {
-        didSet { didGestureStateChanged() }
+        didSet {
+            didGestureStateChanged()
+            
+            if (isDragging && oldValue != isDragging) {
+                eventHandler?(.zIndexChange)
+            }
+        }
     }
     
     @State
@@ -56,6 +95,9 @@ struct FZTransformModifier: ViewModifier {
     
     @State
     var isAnimEnabled: Bool = false
+    
+    @State
+    var willBeDeleted = false
     
     
     private func didGestureStateChanged() {
@@ -82,7 +124,14 @@ struct FZTransformModifier: ViewModifier {
                         .frame(width: geom.size.width, height: geom.size.height)
                         .allowsHitTesting(backdropAllowsHitTesting)
                 }
+                
+                if isDragging {
+                    CardEditorDeleteElementButton(willBeDeleted: willBeDeleted)
+                        .position(x: geom.size.width / 2, y: geom.size.height - 64)
+                }
+
                 content
+                    .opacity(willBeDeleted ? 0.75 : 1.0)
                     .overlay {
                         GeometryReader { elemGeom in
                             Rectangle()
@@ -105,23 +154,35 @@ struct FZTransformModifier: ViewModifier {
                               y: transform.position.y * geom.size.height)
                     .offset(x: delta.position.x * geom.size.width,
                             y: delta.position.y * geom.size.height)
+                
             }
                 .if(editable) {
                     $0
-                        .gesture(FZDragGestureRecognizer { state, point in
+                        .gesture(FZDragGestureRecognizer { state, result in
+                            let (point, rect) = result
+                            
                             if state == .changed {
                                 isDragging = true
                                 
-                                delta.position = Flitz.Position(scaled: point, viewportSize: geom.size)
+                                // print(geom.size)
+                                // print(size)
+                                
+                                delta.position = Flitz.Position(scaled2: point, viewportSize: geom.size, actualSize: rect.size)
+                                willBeDeleted = hitTestForDeleteButton(at: delta.position)
+                                
                             } else if state == .ended {
                                 isDragging = false
                                 
-                                transform.position += Flitz.Position(scaled: point, viewportSize: geom.size)
+                                transform.position += Flitz.Position(scaled2: point, viewportSize: geom.size, actualSize: rect.size)
                                 delta.position = .zero
+                                
+                                if willBeDeleted {
+                                    eventHandler?(.delete)
+                                }
                             }
                         })
                         .gesture(FZMagnifyGestureRecognizer { state, scale in
-                            print(scale)
+                            // print(scale)
                             if state == .changed {
                                 isScaling = true
                                 
@@ -156,6 +217,24 @@ struct FZTransformModifier: ViewModifier {
         }
     }
     
+    /// FIXME: 이거 손가락의 위치를 기준으로 계산해야 하는데 지금은 element의 중심점 기준으로 계산하고 있음!!!
+    func hitTestForDeleteButton(at position: Flitz.Position) -> Bool {
+        // 아잇 염병할 좌표계 왜이래
+        let actualPos = transform.position + position
+        
+        let x = actualPos.x * viewportSize.width
+        let y = actualPos.y * viewportSize.height
+        
+        // print(x, y)
+        
+        let x1 = self.viewportSize.width / 2 - 32 // 28 + padding 4px
+        let x2 = self.viewportSize.width / 2 + 32
+        let y1 = self.viewportSize.height - 64 - 32
+        let y2 = self.viewportSize.height - 64 + 32
+        
+        return x >= x1 && x <= x2 && y >= y1 && y <= y2
+    }
+    
 }
 
 fileprivate extension Flitz.Position {
@@ -165,6 +244,18 @@ fileprivate extension Flitz.Position {
     
     init(scaled size: CGPoint, viewportSize: CGSize) {
         self.init(x: size.x / viewportSize.width, y: size.y / viewportSize.height)
+    }
+    
+    /// 나는 수학 하면 안돼
+    init(scaled2 point: CGPoint, viewportSize: CGSize, actualSize: CGSize) {
+        let scaleX = viewportSize.width / actualSize.width
+        let scaleY = viewportSize.height / actualSize.height
+        
+        // scaleX = 1.36... scaleY = 0.97254...
+        // print(scaleX, scaleY)
+        
+        self.init(x: (point.x / viewportSize.width) * scaleX,
+                  y: (point.y / viewportSize.height) * scaleX) // 아니 이게 왜 맞아? scaleY 쓰면 왜 맛이 가지??
     }
 
     static func + (lhs: Flitz.Position, rhs: Flitz.Position) -> Flitz.Position {
