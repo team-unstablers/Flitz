@@ -92,3 +92,21 @@ struct FZSelfUser: Codable, Identifiable {
                                   paid_coins: 0)
 #endif
 }
+
+struct FZUserIdentity: Codable {
+    var gender: Int
+    var is_trans: Bool
+    var display_trans_to_others: Bool
+    var preferred_genders: Int
+    var welcomes_trans: Bool
+    var trans_prefers_safe_match: Bool
+    
+#if DEBUG
+    static let mock1 = FZUserIdentity(gender: 1,
+                                      is_trans: false,
+                                      display_trans_to_others: false,
+                                      preferred_genders: 1 | 2 | 4,
+                                      welcomes_trans: true,
+                                      trans_prefers_safe_match: false)
+#endif
+}

@@ -25,6 +25,17 @@ extension FZAPIClient {
                                       parameters: args)
     }
     
+    func selfIdentity() async throws -> FZUserIdentity {
+        return try await self.request(to: .selfIdentity, expects: FZUserIdentity.self)
+    }
+    
+    func patchSelfIdentity(_ args: FZUserIdentity) async throws -> FZUserIdentity {
+        return try await self.request(to: .selfIdentity,
+                                      expects: FZUserIdentity.self,
+                                      method: .patch,
+                                      parameters: args)
+    }
+
     func setProfileImage(file: Data, fileName: String, mimeType: String) async throws -> DirectMessage {
         let url = FZAPIEndpoint.selfProfileImage.url(for: context.host.rawValue)
         

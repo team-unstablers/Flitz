@@ -26,6 +26,30 @@ enum FZIntermediateGenderSelection: FZChipSelection {
             return "논바이너리"
         }
     }
+    
+    var asBitMaskValue: Int {
+        switch self {
+        case .man:
+            return 1
+        case .woman:
+            return 2
+        case .nonBinary:
+            return 4
+        }
+    }
+    
+    static func from(bitMaskValue: Int) -> FZIntermediateGenderSelection {
+        switch bitMaskValue {
+        case 1:
+            return .man
+        case 2:
+            return .woman
+        case 4:
+            return .nonBinary
+        default:
+            return .nonBinary
+        }
+    }
 }
 
 class FZIntermediateUser: ObservableObject {
@@ -85,7 +109,7 @@ class FZIntermediateUser: ObservableObject {
         
     }
     
-    static func from(_ profile: FZSelfUser) -> FZIntermediateUser {
+    static func from(_ profile: FZSelfUser, _ identity: FZUserIdentity?) -> FZIntermediateUser {
         let intermediate = FZIntermediateUser()
         
         intermediate.displayName = profile.display_name
@@ -100,6 +124,20 @@ class FZIntermediateUser: ObservableObject {
         
         intermediate.email = profile.email ?? ""
         intermediate.phoneNumber = profile.phone_number ?? ""
+        
+        if let identity = identity {
+            intermediate.gender = FZIntermediateGenderSelection.from(bitMaskValue: identity.gender)
+            intermediate.isTransgender = identity.is_trans
+            intermediate.transVisibleToOthers = identity.display_trans_to_others
+            intermediate.preferredGender = Set([1, 2, 4].filter {
+                identity.preferred_genders & $0 != 0
+            }.map {
+                FZIntermediateGenderSelection.from(bitMaskValue: $0)
+            })
+            intermediate.isTransPreferred = identity.welcomes_trans
+            intermediate.enableTransSafeMatch = identity.trans_prefers_safe_match
+        }
+        
         
         return intermediate
     }
@@ -130,7 +168,9 @@ class ProfileEditViewModel: ObservableObject {
                 return
             }
             
-            self.intermediate = FZIntermediateUser.from(profile)
+            let identity = try? await apiClient?.selfIdentity()
+            
+            self.intermediate = FZIntermediateUser.from(profile, identity)
         } catch {
             // Handle error appropriately
         }
@@ -163,6 +203,17 @@ class ProfileEditViewModel: ObservableObject {
         )
         
         _ = try await apiClient.patchSelf(args)
+        
+        let identityArgs = FZUserIdentity(
+            gender: intermediate.gender.asBitMaskValue,
+            is_trans: intermediate.isTransgender,
+            display_trans_to_others: intermediate.transVisibleToOthers,
+            preferred_genders: intermediate.preferredGender.reduce(0) { $0 | $1.asBitMaskValue },
+            welcomes_trans: intermediate.isTransPreferred,
+            trans_prefers_safe_match: intermediate.enableTransSafeMatch
+        )
+        
+        _ = try await apiClient.patchSelfIdentity(identityArgs)
     }
 }
 
@@ -558,7 +609,7 @@ class MockProfileEditViewModel: ProfileEditViewModel {
     override func loadProfile() async {
         let profile = FZSelfUser.mock1
         
-        self.intermediate = FZIntermediateUser.from(profile)
+        self.intermediate = FZIntermediateUser.from(profile, nil)
     }
 }
 #endif
