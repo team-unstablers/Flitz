@@ -61,6 +61,9 @@ struct CardEditorInternal: View {
     @ObservedObject
     var card: Flitz.Card
     
+    @Binding
+    var isElementEditorPresented: Bool
+    
     @State
     var backgroundImage: UIImage?
 
@@ -109,15 +112,28 @@ struct CardEditorInternal: View {
                 
                 ZStack {
                     CardCanvas(background: card.background, elements: $card.elements, attachEditorHandler: { index in
+                        guard card.elements[index].type == .text else {
+                            return
+                        }
+                        
                         currentElementIndex = index
                     })
                         .aspectScale(basedOn: FlitzCard.size, to: geom.size)
+                        .onChange(of: currentElementIndex) { _, newValue in
+                            if newValue == nil {
+                                isElementEditorPresented = false
+                            } else {
+                                isElementEditorPresented = true
+                            }
+                        }
 
                     
                     if let index = currentElementIndex {
                         let element = card.elements[index]
                         
-                        Flitz.Renderer.editor(for: element)
+                        Flitz.Renderer.editor(for: element) {
+                            currentElementIndex = nil
+                        }
                             .keyboardPadding()
                     } else {
                         self.toolbar
@@ -128,7 +144,7 @@ struct CardEditorInternal: View {
                     .background(.black)
             }
         }
-        // .font(.none)
+        .font(.none)
         .ignoresSafeArea(.keyboard)
         .sheet(isPresented: $showImagePicker, onDismiss: {
             if let image = selectedImage {
@@ -156,5 +172,9 @@ struct CardEditorInternal: View {
     @Previewable
     var card = Flitz.Card()
     
-    CardEditorInternal(card: card)
+    @State
+    @Previewable
+    var isElementEditorPresented = false
+    
+    CardEditorInternal(card: card, isElementEditorPresented: $isElementEditorPresented)
 }

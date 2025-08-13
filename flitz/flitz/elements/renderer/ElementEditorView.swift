@@ -33,6 +33,9 @@ extension Flitz.Renderer {
                     Rectangle()
                         .fill(.black.opacity(0.5))
                         .frame(width: geom.size.width, height: geom.size.height)
+                        .onTapGesture {
+                            dismissHandler()
+                        }
                     Editor(element: element) {
                         dismissHandler()
                     }

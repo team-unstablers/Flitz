@@ -22,10 +22,10 @@ extension Flitz {
         }
         
         @ViewBuilder
-        static func editor(for element: any Element) -> some View {
+        static func editor(for element: any Element, dismissHandler: @escaping () -> Void) -> some View {
             switch element {
             case let text as Flitz.Text:
-                TextElementEditorView(element: text, dismissHandler: {})
+                TextElementEditorView(element: text, dismissHandler: dismissHandler)
             default:
                 EmptyView()
             }
