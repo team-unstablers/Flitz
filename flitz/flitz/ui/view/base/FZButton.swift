@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum FZButtonSize {
+    case textual
     case normal
     case large
 }
@@ -40,7 +41,6 @@ struct FZButton<Content: View>: View {
                 label()
             }
             .font(.main)
-            .fontWeight(.medium)
             .if(size == .large) {
                 $0.frame(maxWidth: .infinity, maxHeight: 60)
             }

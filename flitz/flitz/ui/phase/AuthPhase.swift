@@ -7,17 +7,41 @@
 
 import SwiftUI
 
+enum AuthNavigationItem: Hashable {
+    case signIn
+    case signUp
+}
+
+
 struct AuthPhase: View {
     @Binding
     var phase: AppPhase
     
+    @StateObject
+    var authPhaseState = AuthPhaseState()
+    
     var body: some View {
-        SignInScreen { context in
-            context.save()
-            
-            withAnimation {
-                phase = .main
-            }
+        NavigationStack(path: $authPhaseState.navState) {
+            AppIntroScreen()
+                .navigationDestination(for: AuthNavigationItem.self) { item in
+                    switch item {
+                    case .signIn:
+                        SignInScreen { context in
+                            context.save()
+                            
+                            withAnimation {
+                                phase = .main
+                            }
+                        }
+                    case .signUp:
+                        EmptyView()
+                    default:
+                        EmptyView()
+                    }
+                }
         }
+        .environmentObject(authPhaseState)
+        /*
+         */
     }
 }

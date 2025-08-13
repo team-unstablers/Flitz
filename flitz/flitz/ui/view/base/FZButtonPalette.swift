@@ -30,5 +30,14 @@ extension FZButtonPalette {
         disabledForeground: .white
     )
     
-    
+    static let clear = FZButtonPalette(
+        lightBackground: .clear,
+        lightForeground: .mainBlack,
+        
+        darkBackground: .clear,
+        darkForeground: .white,
+        
+        disabledBackground: .clear,
+        disabledForeground: .Grayscale.gray4
+    )
 }
