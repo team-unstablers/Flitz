@@ -181,80 +181,84 @@ struct SignUpPhases {
         
         var body: some View {
             VStack {
-                Text("Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요.")
-                    .font(.fzMain)
-                    .foregroundStyle(Color.Grayscale.gray7)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                    .padding(.bottom, 60)
-
-                
-                ProfileEditSection {
-                    ProfileEditSectionEntity(title: "정체성") {
-                        FZSingleChipSelector(selectedChip: $viewModel.intermediate.gender)
-                            .padding(.bottom, 8)
+                ScrollView {
+                    VStack {
+                        Text("Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요.")
+                            .font(.fzMain)
+                            .foregroundStyle(Color.Grayscale.gray7)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        Group {
-                            Toggle(isOn: $viewModel.intermediate.isTransgender) {
-                                Text("트랜스젠더예요" + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
-                                    .font(.fzMain)
-                            }
-                            .tint(Color.Pride.trans1)
-                            
-                            if viewModel.intermediate.isTransgender {
-                                Toggle(isOn: $viewModel.intermediate.transVisibleToOthers) {
-                                    Text("트랜스젠더 여부를 프로필에 표시할래요")
-                                        .font(.fzMain)
+                            .padding(.bottom, 60)
+                        
+                        
+                        ProfileEditSection {
+                            ProfileEditSectionEntity(title: "정체성") {
+                                FZSingleChipSelector(selectedChip: $viewModel.intermediate.gender)
+                                    .padding(.bottom, 8)
+                                
+                                Group {
+                                    Toggle(isOn: $viewModel.intermediate.isTransgender) {
+                                        Text("트랜스젠더예요" + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
+                                            .font(.fzMain)
+                                    }
+                                    .tint(Color.Pride.trans1)
+                                    
+                                    if viewModel.intermediate.isTransgender {
+                                        Toggle(isOn: $viewModel.intermediate.transVisibleToOthers) {
+                                            Text("트랜스젠더 여부를 프로필에 표시할래요")
+                                                .font(.fzMain)
+                                        }
+                                        .tint(Color.Pride.trans2)
+                                    }
                                 }
-                                .tint(Color.Pride.trans2)
+                                .padding(.vertical, 4)
                             }
-                        }
-                            .padding(.vertical, 4)
-                    }
-                    
-                    ProfileEditSectionDivider()
-
-                    ProfileEditSectionEntity(title: "선호하는 사람들") {
-                        FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
-                        
-                        if (viewModel.intermediate.isTransgender) {
-                             Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
-                                Text("안전한 사람들하고만 매칭할래요")
-                                    .font(.fzMain)
-                            }
-                            .tint(Color.Pride.trans1)
-                            .padding(.vertical, 4)
                             
-                            if (viewModel.intermediate.enableTransSafeMatch) {
-                                Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
-                                    .font(.fzSmall)
+                            ProfileEditSectionDivider()
+                            
+                            ProfileEditSectionEntity(title: "선호하는 사람들") {
+                                FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
+                                
+                                if (viewModel.intermediate.isTransgender) {
+                                    Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
+                                        Text("안전한 사람들하고만 매칭할래요")
+                                            .font(.fzMain)
+                                    }
+                                    .tint(Color.Pride.trans1)
+                                    .padding(.vertical, 4)
+                                    
+                                    if (viewModel.intermediate.enableTransSafeMatch) {
+                                        Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
+                                            .font(.fzSmall)
+                                    }
+                                } else {
+                                    Toggle(isOn: $viewModel.intermediate.isTransPreferred) {
+                                        Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
+                                            .font(.fzMain)
+                                    }
+                                    .tint(Color.Pride.trans1)
+                                    .padding(.vertical, 4)
+                                }
                             }
-                        } else {
-                            Toggle(isOn: $viewModel.intermediate.isTransPreferred) {
-                                Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
-                                    .font(.fzMain)
-                            }
-                            .tint(Color.Pride.trans1)
-                            .padding(.vertical, 4)
                         }
+                        .padding(.bottom, 8)
+                        
+                        ProfileIdentityNote()
                     }
                 }
-                .padding(.bottom, 8)
                 
-                ProfileIdentityNote()
-                
-                Spacer()
-
-                
-                FZButton(size: .large) {
-                    viewModel.phase.append(.createProfile)
-                } label: {
-                    Text("다음")
-                        .font(.fzMain)
-                        .semibold()
+                VStack {
+                    FZButton(size: .large) {
+                        viewModel.phase.append(.createProfile)
+                    } label: {
+                        Text("다음")
+                            .font(.fzMain)
+                            .semibold()
+                    }
                 }
             }
             .safeAreaPadding(.horizontal)
+            .safeAreaPadding(.bottom)
             .navigationTitle("당신은 어떤 사람인가요?")
         }
     }

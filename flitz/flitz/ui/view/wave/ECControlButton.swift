@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftUIX
 
 enum ECControlButtonSize {
     case small
@@ -30,12 +31,6 @@ struct ECControlButton<Content: View>: View {
     var action: () -> Void
     var content: () -> Content
     
-    let gradient = LinearGradient(
-        gradient: Gradient(colors: [.white, .white, Color(hex: 0xF0F0F0)]),
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
-    
     var body: some View {
         Button {
             action()
@@ -45,11 +40,8 @@ struct ECControlButton<Content: View>: View {
             }
             .frame(width: size.size, height: size.size)
             .background(
-                Circle()
-                    .fill(
-                        gradient
-                        .shadow(.inner(color: .black.opacity(0.25), radius: 2, x: 0, y: -2))
-                    )
+                BlurEffectView(style: .regular)
+                    .clipShape(Circle())
             )
             .compositingGroup()
             .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 2)
