@@ -143,55 +143,60 @@ struct MyCardDetailModal: View {
                             }
                         }
                     
-                    VStack(spacing: 8) {
-                        Text(card.title.isEmpty ? "(제목 없음)" : card.title)
-                            .font(.fzHeading2)
-                            .foregroundStyle(.white)
-                            .bold()
-                            .shadow(color: .black.opacity(0.25), radius: 8)
+                    VStack {
+                        Spacer()
                         
-                        HStack {
-                            FZButton(size: .normal) {
-                                Task {
-                                    await viewModel.setCardAsMain()
-                                }   
-                             } label: {
-                                Text("메인 카드로 설정하기")
-                            }
-                        }
-                        
-                        HStack(spacing: 16) {
-                            FZButton(size: .normal) {
-                                withAnimation {
-                                    self.dismiss()
-                                } completion: {
-                                    appState.navState.append(.cardEditor(cardId: card.id))
+                        VStack(spacing: 8) {
+                            Text(card.title.isEmpty ? "(제목 없음)" : card.title)
+                                .font(.fzHeading2)
+                                .foregroundStyle(.white)
+                                .bold()
+                                .shadow(color: .black.opacity(0.25), radius: 8)
+                            
+                            HStack {
+                                FZButton(size: .normal) {
+                                    Task {
+                                        await viewModel.setCardAsMain()
+                                    }   
+                                 } label: {
+                                    Text("메인 카드로 설정하기")
                                 }
-                            } label: {
-                                Text("편집하기")
                             }
                             
-                            FZButton(size: .normal) {
-                                // Implement delete card functionality
-                                Task {
-                                    await viewModel.deleteCard()
-                                    
-                                    DispatchQueue.main.async {
-                                        withAnimation {
-                                            self.dismiss()
+                            HStack(spacing: 16) {
+                                FZButton(size: .normal) {
+                                    withAnimation {
+                                        self.dismiss()
+                                    } completion: {
+                                        appState.navState.append(.cardEditor(cardId: card.id))
+                                    }
+                                } label: {
+                                    Text("편집하기")
+                                }
+                                
+                                FZButton(size: .normal) {
+                                    // Implement delete card functionality
+                                    Task {
+                                        await viewModel.deleteCard()
+                                        
+                                        DispatchQueue.main.async {
+                                            withAnimation {
+                                                self.dismiss()
+                                            }
                                         }
                                     }
+                                } label: {
+                                    Text("삭제하기")
+                                        .foregroundColor(.red)
                                 }
-                            } label: {
-                                Text("삭제하기")
-                                    .foregroundColor(.red)
                             }
                         }
-                        .padding(16)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
+                        .safeAreaPadding(.bottom)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .opacity(opacity)
-                    // fixed to bottom
-                    .position(x: geom.size.width / 2, y: geom.size.height - 50)
                 }
             }
         }
