@@ -133,7 +133,7 @@ struct UserProfileModalProfileHeader: View {
                 
                 Spacer()
                 
-                Text("지금 온라인")
+                Text(profile.online_status.asLocalizedString)
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray6)
             }
