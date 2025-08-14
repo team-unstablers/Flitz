@@ -52,15 +52,44 @@ enum FZIntermediateGenderSelection: FZChipSelection {
     }
 }
 
+
+class FZIntermediateUserValidationError: ObservableObject {
+    @Published
+    var displayName: FZFormError? = nil
+    
+    @Published
+    var title: FZFormError? = nil
+    
+    @Published
+    var bio: FZFormError? = nil
+    
+    var isValid: Bool {
+        return displayName == nil && title == nil && bio == nil
+    }
+}
+
+
 class FZIntermediateUser: ObservableObject {
     @Published
-    var displayName: String = ""
+    var displayName: String = "" {
+        didSet {
+            validate()
+        }
+    }
     
     @Published
-    var title: String = ""
+    var title: String = "" {
+        didSet {
+            validate()
+        }
+    }
     
     @Published
-    var bio: String = ""
+    var bio: String = "" {
+        didSet {
+            validate()
+        }
+    }
     
     @Published
     var birthDate: Date = Date()
@@ -104,9 +133,44 @@ class FZIntermediateUser: ObservableObject {
     @Published
     var preferredIdentifyRange: ClosedRange<Double> = -2...2
     
+    @Published
+    var validationError = FZIntermediateUserValidationError()
+    
     
     init() {
         
+    }
+    
+    func validate() {
+        // @start displayName
+        if displayName.isEmpty {
+            validationError.displayName = .required
+        } else if displayName.count > 16 {
+            validationError.displayName = .tooLong(maxLength: 16)
+        } else {
+            validationError.displayName = nil
+        }
+        // @end displayName
+        
+        // @start title
+        if title.isEmpty {
+            validationError.title = .required
+        } else if title.count > 16 {
+            validationError.title = .tooLong(maxLength: 16)
+        } else {
+            validationError.title = nil
+        }
+        // @end title
+        
+        // @start bio
+        if bio.isEmpty {
+            validationError.bio = .required
+        } else if bio.count > 240 {
+            validationError.bio = .tooLong(maxLength: 240)
+        } else {
+            validationError.bio = nil
+        }
+        // @end bio
     }
     
     static func from(_ profile: FZSelfUser, _ identity: FZUserIdentity?) -> FZIntermediateUser {
@@ -252,14 +316,27 @@ struct ProfileEditSection<Content: View>: View {
 
 struct ProfileEditSectionEntity<Content: View>: View {
     let title: String
+    
+    var error: FZFormError? = nil
+
     @ViewBuilder
     let content: () -> Content
     
+    
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .font(.fzMain)
-                .foregroundStyle(Color.Grayscale.gray6)
+            HStack {
+                Text(title)
+                    .foregroundStyle(Color.Grayscale.gray6)
+                    .font(.fzMain)
+
+                if let error = error {
+                    Text(error.message)
+                        .foregroundStyle(.red)
+                        .font(.fzSmall)
+                }
+            }
                 .padding(.bottom, 6)
 
             content()
@@ -475,14 +552,14 @@ struct ProfileEditScreen: View {
                 VStack(alignment: .leading) {
                     ProfileEditSectionTitle("기본 정보")
                     ProfileEditSection {
-                        ProfileEditSectionEntity(title: "닉네임") {
+                        ProfileEditSectionEntity(title: "닉네임", error: viewModel.intermediate.validationError.displayName) {
                             TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "한줄 칭호") {
+                        ProfileEditSectionEntity(title: "한줄 칭호", error: viewModel.intermediate.validationError.title) {
                             TextField("당신을 나타내는 한줄 칭호!", text: $viewModel.intermediate.title)
                                 .font(.fzHeading3)
                         }
@@ -495,7 +572,7 @@ struct ProfileEditScreen: View {
 
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "자기소개") {
+                        ProfileEditSectionEntity(title: "자기소개", error: viewModel.intermediate.validationError.bio) {
                             TextField("멋진 자기 소개를 입력해 보세요!", text: $viewModel.intermediate.bio, axis: .vertical)
                                 .lineLimit(3...5)
                                 .font(.fzHeading3)
@@ -602,6 +679,7 @@ struct ProfileEditScreen: View {
                         }
                     }
                 }
+                .disabled(!viewModel.intermediate.validationError.isValid)
             }
         }
         .scrollDismissesKeyboard(.interactively)
