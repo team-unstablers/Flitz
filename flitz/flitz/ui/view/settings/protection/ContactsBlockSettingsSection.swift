@@ -121,10 +121,8 @@ struct ContactsBlockSettingsSection: View {
         }
         .animation(.spring, value: viewModel.busyInitial)
         .onChange(of: viewModel.enabled) { _, newValue in
-            if newValue {
-                Task {
-                    await viewModel.reflectEnabled()
-                }
+            Task {
+                await viewModel.reflectEnabled()
             }
         }
         .onAppear {
