@@ -62,6 +62,72 @@
     "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다." : {
 
     },
+    "fzapi.user.fuzzy_distance.far" : {
+      "comment" : "멀리 있음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "멀리 있음"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.farthest" : {
+      "comment" : "매우 멀리 있음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매우 멀리 있음"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.medium" : {
+      "comment" : "중간 거리",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중간 거리"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.near" : {
+      "comment" : "가까움",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가까움"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.nearest" : {
+      "comment" : "매우 가까움",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매우 가까움"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.unknown" : {
+      "comment" : "알 수 없음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없음"
+          }
+        }
+      }
+    },
     "fzapi.user.online_status.offline" : {
       "comment" : "오프라인",
       "localizations" : {
