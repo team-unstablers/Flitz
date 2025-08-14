@@ -216,6 +216,9 @@ class ProfileEditViewModel: ObservableObject {
     @Published
     var intermediate: FZIntermediateUser = FZIntermediateUser()
     
+    @Published
+    var busy = false
+    
     func configure(with apiClient: FZAPIClient) {
         // Configure with API client if needed
         self.apiClient = apiClient
@@ -241,6 +244,9 @@ class ProfileEditViewModel: ObservableObject {
     }
     
     func saveProfileImage() async throws {
+        defer { busy = false }
+        busy = true
+
         guard let apiClient = apiClient,
               let pendingImage = intermediate.pendingProfileImage else {
             return
@@ -255,6 +261,9 @@ class ProfileEditViewModel: ObservableObject {
     }
     
     func saveProfile() async throws {
+        defer { busy = false }
+        busy = true
+
         guard let apiClient = apiClient else {
             return
         }
@@ -667,19 +676,23 @@ struct ProfileEditScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("저장") {
-                    Task {
-                        try? await viewModel.saveProfileImage()
-                        try? await viewModel.saveProfile()
-                        
-                        appState.loadProfile()
-                        
-                        DispatchQueue.main.async {
-                            appState.navState = []
+                if viewModel.busy {
+                    ProgressView()
+                } else {
+                    Button("저장") {
+                        Task {
+                            try? await viewModel.saveProfileImage()
+                            try? await viewModel.saveProfile()
+                            
+                            appState.loadProfile()
+                            
+                            DispatchQueue.main.async {
+                                appState.navState = []
+                            }
                         }
                     }
+                    .disabled(!viewModel.intermediate.validationError.isValid)
                 }
-                .disabled(!viewModel.intermediate.validationError.isValid)
             }
         }
         .scrollDismissesKeyboard(.interactively)
