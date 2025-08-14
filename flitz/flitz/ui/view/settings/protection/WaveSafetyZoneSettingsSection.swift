@@ -153,6 +153,7 @@ struct WaveSafetyZoneSettingsSection: View {
                 
                 viewModel.locationSheetPresented = false
             }
+            .interactiveDismissDisabled()
         }
         .onAppear {
             Task {

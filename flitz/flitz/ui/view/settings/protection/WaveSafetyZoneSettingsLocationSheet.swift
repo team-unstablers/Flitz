@@ -18,8 +18,16 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
     @State
     private var radius: Double
     
+    /*
     @State
     private var isInInteraction: Bool = false
+    
+    @State
+    private var lastConvertTime: Date = Date.distantPast
+     */
+    
+    @State
+    private var isInteractionEnd = false
     
     var dismissHandler: (() -> Void)
     var submitHandler: ((CLLocationCoordinate2D?, Double) -> Void)
@@ -34,7 +42,7 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
         
         if let lat = latitude, let lon = longitude {
             self._picked = State(initialValue: CLLocationCoordinate2D(latitude: lat, longitude: lon))
-            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), latitudinalMeters: 1000, longitudinalMeters: 1500)
+            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: lat, longitude: lon), latitudinalMeters: 1000, longitudinalMeters: 1000)
             self._position = State(initialValue: .region(region))
         } else {
             self._picked = State(initialValue: nil)
@@ -71,8 +79,9 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                         .opacity(picked == nil ? 1.0 : 0.0)
                 }
                 
+            
                 MapReader { proxy in
-                    Map(position: $position, interactionModes: isInInteraction ? [] : .all) {
+                    Map(position: $position) {
                         if let p = picked {
                             Marker(coordinate: p) {
                                 Text("Wave 끄기 구역\n(반경 \(Int(radius))m)")
@@ -87,15 +96,41 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                         LongPressGesture(minimumDuration: 0.25)
                             .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
                             .onChanged { value in
+                                /*
+                                 이거 Sheet dismiss 동작이랑 충돌해서 앱 크래시남. ㅠ
+                                 이렇게 하려면 아예 별도 화면으로 분리해야 할듯.
+                                if case .second(true, let drag?) = value {
+                                    let now = Date()
+                                    let timeInterval = now.timeIntervalSince(lastConvertTime)
+                                    
+                                    // 5 fps
+                                    guard timeInterval >= (1 / 5) else { return }
+                                    
+                                    if let coord = proxy.convert(drag.location, from: .local) {
+                                        if (!isInInteraction) {
+                                            isInInteraction = true
+                                        }
+                                        
+                                        lastConvertTime = now
+                                        picked = coord
+                                    }
+                                }
+                                 */
+                                
+                                if isInteractionEnd {
+                                    return
+                                }
+                                
                                 if case .second(true, let drag?) = value,
                                    let coord = proxy.convert(drag.location, from: .local) {
-                                    isInInteraction = true
-                                    
-                                    picked = coord     // 여기서 p.latitude, p.longitude 사용
+                                    picked = coord
+                                    isInteractionEnd = true
                                 }
+
                             }
-                            .onEnded { _ in
-                                isInInteraction = false
+                            .onEnded { value in
+                                // isInInteraction = false
+                                isInteractionEnd = false
                             }
                     )
                 }
@@ -124,9 +159,14 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                 }
             }
         }
+        .interactiveDismissDisabled()
     }
 }
 
 #Preview {
-    WaveSafetyZoneSettingsLocationSheet()
+    VStack {
+        
+    }.sheet(isPresented: .constant(true)) {
+        WaveSafetyZoneSettingsLocationSheet()
+    }
 }
