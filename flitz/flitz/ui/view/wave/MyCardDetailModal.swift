@@ -67,6 +67,61 @@ struct MyCardDetailModalBackdrop: View {
     }
 }
 
+struct CardDetailControlsView: View {
+    let card: FZCard
+    let viewModel: MyCardDetailModalViewModel
+    let appState: RootAppState
+    let onDismiss: () -> Void
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Text(card.title.isEmpty ? "(제목 없음)" : card.title)
+                .font(.fzHeading2)
+                .foregroundStyle(.white)
+                .bold()
+                .shadow(color: .black.opacity(0.25), radius: 8)
+            
+            HStack {
+                FZButton(size: .normal) {
+                    Task {
+                        await viewModel.setCardAsMain()
+                    }   
+                 } label: {
+                    Text("메인 카드로 설정하기")
+                }
+            }
+            
+            HStack(spacing: 16) {
+                FZButton(size: .normal) {
+                    withAnimation {
+                        onDismiss()
+                    } completion: {
+                        appState.navState.append(.cardEditor(cardId: card.id))
+                    }
+                } label: {
+                    Text("편집하기")
+                }
+                
+                FZButton(size: .normal) {
+                    // Implement delete card functionality
+                    Task {
+                        await viewModel.deleteCard()
+                        
+                        DispatchQueue.main.async {
+                            withAnimation {
+                                onDismiss()
+                            }
+                        }
+                    }
+                } label: {
+                    Text("삭제하기")
+                        .foregroundColor(.red)
+                }
+            }
+        }
+    }
+}
+
 struct MyCardDetailModal: View {
     @EnvironmentObject
     var appState: RootAppState
@@ -146,51 +201,12 @@ struct MyCardDetailModal: View {
                     VStack {
                         Spacer()
                         
-                        VStack(spacing: 8) {
-                            Text(card.title.isEmpty ? "(제목 없음)" : card.title)
-                                .font(.fzHeading2)
-                                .foregroundStyle(.white)
-                                .bold()
-                                .shadow(color: .black.opacity(0.25), radius: 8)
-                            
-                            HStack {
-                                FZButton(size: .normal) {
-                                    Task {
-                                        await viewModel.setCardAsMain()
-                                    }   
-                                 } label: {
-                                    Text("메인 카드로 설정하기")
-                                }
-                            }
-                            
-                            HStack(spacing: 16) {
-                                FZButton(size: .normal) {
-                                    withAnimation {
-                                        self.dismiss()
-                                    } completion: {
-                                        appState.navState.append(.cardEditor(cardId: card.id))
-                                    }
-                                } label: {
-                                    Text("편집하기")
-                                }
-                                
-                                FZButton(size: .normal) {
-                                    // Implement delete card functionality
-                                    Task {
-                                        await viewModel.deleteCard()
-                                        
-                                        DispatchQueue.main.async {
-                                            withAnimation {
-                                                self.dismiss()
-                                            }
-                                        }
-                                    }
-                                } label: {
-                                    Text("삭제하기")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                        }
+                        CardDetailControlsView(
+                            card: card,
+                            viewModel: viewModel,
+                            appState: appState,
+                            onDismiss: dismiss
+                        )
                         .padding(.horizontal, 16)
                         .padding(.bottom, 16)
                         .safeAreaPadding(.bottom)
