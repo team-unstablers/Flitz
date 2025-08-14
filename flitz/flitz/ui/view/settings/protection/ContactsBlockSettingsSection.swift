@@ -25,10 +25,6 @@ class ContactsBlockSettingsSectionViewModel: ObservableObject {
     func reflectEnabled() async {
         await ContactsBlockerTask.setEnabled(enabled)
         await saveSettings()
-        
-        if (!enabled) {
-            await removeAll()
-        }
     }
     
     func removeAll() async {
