@@ -27,6 +27,8 @@
 	<string>fixme</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>fixme</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Flitz에서 연락처 미리 차단 기능을 사용하기 위해 휴대폰 연락처에 액세스하려 합니다.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

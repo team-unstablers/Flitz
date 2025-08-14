@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Contacts
 
 @MainActor
 class ContactsBlockSettingsSectionViewModel: ObservableObject {
@@ -16,9 +15,24 @@ class ContactsBlockSettingsSectionViewModel: ObservableObject {
     @Published
     var busyInitial = true
     
+    @Published
+    var enabled: Bool = false
 
     var apiClient: FZAPIClient {
         RootAppState.shared.client
+    }
+    
+    func reflectEnabled() async {
+        await ContactsBlockerTask.setEnabled(enabled)
+        await saveSettings()
+        
+        if (!enabled) {
+            await removeAll()
+        }
+    }
+    
+    func removeAll() async {
+        try? await apiClient.contactTriggerDeleteAll()
     }
     
     func loadSettings() async {
@@ -27,14 +41,29 @@ class ContactsBlockSettingsSectionViewModel: ObservableObject {
             busyInitial = false
         }
         busy = true
-       
+        
+        guard let response = try? await apiClient.contactTriggerEnabled() else {
+            #warning("FIXME: 잘못된 오류 처리")
+            return
+        }
+        
+        self.enabled = response.is_enabled
     }
     
     func saveSettings() async {
         defer { busy = false }
         busy = true
-    }
         
+        let args = FZContactsTriggerEnabled(is_enabled: self.enabled)
+        
+        guard let response = try? await apiClient.setContactTriggerEnabled(args) else {
+            #warning("FIXME: 잘못된 오류 처리")
+            return
+        }
+        
+        self.enabled = response.is_enabled
+    }
+    
 }
 
 struct ContactsBlockSettingsSection: View {
@@ -49,16 +78,26 @@ struct ContactsBlockSettingsSection: View {
                     .padding(.vertical, 8)
             } else {
                 FZPageSectionItem("휴대폰 연락처에 등록된 사람들을 미리 차단하기") {
-                    Toggle("", isOn: .constant(false))
+                    Toggle("", isOn: $viewModel.enabled)
                 }
                 
+                /*
                 FZPageSectionActionItem("차단된 연락처 목록") {
                     
                 }
+                 */
                 
+                FZPageSectionActionItem("연락처 지금 동기화") {
+                    Task {
+                        await ContactsBlockerTask().execute()
+                    }
+                }
+
+                /*
                 FZPageSectionActionItem("이 기능에 대한 도움말 보기") {
                     
                 }
+                 */
                 
                 FZPageSectionNote {
                     VStack(alignment: .leading) {
@@ -81,6 +120,13 @@ struct ContactsBlockSettingsSection: View {
             }
         }
         .animation(.spring, value: viewModel.busyInitial)
+        .onChange(of: viewModel.enabled) { _, newValue in
+            if newValue {
+                Task {
+                    await viewModel.reflectEnabled()
+                }
+            }
+        }
         .onAppear {
             Task {
                 await viewModel.loadSettings()

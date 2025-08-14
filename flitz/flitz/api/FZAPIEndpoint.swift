@@ -90,6 +90,18 @@ struct FZAPIEndpoint: RawRepresentable {
     
     // messaging end
     
+    // safety start
+    static let contactTriggers = FZAPIEndpoint(rawValue: "/contact-triggers/")
+    
+    static func contactTrigger(triggerId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/contact-triggers/\(triggerId)/")
+    }
+    
+    static let contactTriggersEnabled = FZAPIEndpoint(rawValue: "/contact-triggers/enabled/")
+    static let contactTriggersBulkCreate = FZAPIEndpoint(rawValue: "/contact-triggers/bulk-create/")
+    static let contactTriggersAll = FZAPIEndpoint(rawValue: "/contact-triggers/all/")
+    // safety end
+
     func urlString(for server: String) -> String {
         return "\(server)\(self.rawValue)"
     }

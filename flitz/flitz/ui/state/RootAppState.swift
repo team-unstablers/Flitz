@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
+@MainActor
 class RootAppState: ObservableObject {
     static let shared = RootAppState()
     
@@ -61,10 +62,9 @@ class RootAppState: ObservableObject {
         Task {
             do {
                 let profile = try await self.client.fetchSelf()
+                self.profile = profile
                 
-                DispatchQueue.main.async {
-                    self.profile = profile
-                }
+                await ContactsBlockerTask.updateEnabled()
             } catch {
                 print(error)
             }
