@@ -110,3 +110,21 @@ struct FZUserIdentity: Codable {
                                       trans_prefers_safe_match: false)
 #endif
 }
+
+struct FZUserWaveSafetyZone: Codable {
+    var latitude: Double?
+    var longitude: Double?
+    
+    var radius: Double // in meters
+    
+    var is_enabled: Bool
+    var enable_wave_after_exit: Bool
+    
+#if DEBUG
+    static let mock1 = FZUserWaveSafetyZone(latitude: 37.5665,
+                                            longitude: 126.978,
+                                            radius: 1000, // 1km
+                                            is_enabled: true,
+                                            enable_wave_after_exit: true)
+#endif
+}

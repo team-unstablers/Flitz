@@ -35,6 +35,17 @@ extension FZAPIClient {
                                       method: .patch,
                                       parameters: args)
     }
+    
+    func selfWaveSafetyZone() async throws -> FZUserWaveSafetyZone {
+        return try await self.request(to: .selfWaveSafetyZone, expects: FZUserWaveSafetyZone.self)
+    }
+    
+    func patchSelfWaveSafetyZone(_ args: FZUserWaveSafetyZone) async throws -> FZUserWaveSafetyZone {
+        return try await self.request(to: .selfWaveSafetyZone,
+                                      expects: FZUserWaveSafetyZone.self,
+                                      method: .patch,
+                                      parameters: args)
+    }
 
     func setProfileImage(file: Data, fileName: String, mimeType: String) async throws -> Void {
         let url = FZAPIEndpoint.selfProfileImage.url(for: context.host.rawValue)

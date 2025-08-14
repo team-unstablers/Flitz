@@ -14,23 +14,8 @@ struct ProtectionSettingsScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    FZPageSectionTitle(title: "자동으로 Wave 끄기 (베타)")
-                    FZPageSectionItem("자동으로 Wave 끄기 (베타)") {
-                        Toggle("", isOn: .constant(false))
-                    }
-                    FZPageSectionItem("장소에서 벗어나면 다시 Wave 켜기") {
-                        Toggle("", isOn: .constant(true))
-                    }
-                    FZPageSectionActionItem("위치 지정하기") {
-                        
-                    }
-                    
-                    FZPageSectionNote() {
-                        Text("특정 장소에 도착하면, 자동으로 Wave를 끄고 오프라인 상태로 전환합니다. 오프라인 상태에서는 상대방이 당신을 발견하거나 Wave할 수 없게 됩니다.".byCharWrapping)
-                    }
-                }
-                .padding(.horizontal, 16)
+                WaveSafetyZoneSettingsSection()
+                    .padding(.horizontal, 16)
                 
                 FZPageSectionDivider()
                 
