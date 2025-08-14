@@ -87,9 +87,17 @@ struct ContactsBlockSettingsSection: View {
                 }
                  */
                 
-                FZPageSectionActionItem("연락처 지금 동기화") {
-                    Task {
-                        await ContactsBlockerTask().execute()
+                if viewModel.enabled {
+                    FZPageSectionActionItem("지금 연락처 동기화하기") {
+                        Task {
+                            await ContactsBlockerTask().execute()
+                        }
+                    }
+                } else {
+                    FZPageSectionActionItem("연락처를 서버로부터 모두 삭제하고 차단 해제하기") {
+                        Task {
+                            await viewModel.removeAll()
+                        }
                     }
                 }
 
