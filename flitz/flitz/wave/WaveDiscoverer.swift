@@ -15,6 +15,7 @@ protocol WaveDiscovererDelegate: AnyObject {
 class WaveDiscoverer: NSObject {
     static let RESTORE_IDENTIFIER = "pl.unstabler.flitz.wave.discoverer"
     
+    private let logger = createFZOSLogger("WaveDiscoverer")
     let locationReporter: WaveLocationReporter
     
     var centralManager: CBCentralManager!
@@ -54,26 +55,26 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOn:
-            print("Bluetooth Central is powered on")
+            logger.info("Bluetooth Central is powered on")
             // 백그라운드에서 복원될 때 스캔 재시작
             if central.isScanning {
-                print("Already scanning")
+                logger.debug("Already scanning")
             } else {
-                print("Restarting scan")
+                logger.info("Restarting scan")
                 self.start()
             }
         case .poweredOff:
-            print("Bluetooth Central is powered off")
+            logger.warning("Bluetooth Central is powered off")
         case .resetting:
-            print("Bluetooth Central is resetting")
+            logger.warning("Bluetooth Central is resetting")
         case .unauthorized:
-            print("Bluetooth Central is unauthorized")
+            logger.error("Bluetooth Central is unauthorized")
         case .unsupported:
-            print("Bluetooth Central is unsupported")
+            logger.error("Bluetooth Central is unsupported")
         case .unknown:
-            print("Bluetooth Central state is unknown")
+            logger.warning("Bluetooth Central state is unknown")
         @unknown default:
-            print("Unknown bluetooth central state")
+            logger.warning("Unknown bluetooth central state")
         }
     }
     
@@ -89,22 +90,19 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
         
         self.peripherals.insert(peripheral)
         central.connect(peripheral)
-        print("connecting")
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-        print("connected")
         peripheral.delegate = self
         peripheral.discoverServices([FlitzWaveServiceID.default.rawValue])
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
-        print("disconencted")
         self.peripherals.remove(peripheral)
     }
     
     func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
-        print("restoring state")
+        logger.info("restoring state")
         
         // restore scanning state
         if dict[CBCentralManagerRestoredStateScanServicesKey] is [CBUUID] {
@@ -133,8 +131,6 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
 
 extension WaveDiscoverer: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
-        print("service discovered")
-        
         guard let service = peripheral.services?.first else {
             self.centralManager.cancelPeripheralConnection(peripheral)
             return
@@ -166,7 +162,7 @@ extension WaveDiscoverer: CBPeripheralDelegate {
         
         self.discoveredPeripheralIds.insert(peripheral.identifier)
         
-        print("discovered \(id)")
+        logger.info("discovered \(id)")
         self.delegate?.discoverer(self,
                                   didDiscover: id,
                                   from: locationReporter.location)

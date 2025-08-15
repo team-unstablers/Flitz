@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+    private let logger = createFZOSLogger("AppDelegate")
     
     static fileprivate(set) var apnsToken: String? = nil
     
@@ -18,6 +19,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         
         UIFont.setupUINavigationBarTypography()
+        
+#if DEBUG
+        FZ_GLOBAL_LOGGER_LEVEL = .verbose
+#else
+        FZ_GLOBAL_LOGGER_LEVEL = .normal
+#endif
         
         recoverWaveCommunicatorState()
         
@@ -30,7 +37,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let stringifiedToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Self.apnsToken = stringifiedToken
-        print("stringifiedToken:", stringifiedToken)
+        
+        logger.debug("got APNS Token: \(stringifiedToken)")
         
         RootAppState.shared.updateAPNSToken()
     }
@@ -38,8 +46,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        
-        print("silent push received", userInfo)
         
         defer { completionHandler(.newData) }
         
@@ -61,7 +67,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             do {
                 try await RootAppState.shared.waveCommunicator.recoverState()
             } catch {
-                print("Failed to recover wave communicator state: \(error)")
+                logger.debug("Failed to recover wave communicator state: \(error)")
             }
         }
     }

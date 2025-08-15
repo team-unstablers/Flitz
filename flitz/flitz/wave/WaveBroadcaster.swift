@@ -13,6 +13,8 @@ protocol WaveBroadcasterDelegate: AnyObject {
 }
 
 class WaveBroadcaster: NSObject {
+    private let logger = createFZOSLogger("WaveBroadcaster")
+    
     private var peripheralManager: CBPeripheralManager!
     private var service: CBMutableService?
     private var characteristic: CBMutableCharacteristic?
@@ -41,13 +43,13 @@ class WaveBroadcaster: NSObject {
     
     func start() {
         guard let identity = self.identity else {
-            print("cannot start: identity is empty")
+            logger.error("cannot start: identity is empty")
             return
         }
         
         // PeripheralManager가 준비될 때까지 대기
         guard peripheralManager.state == .poweredOn else {
-            print("Bluetooth is not ready. Current state: \(peripheralManager.state.rawValue)")
+            logger.warning("Bluetooth is not ready. Current state: \(peripheralManager.state.rawValue)")
             return
         }
         
@@ -98,37 +100,37 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
     func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
         switch peripheral.state {
         case .poweredOn:
-            print("Bluetooth is powered on")
+            logger.info("Bluetooth is powered on")
             self.start()
         case .poweredOff:
-            print("Bluetooth is powered off")
+            logger.info("Bluetooth is powered off")
         case .resetting:
-            print("Bluetooth is resetting")
+            logger.info("Bluetooth is resetting")
         case .unauthorized:
-            print("Bluetooth is unauthorized")
+            logger.info("Bluetooth is unauthorized")
         case .unsupported:
-            print("Bluetooth is unsupported")
+            logger.info("Bluetooth is unsupported")
         case .unknown:
-            print("Bluetooth state is unknown")
+            logger.info("Bluetooth state is unknown")
         @unknown default:
-            print("Unknown bluetooth state")
+            logger.info("Unknown bluetooth state")
         }
     }
     
     func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
         if let error = error {
-            print("Failed to add service: \(error.localizedDescription)")
+            logger.error("Failed to add service: \(error.localizedDescription)")
             return
         }
         
-        print("Service added successfully")
+        logger.info("Service added successfully")
     }
     
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         if let error = error {
-            print("Failed to start advertising: \(error.localizedDescription)")
+            logger.error("Failed to start advertising: \(error.localizedDescription)")
         } else {
-            print("Started advertising successfully")
+            logger.info("Started advertising successfully")
         }
     }
     
@@ -152,7 +154,7 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
         // 앱이 종료됐다가 복원될 때 호출됨
         // NOTE: 저장된 상태를 사용해선 안됨: 매 실행마다 self.identity를 로테이션 해야 하기 때문에 부모로부터 새 identity를 받고, start()를 call하도록 재촉해야 함
         
-        print("Restoring peripheral manager state")
+        logger.info("Restoring peripheral manager state")
         
         delegate?.broadcasterDidRestoreState(self)
     }

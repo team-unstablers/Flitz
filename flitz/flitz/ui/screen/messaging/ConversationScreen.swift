@@ -11,6 +11,8 @@ import Combine
 
 @MainActor
 class ConversationViewModel: ObservableObject {
+    private let logger = createFZOSLogger("ConversationViewModel")
+    
     @Published var messages: [DirectMessage] = []
     @Published var conversation: DirectMessageConversation?
     @Published var isLoading = false
@@ -92,7 +94,7 @@ class ConversationViewModel: ObservableObject {
         isReconnecting = true
         
         // 지수 백오프: max(5, 2^n) 초 (최대 32초)
-        print("[WebSocket] Reconnecting in 2 seconds (attempt \(reconnectAttempts))")
+        logger.info("[WebSocket] Reconnecting in 2 seconds (attempt \(reconnectAttempts))")
         
         try? await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000))
         
@@ -116,7 +118,7 @@ class ConversationViewModel: ObservableObject {
     private func handleStreamEvent(_ event: FZMessagingStreamClient.StreamEvent) {
         switch event {
         case .connected:
-            print("[WebSocket] Connected to conversation: \(conversationId)")
+            logger.info("[WebSocket] Connected to conversation: \(conversationId)")
             connectionState = .connected
             isReconnecting = false
             reconnectAttempts = 0
@@ -129,7 +131,7 @@ class ConversationViewModel: ObservableObject {
             }
             
         case .disconnected(let error):
-            print("[WebSocket] Disconnected: \(error?.localizedDescription ?? "Unknown")")
+            logger.warning("[WebSocket] Disconnected: \(error?.localizedDescription ?? "Unknown")")
             connectionState = .disconnected
             
             // 자동 재연결 시작
@@ -152,12 +154,12 @@ class ConversationViewModel: ObservableObject {
             
         case .readEvent(let userId, let readAt):
             // 읽음 상태 업데이트
-            print("[WebSocket] User \(userId) read messages at \(readAt)")
+            logger.debug("[WebSocket] User \(userId) read messages at \(readAt)")
             // 대화 참여자의 읽음 시간 업데이트
             self.readState[userId] = readAt
             
         case .error(let error):
-            print("[WebSocket] Error: \(error)")
+            logger.error("[WebSocket] Error: \(error)")
             // 에러 발생 시에도 재연결 시도
             if connectionState == .connected {
                 connectionState = .disconnected
@@ -172,7 +174,7 @@ class ConversationViewModel: ObservableObject {
     private func fetchMissedMessages(since date: Date) async {
         guard let apiClient = apiClient else { return }
         
-        print("[WebSocket] Fetching missed messages since \(date)")
+        logger.debug("[WebSocket] Fetching missed messages since \(date)")
         
         do {
             // 최신 메시지들을 가져옴
@@ -194,7 +196,7 @@ class ConversationViewModel: ObservableObject {
                 prefetchImages(from: newMessages)
             }
         } catch {
-            print("[WebSocket] Failed to fetch missed messages: \(error)")
+            logger.error("[WebSocket] Failed to fetch missed messages: \(error)")
         }
     }
     
@@ -216,7 +218,7 @@ class ConversationViewModel: ObservableObject {
                 }
             }
         } catch {
-            print("[Conversation] Failed to load conversation info: \(error)")
+            logger.error("[Conversation] Failed to load conversation info: \(error)")
         }
     }
     
@@ -237,7 +239,7 @@ class ConversationViewModel: ObservableObject {
             // 이미지 프리페칭
             prefetchImages(from: page.results)
         } catch {
-            print("[Conversation] Failed to load messages: \(error)")
+            logger.error("[Conversation] Failed to load messages: \(error)")
         }
         isLoading = false
     }
@@ -259,7 +261,7 @@ class ConversationViewModel: ObservableObject {
             // 이미지 프리페칭
             prefetchImages(from: page.results)
         } catch {
-            print("[Conversation] Failed to load more messages: \(error)")
+            logger.error("[Conversation] Failed to load more messages: \(error)")
         }
         isLoadingMore = false
     }
@@ -296,7 +298,7 @@ class ConversationViewModel: ObservableObject {
                 messages.append(message)
             }
         } catch {
-            print("[Conversation] Failed to send message: \(error)")
+            logger.error("[Conversation] Failed to send message: \(error)")
         }
         isSending = false
     }
@@ -313,7 +315,7 @@ class ConversationViewModel: ObservableObject {
                 messages.append(message)
             }
         } catch {
-            print("[Conversation] Failed to send image: \(error)")
+            logger.error("[Conversation] Failed to send image: \(error)")
         }
         isSending = false
     }
@@ -325,7 +327,7 @@ class ConversationViewModel: ObservableObject {
             try await apiClient.deleteMessage(conversationId: conversationId, messageId: id)
             messages.removeAll { $0.id.uuidString == id }
         } catch {
-            print("[Conversation] Failed to delete message: \(error)")
+            logger.error("[Conversation] Failed to delete message: \(error)")
         }
     }
     
@@ -337,7 +339,7 @@ class ConversationViewModel: ObservableObject {
             // WebSocket을 통해서도 읽음 확인 전송
             // streamClient?.sendReadReceipt()
         } catch {
-            print("[Conversation] Failed to mark as read: \(error)")
+            logger.error("[Conversation] Failed to mark as read: \(error)")
         }
     }
     
@@ -375,6 +377,8 @@ class ConversationViewModel: ObservableObject {
 }
 
 struct ConversationScreen: View {
+    private let logger = createFZOSLogger("ConversationScreen")
+    
     @EnvironmentObject
     var appState: RootAppState
     
@@ -541,7 +545,7 @@ struct ConversationScreen: View {
             switch newPhase {
             case .active:
                 // 앱이 포그라운드로 돌아왔을 때
-                print("[ConversationScreen] App became active, reconnecting...")
+                logger.info("[ConversationScreen] App became active, reconnecting...")
                 // WebSocket 재연결 및 메시지 갱신
                 if viewModel.connectionState == .disconnected {
                     viewModel.connectWebSocket()
@@ -552,7 +556,7 @@ struct ConversationScreen: View {
                 }
             case .background:
                 // 앱이 백그라운드로 갔을 때
-                print("[ConversationScreen] App went to background, disconnecting...")
+                logger.info("[ConversationScreen] App went to background, disconnecting...")
                 viewModel.disconnectWebSocket()
             case .inactive:
                 // 중간 상태 (앱 스위처 등)

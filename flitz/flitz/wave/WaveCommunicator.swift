@@ -29,6 +29,8 @@ class WaveCommunicator: NSObject {
     
     let locationReporter = WaveLocationReporter.shared
     
+    private let logger = createFZOSLogger("WaveCommunicator")
+    
     var discoverer: WaveDiscoverer!
     var broadcaster: WaveBroadcaster!
     
@@ -77,7 +79,7 @@ class WaveCommunicator: NSObject {
         let session = try await client.startWaveDiscovery()
         self.identity = session.session_id
         
-        print("starting wave with identity: \(session.session_id)")
+        logger.info("starting wave with identity: \(session.session_id)")
         
         locationReporter.startMonitoring()
         
@@ -111,7 +113,7 @@ class WaveCommunicator: NSObject {
 extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
     func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
         guard let identity = self.identity else {
-            print("WaveCommunicator: No active session to report discovery")
+            logger.warning("WaveCommunicator: No active session to report discovery")
             return
         }
         
@@ -129,7 +131,7 @@ extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
             do {
                 try await self.client.reportWaveDiscovery(args)
             } catch {
-                print(error)
+                logger.error("\(error)")
             }
         }
     }

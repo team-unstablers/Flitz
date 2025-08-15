@@ -16,6 +16,8 @@ class WaveLocationReporter: NSObject {
     
     weak var client: FZAPIClient? = nil
     
+    private let logger = createFZOSLogger("WaveLocationReporter")
+    
     var location: CLLocation? {
         locationManager.location
     }
@@ -83,18 +85,16 @@ extension WaveLocationReporter: CLLocationManagerDelegate {
             return
         }
         
-        print("Updated location: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-        
         Task {
             do {
                 try await postLocation(location)
             } catch {
-                print("Failed to post location: \(error)")
+                logger.error("Failed to post location: \(error)")
             }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
-        print(error)
+        logger.error("Location manager failed with error: \(error)")
     }
 }
