@@ -41,6 +41,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         
         sceneView.scene = world.scene
         sceneView.pointOfView = world.mainCamera
+        
         /*
         sceneView.isPlaying = true
         sceneView.rendersContinuously = true
