@@ -348,6 +348,54 @@ streamClient.eventPublisher
 apiClient.disconnectMessagingStream(conversationId: "conversation-id")
 ```
 
+## 로깅 시스템 (FZLogger)
+
+### 개요
+프로젝트 전체에서 일관된 로깅을 위해 `FZLogger`를 사용합니다. **절대 `print()` 문을 사용하지 마세요.** 모든 디버깅 및 로그 출력은 FZLogger를 통해 이루어져야 합니다.
+
+### 로거 생성
+각 클래스에서 로거 인스턴스를 생성하여 사용합니다:
+
+```swift
+class MyViewController: UIViewController {
+    private let logger = createFZOSLogger("MyViewController")
+    
+    func someMethod() {
+        logger.debug("디버깅 메시지")
+        logger.info("일반 정보 메시지")
+        logger.warning("경고 메시지")
+        logger.error("에러 메시지")
+        logger.fatal("치명적 에러 메시지")
+    }
+}
+```
+
+### 로그 레벨
+- **debug**: 개발 중 디버깅 정보 (일반 모드에서는 출력되지 않음)
+- **info**: 일반적인 정보성 메시지
+- **warning**: 주의가 필요한 상황
+- **error**: 에러 발생 (복구 가능)
+- **fatal**: 치명적 에러 (앱 크래시 가능성)
+
+### 로그 레벨 설정
+앱 시작 시 글로벌 로그 레벨을 설정할 수 있습니다:
+
+```swift
+// AppDelegate.swift
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    #if DEBUG
+    setGlobalLoggerLevel(.verbose)  // 개발 환경: 모든 로그 출력
+    #else
+    setGlobalLoggerLevel(.normal)   // 프로덕션: debug 제외 출력
+    #endif
+}
+```
+
+### 주의사항
+- **print() 사용 금지**: 성능 및 보안상의 이유로 `print()` 대신 반드시 logger를 사용하세요
+- **클래스명 일치**: `createFZOSLogger()`에 전달하는 문자열은 해당 클래스명과 일치시켜 로그 추적을 용이하게 합니다
+- **민감정보 로깅 금지**: 비밀번호, 토큰, 개인정보 등은 절대 로그에 포함시키지 마세요
+
 </section>
 <section name="note">
 # NOTE
