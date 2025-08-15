@@ -43,9 +43,17 @@ class RootAppState: ObservableObject {
     init() {
         self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self
+        
+        Task {
+            try await self.waveCommunicator.recoverState()
+        }
     }
     
     func reloadContext() {
+        Task {
+            try await self.waveCommunicator.stop()
+        }
+        
         self.client = FZAPIClient(context: .load())
         self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self
@@ -58,6 +66,10 @@ class RootAppState: ObservableObject {
         
         // Update APNS token if available
         updateAPNSToken()
+        
+        Task {
+            try await self.waveCommunicator.recoverState()
+        }
     }
     
     func loadProfile() {

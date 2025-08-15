@@ -54,8 +54,10 @@ struct WaveScreen: View {
         let waveActive = appState.waveActive
         Task {
             if waveActive {
+                WaveCommunicator.serviceEnabled = false
                 try? await appState.waveCommunicator.stop()
             } else {
+                WaveCommunicator.serviceEnabled = true
                 try? await appState.waveCommunicator.start()
             }
         }

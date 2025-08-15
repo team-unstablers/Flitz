@@ -16,6 +16,15 @@ protocol WaveCommunicatorDelegate: AnyObject {
 
 @MainActor
 class WaveCommunicator {
+    static var serviceEnabled: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: "FlitzWaveEnabled")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "FlitzWaveEnabled")
+        }
+    }
+    
     var client: FZAPIClient
     
     let locationReporter = WaveLocationReporter.shared
@@ -49,6 +58,14 @@ class WaveCommunicator {
         if client.context.id != nil {
             locationReporter.startMonitoring()
         }
+    }
+    
+    func recoverState() async throws {
+        guard Self.serviceEnabled else {
+            return
+        }
+        
+        try await self.start()
     }
     
     func start() async throws {
