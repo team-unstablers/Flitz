@@ -13,8 +13,11 @@ protocol WaveDiscovererDelegate: AnyObject {
 }
 
 class WaveDiscoverer: NSObject {
+    static let RESTORE_IDENTIFIER = "pl.unstabler.flitz.wave.discoverer"
+    
     let locationReporter: WaveLocationReporter
-    let centralManager = CBCentralManager()
+    
+    var centralManager: CBCentralManager!
     
     private var peripherals: Set<CBPeripheral> = []
     
@@ -22,9 +25,17 @@ class WaveDiscoverer: NSObject {
     
     init(locationReporter: WaveLocationReporter) {
         self.locationReporter = locationReporter
+        
         super.init()
         
-        centralManager.delegate = self
+        self.centralManager = CBCentralManager(
+            delegate: self,
+            queue: nil,
+            options: [
+                CBCentralManagerOptionShowPowerAlertKey: true,
+                CBCentralManagerOptionRestoreIdentifierKey: Self.RESTORE_IDENTIFIER
+            ]
+        )
     }
     
     func start(for serviceIds: [FlitzWaveServiceID] = [.default]) {
@@ -62,6 +73,33 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
         print("disconencted")
         self.peripherals.remove(peripheral)
+    }
+    
+    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+        print("restoring state")
+        
+        // restore scanning state
+        if dict[CBCentralManagerRestoredStateScanServicesKey] is [CBUUID] {
+            // restart scanning
+            self.start()
+        }
+        
+        guard let peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] else {
+            return
+        }
+        
+        for peripheral in peripherals {
+            self.peripherals.insert(peripheral)
+            peripheral.delegate = self
+
+            if peripheral.state == .connected {
+                // already connected, discover services
+                peripheral.discoverServices([FlitzWaveServiceID.default.rawValue])
+            } else if peripheral.state == .disconnected {
+                // not connected, connect
+                central.connect(peripheral)
+            }
+        }
     }
 }
 
