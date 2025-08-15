@@ -35,7 +35,7 @@ class FZCardViewWorld {
     private func setupLight() {
         let envLight = SCNLight()
         envLight.type = .ambient
-        envLight.intensity = 1200
+        envLight.intensity = 800
         envLight.temperature = 6500 // 주광색
         
         scene.rootNode.light = envLight
@@ -43,7 +43,7 @@ class FZCardViewWorld {
         
         let light = SCNLight()
         light.type = .omni
-        light.intensity = 800
+        light.intensity = 600
         light.temperature = 6500 // 주광색
         
         lightNode.light = light
