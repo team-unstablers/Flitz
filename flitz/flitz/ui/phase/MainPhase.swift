@@ -19,5 +19,10 @@ struct MainPhase: View {
                 UNUserNotificationCenter.setup()
                 appState.loadProfile()
             }
+        /*
+            .onScenePhase(.active, immediate: false) {
+                WaveLocationReporter.shared.requestLocation()
+            }
+         */
     }
 }

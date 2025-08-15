@@ -18,8 +18,10 @@ protocol WaveCommunicatorDelegate: AnyObject {
 class WaveCommunicator {
     var client: FZAPIClient
     
-    let discoverer = WaveDiscoverer()
-    let broadcaster = WaveBroadcaster()
+    let locationReporter = WaveLocationReporter.shared
+    
+    let discoverer: WaveDiscoverer
+    let broadcaster: WaveBroadcaster
     
     var identity: String {
         get {
@@ -37,7 +39,16 @@ class WaveCommunicator {
     init(with client: FZAPIClient) {
         self.client = client
         
+        locationReporter.client = client
+        
+        discoverer = WaveDiscoverer(locationReporter: locationReporter)
+        broadcaster = WaveBroadcaster()
+        
         discoverer.delegate = self
+        
+        if client.context.id != nil {
+            locationReporter.startMonitoring()
+        }
     }
     
     func start() async throws {
@@ -45,6 +56,8 @@ class WaveCommunicator {
         self.identity = session.session_id
         
         print("starting wave with identity: \(self.identity)")
+        
+        locationReporter.startMonitoring()
         
         broadcaster.start()
         discoverer.start()

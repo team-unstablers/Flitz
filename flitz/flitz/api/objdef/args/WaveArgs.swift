@@ -16,3 +16,10 @@ struct ReportWaveDiscoveryArgs: Codable {
     let altitude: Double?
     let accuracy: Double?
 }
+
+struct WaveUpdateLocationArgs: Codable {
+    let latitude: Double?
+    let longitude: Double?
+    let altitude: Double?
+    let accuracy: Double?
+}

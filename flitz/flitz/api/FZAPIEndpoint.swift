@@ -59,6 +59,7 @@ struct FZAPIEndpoint: RawRepresentable {
     static let waveDiscoveryStart = FZAPIEndpoint(rawValue: "/wave/discovery/start/")
     static let waveDiscoveryEnd = FZAPIEndpoint(rawValue: "/wave/discovery/stop/")
     static let waveReportDiscovery = FZAPIEndpoint(rawValue: "/wave/discovery/report/")
+    static let waveUpdateLocation = FZAPIEndpoint(rawValue: "/wave/discovery/update/")
     // wave end
     
     // messaging start
