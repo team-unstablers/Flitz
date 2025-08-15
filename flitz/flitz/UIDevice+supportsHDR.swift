@@ -10,6 +10,10 @@ import UIKit
 
 extension UIDevice {
     static var supportsHDR: Bool {
-        UIScreen.main.traitCollection.displayGamut == .P3
+        return UIScreen.main.potentialEDRHeadroom > 1.0
+    }
+    
+    static var supportsXDR: Bool {
+        return UIScreen.main.potentialEDRHeadroom >= 4.0
     }
 }
