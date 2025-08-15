@@ -19,13 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         UIFont.setupUINavigationBarTypography()
         
-        Task {
-            do {
-                try await RootAppState.shared.waveCommunicator.recoverState()
-            } catch {
-                print("Failed to recover wave communicator state: \(error)")
-            }
-        }
+        recoverWaveCommunicatorState()
         
         return true
     }
@@ -39,6 +33,37 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         print("stringifiedToken:", stringifiedToken)
         
         RootAppState.shared.updateAPNSToken()
+    }
+    
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        print("silent push received", userInfo)
+        
+        defer { completionHandler(.newData) }
+        
+        guard let type = userInfo["type"] as? String else {
+            return
+        }
+        
+        switch type {
+        case "wake_up":
+            recoverWaveCommunicatorState()
+            break
+        default:
+            break
+        }
+    }
+    
+    func recoverWaveCommunicatorState() {
+        Task {
+            do {
+                try await RootAppState.shared.waveCommunicator.recoverState()
+            } catch {
+                print("Failed to recover wave communicator state: \(error)")
+            }
+        }
     }
 }
 
