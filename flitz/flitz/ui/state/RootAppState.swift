@@ -26,7 +26,7 @@ class RootAppState: ObservableObject {
     var currentModal: RootModalItem? = nil
     
     @Published
-    var waveCommunicator: FlitzWaveCommunicator!
+    var waveCommunicator: WaveCommunicator!
     
     @Published
     var waveActive: Bool = false
@@ -41,13 +41,13 @@ class RootAppState: ObservableObject {
     var conversationUpdated = PassthroughSubject<Void, Never>()
     
     init() {
-        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self
     }
     
     func reloadContext() {
         self.client = FZAPIClient(context: .load())
-        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self
 
         // Reset the profile
@@ -87,12 +87,12 @@ class RootAppState: ObservableObject {
     }
 }
 
-extension RootAppState: @preconcurrency FlitzWaveCommunicatorDelegate {
-    func communicator(_ communicator: FlitzWaveCommunicator, didStart sessionId: String) {
+extension RootAppState: @preconcurrency WaveCommunicatorDelegate {
+    func communicator(_ communicator: WaveCommunicator, didStart sessionId: String) {
         self.waveActive = true
     }
     
-    func communicator(_ communicator: FlitzWaveCommunicator, didStop sessionId: String) {
+    func communicator(_ communicator: WaveCommunicator, didStop sessionId: String) {
         self.waveActive = false
     }
     

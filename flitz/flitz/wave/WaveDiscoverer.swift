@@ -8,17 +8,17 @@
 import CoreBluetooth
 import CoreLocation
 
-protocol FlitzWaveDiscovererDelegate: AnyObject {
-    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
+protocol WaveDiscovererDelegate: AnyObject {
+    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
 }
 
-class FlitzWaveDiscoverer: NSObject {
+class WaveDiscoverer: NSObject {
     let locationManager = CLLocationManager()
     let centralManager = CBCentralManager()
     
     private var peripherals: Set<CBPeripheral> = []
     
-    weak var delegate: FlitzWaveDiscovererDelegate?
+    weak var delegate: WaveDiscovererDelegate?
     
     override init() {
         super.init()
@@ -43,7 +43,7 @@ class FlitzWaveDiscoverer: NSObject {
     }
 }
 
-extension FlitzWaveDiscoverer: CLLocationManagerDelegate {
+extension WaveDiscoverer: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .notDetermined:
@@ -67,7 +67,7 @@ extension FlitzWaveDiscoverer: CLLocationManagerDelegate {
     }
 }
 
-extension FlitzWaveDiscoverer: CBCentralManagerDelegate {
+extension WaveDiscoverer: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         // FIXME
     }
@@ -94,7 +94,7 @@ extension FlitzWaveDiscoverer: CBCentralManagerDelegate {
     }
 }
 
-extension FlitzWaveDiscoverer: CBPeripheralDelegate {
+extension WaveDiscoverer: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
         print("service discovered")
         

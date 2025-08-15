@@ -8,18 +8,18 @@
 import CoreBluetooth
 import CoreLocation
 
-protocol FlitzWaveCommunicatorDelegate: AnyObject {
-    func communicator(_ communicator: FlitzWaveCommunicator, didStart sessionId: String)
-    func communicator(_ communicator: FlitzWaveCommunicator, didStop sessionId: String)
+protocol WaveCommunicatorDelegate: AnyObject {
+    func communicator(_ communicator: WaveCommunicator, didStart sessionId: String)
+    func communicator(_ communicator: WaveCommunicator, didStop sessionId: String)
 }
 
 
 @MainActor
-class FlitzWaveCommunicator {
+class WaveCommunicator {
     var client: FZAPIClient
     
-    let discoverer = FlitzWaveDiscoverer()
-    let broadcaster = FlitzWaveBroadcaster()
+    let discoverer = WaveDiscoverer()
+    let broadcaster = WaveBroadcaster()
     
     var identity: String {
         get {
@@ -30,7 +30,7 @@ class FlitzWaveCommunicator {
         }
     }
     
-    weak var delegate: FlitzWaveCommunicatorDelegate? = nil
+    weak var delegate: WaveCommunicatorDelegate? = nil
     
     private(set) var isActive: Bool = false
     
@@ -70,8 +70,8 @@ class FlitzWaveCommunicator {
     
 }
 
-extension FlitzWaveCommunicator: FlitzWaveDiscovererDelegate {
-    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
+extension WaveCommunicator: WaveDiscovererDelegate {
+    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
         let args = ReportWaveDiscoveryArgs(
             session_id: self.identity,
             discovered_session_id: sessionId,
