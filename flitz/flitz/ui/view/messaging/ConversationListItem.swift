@@ -70,7 +70,7 @@ struct ConversationListItem: View {
 
 fileprivate extension DirectMessageConversation {
     func unreadCount(for userId: String) -> Int {
-        return participants.first { $0.user.id == userId }!.unread_count ?? 0
+        return participants.first { $0.user.id == userId }?.unread_count ?? 0
     }
     
     var displayText: String {
