@@ -46,6 +46,8 @@ struct NoCardsAvailable: View {
     var reason: NoCardsAvailableReason
     
     var body: some View {
+        EmptyView()
+        /*
         DummyCardView()
             .shadow(radius: 8)
             .blur(radius: 8)
@@ -78,6 +80,7 @@ struct NoCardsAvailable: View {
                 }
                     .padding()
             }
+         */
     }
 }
 

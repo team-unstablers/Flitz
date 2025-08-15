@@ -41,6 +41,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         
         sceneView.scene = world.scene
         sceneView.pointOfView = world.mainCamera
+        // sceneView.technique = world.glowTechnique
         
         /*
         sceneView.isPlaying = true
@@ -312,6 +313,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
         let cardInstance = world.spawn(card: card)
         
         cardInstance.updateContent()
+        
+        // Enable glow effect with customization
+        world.setGlowColor(r: 1.0, g: 0.8, b: 0.9)  // Soft pink glow
+        world.glowIntensity = 2.0
+        world.glowRadius = 3.0
+        world.enableGlow(true)
         
         return world
     }()

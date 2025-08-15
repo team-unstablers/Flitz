@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>passes</key>
+	<dict>
+		<!-- Pass 1: Render scene normally -->
+		<key>pass_scene</key>
+		<dict>
+			<key>draw</key>
+			<string>DRAW_SCENE</string>
+			<key>outputs</key>
+			<dict>
+				<key>color</key>
+				<string>COLOR</string>
+			</dict>
+		</dict>
+		
+		<!-- Pass 2: Extract bright areas -->
+		<key>pass_bright</key>
+		<dict>
+			<key>draw</key>
+			<string>DRAW_QUAD</string>
+			<key>metalVertexShader</key>
+			<string>glow_vertex</string>
+			<key>metalFragmentShader</key>
+			<string>glow_bright_pass</string>
+			<key>inputs</key>
+			<dict>
+				<key>colorTex</key>
+				<string>COLOR</string>
+
+                <key>threshold</key>
+                <string>threshold</string>
+                <key>radius</key>
+                <string>radius</string>
+                <key>glowColor</key>
+                <string>glowColor</string>
+                <key>intensity</key>
+                <string>intensity</string>
+                <key>time</key>
+                <string>time</string>
+                <key>_padding</key>
+                <string>_padding</string>
+			</dict>
+			<key>outputs</key>
+			<dict>
+				<key>color</key>
+				<string>bright_pass</string>
+			</dict>
+		</dict>
+		
+		<!-- Pass 3: Horizontal blur -->
+		<key>pass_blur_h</key>
+		<dict>
+			<key>draw</key>
+			<string>DRAW_QUAD</string>
+			<key>metalVertexShader</key>
+			<string>glow_vertex</string>
+			<key>metalFragmentShader</key>
+			<string>glow_blur_horizontal</string>
+			<key>inputs</key>
+			<dict>
+				<key>colorTex</key>
+				<string>bright_pass</string>
+
+                <key>threshold</key>
+                <string>threshold</string>
+                <key>radius</key>
+                <string>radius</string>
+                <key>glowColor</key>
+                <string>glowColor</string>
+                <key>intensity</key>
+                <string>intensity</string>
+                <key>time</key>
+                <string>time</string>
+                <key>_padding</key>
+                <string>_padding</string>
+			</dict>
+			<key>outputs</key>
+			<dict>
+				<key>color</key>
+				<string>blur_horizontal</string>
+			</dict>
+		</dict>
+		
+		<!-- Pass 4: Vertical blur -->
+		<key>pass_blur_v</key>
+		<dict>
+			<key>draw</key>
+			<string>DRAW_QUAD</string>
+			<key>metalVertexShader</key>
+			<string>glow_vertex</string>
+			<key>metalFragmentShader</key>
+			<string>glow_blur_vertical</string>
+			<key>inputs</key>
+			<dict>
+				<key>colorTex</key>
+				<string>blur_horizontal</string>
+
+                <key>threshold</key>
+                <string>threshold</string>
+                <key>radius</key>
+                <string>radius</string>
+                <key>glowColor</key>
+                <string>glowColor</string>
+                <key>intensity</key>
+                <string>intensity</string>
+                <key>time</key>
+                <string>time</string>
+                <key>_padding</key>
+                <string>_padding</string>
+			</dict>
+			<key>outputs</key>
+			<dict>
+				<key>color</key>
+				<string>blur_vertical</string>
+			</dict>
+		</dict>
+		
+		<!-- Pass 5: Composite final image -->
+		<key>pass_composite</key>
+		<dict>
+			<key>draw</key>
+			<string>DRAW_QUAD</string>
+			<key>metalVertexShader</key>
+			<string>glow_vertex</string>
+			<key>metalFragmentShader</key>
+			<string>glow_composite</string>
+			<key>inputs</key>
+			<dict>
+				<key>sceneTex</key>
+				<string>COLOR</string>
+				<key>glowTex</key>
+				<string>blur_vertical</string>
+
+                <key>threshold</key>
+                <string>threshold</string>
+                <key>radius</key>
+                <string>radius</string>
+                <key>glowColor</key>
+                <string>glowColor</string>
+                <key>intensity</key>
+                <string>intensity</string>
+                <key>time</key>
+                <string>time</string>
+                <key>_padding</key>
+                <string>_padding</string>
+			</dict>
+			<key>outputs</key>
+			<dict>
+				<key>color</key>
+				<string>COLOR</string>
+			</dict>
+		</dict>
+	</dict>
+	
+	<key>sequence</key>
+	<array>
+		<string>pass_scene</string>
+		<string>pass_bright</string>
+		<string>pass_blur_h</string>
+		<string>pass_blur_v</string>
+		<string>pass_composite</string>
+	</array>
+	
+	<key>targets</key>
+	<dict>
+		<key>bright_pass</key>
+		<dict>
+			<key>type</key>
+			<string>color</string>
+		</dict>
+		<key>blur_horizontal</key>
+		<dict>
+			<key>type</key>
+			<string>color</string>
+		</dict>
+		<key>blur_vertical</key>
+		<dict>
+			<key>type</key>
+			<string>color</string>
+		</dict>
+	</dict>
+	
+	<key>symbols</key>
+	<dict>
+		<!-- Bright pass parameters -->
+		<key>threshold</key>
+		<dict>
+			<key>type</key>
+			<string>float</string>
+			<key>default</key>
+			<real>0.6</real>
+		</dict>
+		
+		<!-- Blur parameters -->
+		<key>radius</key>
+		<dict>
+			<key>type</key>
+			<string>float</string>
+			<key>default</key>
+			<real>2.0</real>
+		</dict>
+		
+		<!-- Glow color -->
+		<key>glowColor</key>
+		<dict>
+			<key>type</key>
+			<string>float3</string>
+			<key>default</key>
+			<dict>
+				<key>x</key>
+				<real>1.0</real>
+				<key>y</key>
+				<real>0.9</real>
+				<key>z</key>
+				<real>0.8</real>
+			</dict>
+		</dict>
+		
+		<!-- Glow intensity -->
+		<key>intensity</key>
+		<dict>
+			<key>type</key>
+			<string>float</string>
+			<key>default</key>
+			<real>1.5</real>
+		</dict>
+		
+		<!-- Time for animation -->
+		<key>time</key>
+		<dict>
+			<key>type</key>
+			<string>float</string>
+			<key>default</key>
+			<real>0.0</real>
+		</dict>
+
+		<!-- Time for animation -->
+		<key>_padding</key>
+		<dict>
+			<key>type</key>
+			<string>float</string>
+			<key>default</key>
+			<real>0.0</real>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -7,6 +7,7 @@
 
 import Foundation
 import SceneKit
+import QuartzCore
 
 
 
@@ -22,8 +23,40 @@ class FZCardViewWorld {
     private var cardIdCounter: Int = 0
     private(set) var cardArena: Set<FZCardViewCardInstance> = []
     
+    // Glow effect properties
+    private(set) var glowTechnique: SCNTechnique?
+    private var displayLink: CADisplayLink?
+    private var startTime: TimeInterval = 0
+    private var glowEnabled: Bool = false
+    
+    // Glow parameters
+    var glowColor: SCNVector3 = SCNVector3(1.0, 0.9, 0.8) {
+        didSet {
+            updateGlowParameters()
+        }
+    }
+    var glowIntensity: Float = 0.35 {
+        didSet {
+            updateGlowParameters()
+        }
+    }
+    var glowRadius: Float = 3.0 {
+        didSet {
+            updateGlowParameters()
+        }
+    }
+    var glowThreshold: Float = 0.0 {
+        didSet {
+            updateGlowParameters()
+        }
+    }
+    
     init() {
         
+    }
+    
+    deinit {
+        // stopGlowAnimation()
     }
     
     private func setupScene() {
@@ -66,6 +99,9 @@ class FZCardViewWorld {
         setupScene()
         setupMainCamera()
         setupLight()
+        // setupGlowEffect()
+        
+        // enableGlow(true)
     }
 
     // 광원 위치 업데이트 메서드
@@ -76,6 +112,94 @@ class FZCardViewWorld {
         lightNode.position = SCNVector3(x: x, y: y, z: z)
         
         SCNTransaction.commit()
+    }
+    
+    // MARK: - Glow Effect Methods
+    
+    private func setupGlowEffect() {
+        guard self.glowTechnique == nil else {
+            print("Glow technique already set up")
+            return
+        }
+        
+        // Load the glow technique from plist
+        guard let techniqueURL = Bundle.main.url(forResource: "CardGlowTechnique", withExtension: "plist"),
+              let techniqueDictionary = NSDictionary(contentsOf: techniqueURL) as? [String: Any] else {
+            print("Failed to load glow technique plist")
+            return
+        }
+        
+        // Create SCNTechnique with the dictionary
+        glowTechnique = SCNTechnique(dictionary: techniqueDictionary)
+        
+        
+        // Apply initial parameters
+        updateGlowParameters()
+    }
+    
+    func enableGlow(_ enabled: Bool) {
+        glowEnabled = enabled
+        
+        if enabled {
+            // Apply technique to camera
+            // mainCamera.camera?.technique = glowTechnique
+            startGlowAnimation()
+        } else {
+            // Remove technique
+            mainCamera.camera?.technique = nil
+            stopGlowAnimation()
+        }
+    }
+    
+    private func startGlowAnimation() {
+        guard displayLink == nil else { return }
+        
+        startTime = CACurrentMediaTime()
+        displayLink = CADisplayLink(target: self, selector: #selector(updateGlowAnimation))
+        displayLink?.add(to: .main, forMode: .default)
+    }
+    
+    private func stopGlowAnimation() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+    
+    @objc private func updateGlowAnimation() {
+        guard let technique = glowTechnique else { return }
+        
+        let currentTime = CACurrentMediaTime() - startTime
+        glowTechnique?.setValue(Float(currentTime), forKey: "time")
+        glowTechnique?.setValue(glowThreshold, forKey: "threshold")
+        glowTechnique?.setValue(glowRadius, forKey: "radius")
+        glowTechnique?.setValue(glowIntensity, forKey: "intensity")
+        glowTechnique?.setValue(glowColor, forKey: "glowColor")
+
+        
+        print(Float(currentTime))
+    }
+    
+    private func updateGlowParameters() {
+        guard let technique = glowTechnique else { return }
+        
+        /*
+        // Create a uniform struct matching GlowUniforms in the shader
+        var uniforms: [String: Any] = [:]
+        uniforms["threshold"] = glowThreshold
+        uniforms["radius"] = glowRadius
+        uniforms["glowColor"] = glowColor
+        uniforms["intensity"] = glowIntensity
+        uniforms["time"] = Float(0.0) // Will be updated by animation
+         */
+        
+        // Set individual symbols
+        glowTechnique?.setValue(glowThreshold, forKey: "threshold")
+        glowTechnique?.setValue(glowRadius, forKey: "radius")
+        glowTechnique?.setValue(glowIntensity, forKey: "intensity")
+        glowTechnique?.setValue(glowColor, forKey: "glowColor")
+    }
+    
+    func setGlowColor(r: Float, g: Float, b: Float) {
+        glowColor = SCNVector3(r, g, b)
     }
     
     func spawn(card: Flitz.Card) -> FZCardViewCardInstance {
