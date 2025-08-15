@@ -8,8 +8,14 @@
 import CoreBluetooth
 import CoreLocation
 
+protocol FlitzWaveCommunicatorDelegate: AnyObject {
+    func communicator(_ communicator: FlitzWaveCommunicator, didStart sessionId: String)
+    func communicator(_ communicator: FlitzWaveCommunicator, didStop sessionId: String)
+}
 
-class FlitzWaveCommunicator: ObservableObject {
+
+@MainActor
+class FlitzWaveCommunicator {
     var client: FZAPIClient
     
     let discoverer = FlitzWaveDiscoverer()
@@ -24,7 +30,8 @@ class FlitzWaveCommunicator: ObservableObject {
         }
     }
     
-    @Published
+    weak var delegate: FlitzWaveCommunicatorDelegate? = nil
+    
     private(set) var isActive: Bool = false
     
     init(with client: FZAPIClient) {
@@ -42,22 +49,22 @@ class FlitzWaveCommunicator: ObservableObject {
         broadcaster.start()
         discoverer.start()
         
-        DispatchQueue.main.async {
-            self.isActive = true
-            RootAppState.shared.waveActive = true
-        }
+        self.isActive = true
+        
+        delegate?.communicator(self, didStart: self.identity)
     }
     
     func stop() async throws {
+        let identity = broadcaster.identity
+        
         broadcaster.stop()
         discoverer.stop()
         
-        DispatchQueue.main.async {
-            self.isActive = false
-            RootAppState.shared.waveActive = false
-        }
+        self.isActive = false
 
         try await client.stopWaveDiscovery()
+        
+        delegate?.communicator(self, didStop: identity)
     }
     
     

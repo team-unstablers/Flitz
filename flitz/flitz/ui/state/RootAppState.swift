@@ -42,12 +42,14 @@ class RootAppState: ObservableObject {
     
     init() {
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        self.waveCommunicator.delegate = self
     }
     
     func reloadContext() {
         self.client = FZAPIClient(context: .load())
         self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
-        
+        self.waveCommunicator.delegate = self
+
         // Reset the profile
         self.profile = nil
         
@@ -83,4 +85,15 @@ class RootAppState: ObservableObject {
             }
         }
     }
+}
+
+extension RootAppState: @preconcurrency FlitzWaveCommunicatorDelegate {
+    func communicator(_ communicator: FlitzWaveCommunicator, didStart sessionId: String) {
+        self.waveActive = true
+    }
+    
+    func communicator(_ communicator: FlitzWaveCommunicator, didStop sessionId: String) {
+        self.waveActive = false
+    }
+    
 }
