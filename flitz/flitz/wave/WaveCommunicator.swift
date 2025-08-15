@@ -15,7 +15,7 @@ protocol WaveCommunicatorDelegate: AnyObject {
 
 
 @MainActor
-class WaveCommunicator {
+class WaveCommunicator: NSObject {
     static var serviceEnabled: Bool {
         get {
             UserDefaults.standard.bool(forKey: "FlitzWaveEnabled")
@@ -29,8 +29,8 @@ class WaveCommunicator {
     
     let locationReporter = WaveLocationReporter.shared
     
-    let discoverer: WaveDiscoverer
-    let broadcaster: WaveBroadcaster
+    var discoverer: WaveDiscoverer!
+    var broadcaster: WaveBroadcaster!
     
     var identity: String {
         get {
@@ -47,13 +47,14 @@ class WaveCommunicator {
     
     init(with client: FZAPIClient) {
         self.client = client
-        
         locationReporter.client = client
         
         discoverer = WaveDiscoverer(locationReporter: locationReporter)
-        broadcaster = WaveBroadcaster()
+
+        super.init()
         
         discoverer.delegate = self
+        broadcaster = WaveBroadcaster(delegate: self)
         
         if client.context.id != nil {
             locationReporter.startMonitoring()
@@ -100,7 +101,7 @@ class WaveCommunicator {
     
 }
 
-extension WaveCommunicator: WaveDiscovererDelegate {
+extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
     func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
         let args = ReportWaveDiscoveryArgs(
             session_id: self.identity,
@@ -118,6 +119,14 @@ extension WaveCommunicator: WaveDiscovererDelegate {
             } catch {
                 print(error)
             }
+        }
+    }
+}
+
+extension WaveCommunicator: @preconcurrency WaveBroadcasterDelegate {
+    func broadcasterDidRestoreState(_ broadcaster: WaveBroadcaster) {
+        Task {
+            try? await self.recoverState()
         }
     }
 }

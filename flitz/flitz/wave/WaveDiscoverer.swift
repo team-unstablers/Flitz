@@ -51,7 +51,29 @@ class WaveDiscoverer: NSObject {
 
 extension WaveDiscoverer: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        // FIXME
+        switch central.state {
+        case .poweredOn:
+            print("Bluetooth Central is powered on")
+            // 백그라운드에서 복원될 때 스캔 재시작
+            if central.isScanning {
+                print("Already scanning")
+            } else {
+                print("Restarting scan")
+                self.start()
+            }
+        case .poweredOff:
+            print("Bluetooth Central is powered off")
+        case .resetting:
+            print("Bluetooth Central is resetting")
+        case .unauthorized:
+            print("Bluetooth Central is unauthorized")
+        case .unsupported:
+            print("Bluetooth Central is unsupported")
+        case .unknown:
+            print("Bluetooth Central state is unknown")
+        @unknown default:
+            print("Unknown bluetooth central state")
+        }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {

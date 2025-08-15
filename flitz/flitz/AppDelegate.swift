@@ -19,10 +19,19 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         UIFont.setupUINavigationBarTypography()
         
-
+        Task {
+            do {
+                try await RootAppState.shared.waveCommunicator.recoverState()
+            } catch {
+                print("Failed to recover wave communicator state: \(error)")
+            }
+        }
+        
         return true
     }
     
+    func applicationDidEnterBackground(_ application: UIApplication) {
+    }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let stringifiedToken = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()

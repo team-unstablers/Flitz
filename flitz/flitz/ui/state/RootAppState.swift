@@ -43,10 +43,6 @@ class RootAppState: ObservableObject {
     init() {
         self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self
-        
-        Task {
-            try await self.waveCommunicator.recoverState()
-        }
     }
     
     func reloadContext() {
