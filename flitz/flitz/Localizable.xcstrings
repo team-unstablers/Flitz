@@ -1,0 +1,425 @@
+{
+  "sourceLanguage" : "ko",
+  "strings" : {
+    "" : {
+
+    },
+    " " : {
+
+    },
+    "  ›" : {
+
+    },
+    "[해시 (단방향 암호화)란 무엇인가요?](https://google.com)" : {
+
+    },
+    "**경고**: 테스트 서버이므로 자주 사용하는 비밀번호를 사용하지 마십시오." : {
+
+    },
+    "**경고**: 특별한 사유가 있지 않은 이상 이 클라이언트로 프로덕션 서버에 접속하는 행위는 삼가하십시오." : {
+
+    },
+    "**아웃팅**은 심각한 **범죄 행위**입니다. 다른 사람들의 프라이버시를 존중해 주세요." : {
+
+    },
+    "%lld" : {
+
+    },
+    "300m" : {
+
+    },
+    "1000m" : {
+
+    },
+    "ASSERTION FAILED (reason=%@)\n%@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ASSERTION FAILED (reason=%1$@)\n%2$@"
+          }
+        }
+      }
+    },
+    "Flitz version %@\nCopyright © 2025 team unstablers Inc.\nAll rights reserved." : {
+
+    },
+    "Flitz 앱이 다른 사람과 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요." : {
+      "comment" : "NoCardsAvailableReason::description"
+    },
+    "Flitz는 현재 대한민국에서만 사용할 수 있어요." : {
+
+    },
+    "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요." : {
+
+    },
+    "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://google.com)에서 확인할 수 있습니다." : {
+
+    },
+    "Flitz에서 사용자님의 안전을 위해 앱을 중단하였습니다." : {
+
+    },
+    "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다." : {
+
+    },
+    "fzapi.user.fuzzy_distance.far" : {
+      "comment" : "멀리 있음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "멀리 있음"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.farthest" : {
+      "comment" : "매우 멀리 있음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매우 멀리 있음"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.medium" : {
+      "comment" : "중간 거리",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중간 거리"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.near" : {
+      "comment" : "가까움",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가까움"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.nearest" : {
+      "comment" : "매우 가까움",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매우 가까움"
+          }
+        }
+      }
+    },
+    "fzapi.user.fuzzy_distance.unknown" : {
+      "comment" : "알 수 없음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없음"
+          }
+        }
+      }
+    },
+    "fzapi.user.online_status.offline" : {
+      "comment" : "오프라인",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오프라인"
+          }
+        }
+      }
+    },
+    "fzapi.user.online_status.online" : {
+      "comment" : "온라인",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온라인"
+          }
+        }
+      }
+    },
+    "fzapi.user.online_status.recent" : {
+      "comment" : "최근 접속",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 접속함"
+          }
+        }
+      }
+    },
+    "fzapi.user.online_status.unknown" : {
+      "comment" : "알 수 없음",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없음"
+          }
+        }
+      }
+    },
+    "host" : {
+
+    },
+    "rot: %@ scl: %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "rot: %1$@ scl: %2$@"
+          }
+        }
+      }
+    },
+    "TODO: date selector" : {
+
+    },
+    "Unsupported message type" : {
+
+    },
+    "Wave 끄기 구역\n(반경 %lldm)" : {
+
+    },
+    "Wave 끄기 구역 설정" : {
+
+    },
+    "Wave에 대해 자세히 알아보기" : {
+
+    },
+    "Welcome, %@" : {
+
+    },
+    "x: %@ y: %@" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "x: %1$@ y: %2$@"
+          }
+        }
+      }
+    },
+    "국가 선택" : {
+
+    },
+    "나가기" : {
+
+    },
+    "내일은 멋진 카드를 받을 수 있을지도 몰라요.\nFlitz 앱이 열심히 찾아줄 거에요!" : {
+      "comment" : "NoCardsAvailableReason::description"
+    },
+    "닉네임을 입력하세요" : {
+
+    },
+    "다음" : {
+
+    },
+    "당신은 어떤 사람인가요?" : {
+
+    },
+    "당신을 나타내는 한줄 칭호!" : {
+
+    },
+    "대시보드" : {
+
+    },
+    "대화" : {
+
+    },
+    "대화 나가기" : {
+
+    },
+    "대화 신고하기" : {
+
+    },
+    "디버그 모드의 클라이언트입니다" : {
+
+    },
+    "로그아웃 되었으므로 앱을 다시 기동하여 주십시오. (죄송합니다! 💦💦)" : {
+
+    },
+    "로그인" : {
+
+    },
+    "리버스 엔지니어링, 패킷 덤프 등을 통하여 이 소프트웨어 및 통신 내용을 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다." : {
+
+    },
+    "마이페이지" : {
+
+    },
+    "멋진 자기 소개를 입력해 보세요!" : {
+
+    },
+    "메시지" : {
+
+    },
+    "메시지 삭제" : {
+
+    },
+    "메시지 신고" : {
+
+    },
+    "메시지를 입력하세요" : {
+
+    },
+    "메인 카드로 설정하기" : {
+
+    },
+    "반경" : {
+
+    },
+    "비밀번호 찾기" : {
+
+    },
+    "비밀번호를 다시 한번 입력해 주세요" : {
+
+    },
+    "비밀번호를 입력해 주세요" : {
+
+    },
+    "비밀번호를 입력해주세요" : {
+
+    },
+    "사용자 보호 기능 설정" : {
+
+    },
+    "사진 앱에 저장" : {
+
+    },
+    "삭제하기" : {
+
+    },
+    "상호명 **주식회사 팀언스테이블러즈**\n대표 **박규환** ｜ 사업자등록번호 **473-81-02068**\n통신판매업 신고번호 **취득 진행 중**\n주소 **(15495) 경기도 안산시 광덕1로 362 5층 518호**" : {
+
+    },
+    "새 카드 만들기" : {
+
+    },
+    "설정" : {
+
+    },
+    "스토어" : {
+
+    },
+    "아직 구현되지 않았습니다" : {
+
+    },
+    "아직 위치를 지정하지 않았습니다!" : {
+
+    },
+    "안내" : {
+
+    },
+    "안전이 확보되었다고 생각되면 앱을 다시 시작해 주세요." : {
+
+    },
+    "안전한 사람들하고만 매칭할래요" : {
+
+    },
+    "알림" : {
+
+    },
+    "앱 설정 열기" : {
+
+    },
+    "앱이 일시 중단되었습니다" : {
+
+    },
+    "오늘은 교환된 카드가 없습니다" : {
+      "comment" : "NoCardsAvailableReason::title"
+    },
+    "웨이브" : {
+
+    },
+    "위치를 길게 눌러서 선택하세요." : {
+
+    },
+    "유저네임을 입력해 주세요" : {
+
+    },
+    "이 대화에서 나가시겠습니까? 모든 메시지가 삭제됩니다." : {
+
+    },
+    "이메일 주소를 입력해 주세요" : {
+
+    },
+    "이미지 옵션" : {
+
+    },
+    "이미지 자르기" : {
+
+    },
+    "읽음" : {
+
+    },
+    "잠깐! 마지막으로.." : {
+
+    },
+    "전화번호 또는 이메일을 입력해주세요" : {
+
+    },
+    "전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다." : {
+
+    },
+    "추가 권한이 필요합니다" : {
+      "comment" : "NoCardsAvailableReason::title"
+    },
+    "취소" : {
+
+    },
+    "트랜스젠더 여부를 프로필에 표시할래요" : {
+
+    },
+    "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요." : {
+
+    },
+    "편집하기" : {
+
+    },
+    "프로필" : {
+
+    },
+    "프로필 설정" : {
+
+    },
+    "프로필 정보 입력" : {
+
+    },
+    "해시태그를 입력하세요" : {
+
+    },
+    "호스트: %@" : {
+
+    },
+    "회원 가입 마치기" : {
+
+    },
+    "회원가입" : {
+
+    },
+    "휴대폰 번호를 입력해 주세요" : {
+
+    },
+    "휴대폰 인증" : {
+
+    },
+    "휴대폰 인증하기" : {
+
+    }
+  },
+  "version" : "1.0"
+}

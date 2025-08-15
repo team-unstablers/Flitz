@@ -19,6 +19,71 @@ struct FZUserToken: Codable {
     var token: String
 }
 
+struct FZUserFuzzyDistance: RawRepresentable, Codable, Equatable {
+    var rawValue: String
+    
+    static let nearest = Self.init(rawValue: "nearest")
+    static let near = Self.init(rawValue: "near")
+    static let medium = Self.init(rawValue: "medium")
+    static let far = Self.init(rawValue: "far")
+    static let farthest = Self.init(rawValue: "farthest")
+
+    init(rawValue: RawValue) {
+        self.rawValue = rawValue
+    }
+    
+    init(_ value: String) {
+        self.rawValue = value
+    }
+    
+    var asLocalizedString: String {
+        switch self {
+        case .nearest:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.nearest", comment: "매우 가까움")
+        case .near:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.near", comment: "가까움")
+        case .medium:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.medium", comment: "중간 거리")
+        case .far:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.far", comment: "멀리 있음")
+        case .farthest:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.farthest", comment: "매우 멀리 있음")
+        default:
+            return NSLocalizedString("fzapi.user.fuzzy_distance.unknown", comment: "알 수 없음")
+        }
+    }
+}
+
+struct FZUserOnlineStatus: RawRepresentable, Codable, Equatable {
+    var rawValue: String
+    
+    static let online = FZUserOnlineStatus(rawValue: "online")
+    static let recent = FZUserOnlineStatus(rawValue: "recent")
+    static let offline = FZUserOnlineStatus(rawValue: "offline")
+    
+    init(rawValue: RawValue) {
+        self.rawValue = rawValue
+    }
+    
+    init(_ value: String) {
+        self.rawValue = value
+    }
+    
+    var asLocalizedString: String {
+        switch self {
+        case .online:
+            return NSLocalizedString("fzapi.user.online_status.online", comment: "온라인")
+        case .recent:
+            return NSLocalizedString("fzapi.user.online_status.recent", comment: "최근 접속")
+        case .offline:
+            return NSLocalizedString("fzapi.user.online_status.offline", comment: "오프라인")
+        default:
+            return NSLocalizedString("fzapi.user.online_status.unknown", comment: "알 수 없음")
+        }
+        
+    }
+}
+
 struct FZUser: Codable, Identifiable {
     var id: String
     var username: String
@@ -27,6 +92,9 @@ struct FZUser: Codable, Identifiable {
     var title: String
     var bio: String
     var hashtags: [String]
+    
+    var online_status: FZUserOnlineStatus
+    var fuzzy_distance: FZUserFuzzyDistance
     
     var profile_image_url: String?
     
@@ -39,6 +107,9 @@ struct FZUser: Codable, Identifiable {
                               bio: "안녕하세요! Flitz 개발자입니다.",
                               hashtags: ["Flitz", "SwiftUI"],
                               
+                              online_status: .online,
+                              fuzzy_distance: .nearest,
+                              
                               profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4")
  
     
@@ -50,6 +121,9 @@ struct FZUser: Codable, Identifiable {
                               bio: "안녕하세요! Flitz 개발자입니다.",
                               hashtags: ["Flitz", "SwiftUI"],
                               
+                              online_status: .recent,
+                              fuzzy_distance: .nearest,
+
                               profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4")
                               
 #endif
@@ -108,5 +182,23 @@ struct FZUserIdentity: Codable {
                                       preferred_genders: 1 | 2 | 4,
                                       welcomes_trans: true,
                                       trans_prefers_safe_match: false)
+#endif
+}
+
+struct FZUserWaveSafetyZone: Codable {
+    var latitude: Double?
+    var longitude: Double?
+    
+    var radius: Double // in meters
+    
+    var is_enabled: Bool
+    var enable_wave_after_exit: Bool
+    
+#if DEBUG
+    static let mock1 = FZUserWaveSafetyZone(latitude: 37.5665,
+                                            longitude: 126.978,
+                                            radius: 1000, // 1km
+                                            is_enabled: true,
+                                            enable_wave_after_exit: true)
 #endif
 }

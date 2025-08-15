@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 
+@MainActor
 class RootAppState: ObservableObject {
     static let shared = RootAppState()
     
@@ -25,7 +26,7 @@ class RootAppState: ObservableObject {
     var currentModal: RootModalItem? = nil
     
     @Published
-    var waveCommunicator: FlitzWaveCommunicator!
+    var waveCommunicator: WaveCommunicator!
     
     @Published
     var waveActive: Bool = false
@@ -40,13 +41,23 @@ class RootAppState: ObservableObject {
     var conversationUpdated = PassthroughSubject<Void, Never>()
     
     init() {
-        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        self.waveCommunicator = WaveCommunicator(with: self.client)
+        self.waveCommunicator.delegate = self
+        
+        Task {
+            try await self.waveCommunicator.recoverState()
+        }
     }
     
     func reloadContext() {
-        self.client = FZAPIClient(context: .load())
-        self.waveCommunicator = FlitzWaveCommunicator(with: self.client)
+        Task {
+            try await self.waveCommunicator.stop()
+        }
         
+        self.client = FZAPIClient(context: .load())
+        self.waveCommunicator = WaveCommunicator(with: self.client)
+        self.waveCommunicator.delegate = self
+
         // Reset the profile
         self.profile = nil
         
@@ -55,16 +66,19 @@ class RootAppState: ObservableObject {
         
         // Update APNS token if available
         updateAPNSToken()
+        
+        Task {
+            try await self.waveCommunicator.recoverState()
+        }
     }
     
     func loadProfile() {
         Task {
             do {
                 let profile = try await self.client.fetchSelf()
+                self.profile = profile
                 
-                DispatchQueue.main.async {
-                    self.profile = profile
-                }
+                await ContactsBlockerTask.updateEnabled()
             } catch {
                 print(error)
             }
@@ -83,4 +97,15 @@ class RootAppState: ObservableObject {
             }
         }
     }
+}
+
+extension RootAppState: @preconcurrency WaveCommunicatorDelegate {
+    func communicator(_ communicator: WaveCommunicator, didStart sessionId: String) {
+        self.waveActive = true
+    }
+    
+    func communicator(_ communicator: WaveCommunicator, didStop sessionId: String) {
+        self.waveActive = false
+    }
+    
 }

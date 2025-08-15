@@ -22,7 +22,12 @@ struct FZAPIContext: Codable {
         }
         
         do {
-            return try decoder.decode(FZAPIContext.self, from: data)
+            var context = try decoder.decode(FZAPIContext.self, from: data)
+            guard context.valid() else {
+                return FZAPIContext()
+            }
+            
+            return context
         } catch {
             return FZAPIContext()
         }
@@ -35,8 +40,56 @@ struct FZAPIContext: Codable {
     var host: FZAPIServerHost = .default
     var token: String?
     
+    var id: String?
+    
     init() {
         
+    }
+    
+    mutating func valid() -> Bool {
+        // TODO: decode JWT
+        guard let token = token else {
+            return false
+        }
+        
+        let components = token.split(separator: ".")
+        guard components.count == 3 else {
+            return false
+        }
+        
+        let payload = components[1]
+        guard let payloadData = Data(base64Encoded: String(payload).paddedBase64String) else {
+            return false
+        }
+        
+        do {
+            let json = try JSONSerialization.jsonObject(with: payloadData, options: [])
+            guard let dict = json as? [String: Any] else {
+                return false
+            }
+            
+            /*
+            // Check for expiration
+            if let exp = dict["exp"] as? TimeInterval {
+                let expirationDate = Date(timeIntervalSince1970: exp)
+                return expirationDate > Date()
+            }
+             */
+            
+            guard let id = dict["sub"] as? String,
+                  let flitzOptions = dict["x-flitz-options"] as? String,
+                  flitzOptions == "--with-love"
+            else {
+                return false
+            }
+            
+            self.id = id
+            
+            return true
+        } catch {
+            print(error)
+            return false
+        }
     }
     
     func save() {

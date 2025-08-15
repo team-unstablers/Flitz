@@ -8,66 +8,37 @@
 import CoreBluetooth
 import CoreLocation
 
-protocol FlitzWaveDiscovererDelegate: AnyObject {
-    func discoverer(_ discoverer: FlitzWaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
+protocol WaveDiscovererDelegate: AnyObject {
+    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
 }
 
-class FlitzWaveDiscoverer: NSObject {
-    let locationManager = CLLocationManager()
+class WaveDiscoverer: NSObject {
+    let locationReporter: WaveLocationReporter
     let centralManager = CBCentralManager()
     
     private var peripherals: Set<CBPeripheral> = []
     
-    weak var delegate: FlitzWaveDiscovererDelegate?
+    weak var delegate: WaveDiscovererDelegate?
     
-    override init() {
+    init(locationReporter: WaveLocationReporter) {
+        self.locationReporter = locationReporter
         super.init()
         
-        locationManager.delegate = self
         centralManager.delegate = self
     }
     
     func start(for serviceIds: [FlitzWaveServiceID] = [.default]) {
-        let constraint = CLBeaconIdentityConstraint(uuid: UUID(uuidString: FlitzWaveServiceID.default.rawValue.uuidString)!)
-        
-        locationManager.startMonitoringSignificantLocationChanges()
-        locationManager.startRangingBeacons(satisfying: constraint)
-        
         centralManager.scanForPeripherals(withServices: serviceIds.map { $0.rawValue },
                                           options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
     
     func stop() {
-        self.locationManager.stopMonitoringSignificantLocationChanges()
         self.centralManager.stopScan()
     }
 }
 
-extension FlitzWaveDiscoverer: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-            
-        case .authorizedWhenInUse:
-            locationManager.requestAlwaysAuthorization()
-            
-        case .restricted, .denied:
-            break
-            
-        case .authorizedAlways:
-            locationManager.allowsBackgroundLocationUpdates = true
-            locationManager.showsBackgroundLocationIndicator = true
-            locationManager.pausesLocationUpdatesAutomatically = false
-            break
-            
-        default:
-            break
-        }
-    }
-}
 
-extension FlitzWaveDiscoverer: CBCentralManagerDelegate {
+extension WaveDiscoverer: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         // FIXME
     }
@@ -94,7 +65,7 @@ extension FlitzWaveDiscoverer: CBCentralManagerDelegate {
     }
 }
 
-extension FlitzWaveDiscoverer: CBPeripheralDelegate {
+extension WaveDiscoverer: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
         print("service discovered")
         
@@ -130,7 +101,7 @@ extension FlitzWaveDiscoverer: CBPeripheralDelegate {
         print("discovered \(id)")
         self.delegate?.discoverer(self,
                                   didDiscover: id,
-                                  from: locationManager.location)
+                                  from: locationReporter.location)
     }
 }
 

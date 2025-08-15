@@ -58,23 +58,6 @@ struct UserProfileModalDragArea: View {
     }
 }
 
-struct UserProfileModalDistanceIndicator: View {
-    var profile: FZUser
-    
-    var body: some View {
-        VStack {
-            Text("가까움")
-                .font(.fzSmall)
-                .foregroundStyle(Color(hex: 0x71CA68))
-                .semibold()
-        }
-        .frame(width: 48, height: 24)
-        .background(Color(hex: 0xA9D2A5, alpha: 0.2))
-        .clipShape(RoundedRectangle(cornerRadius: 4))
-    }
-
-}
-
 struct UserProfileModalDivider: View {
     
     var body: some View {
@@ -122,7 +105,7 @@ struct UserProfileModalProfileHeader: View {
                 
                 Spacer()
                 
-                UserProfileModalDistanceIndicator(profile: profile)
+                DistanceIndicator(distance: profile.fuzzy_distance)
             }
                 .padding(.bottom, 8)
             
@@ -133,7 +116,7 @@ struct UserProfileModalProfileHeader: View {
                 
                 Spacer()
                 
-                Text("지금 온라인")
+                Text(profile.online_status.asLocalizedString)
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray6)
             }

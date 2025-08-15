@@ -8,7 +8,7 @@
 import Foundation
 import CoreBluetooth
 
-class FlitzWaveBroadcaster {
+class WaveBroadcaster {
     let peripheralManager: CBPeripheralManager = CBPeripheralManager()
     
     var identity: String = ""

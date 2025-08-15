@@ -21,4 +21,10 @@ extension FZAPIClient {
                                    parameters: args)
     }
     
+    func waveUpdateLocation(_ args: WaveUpdateLocationArgs) async throws {
+        _ = try await self.request(to: .waveUpdateLocation,
+                                   expects: Ditch.self,
+                                   method: .post,
+                                   parameters: args)
+    }
 }

@@ -47,6 +47,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
          */
         sceneView.contentScaleFactor = UIScreen.main.scale * 0.9
         
+        // Coordinator에 SCNView 참조 전달
+        context.coordinator.setSceneView(sceneView)
+        
         // 자이로스코프 업데이트 설정
         context.coordinator.setupMotionUpdates()
         
@@ -55,6 +58,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
     
     func updateUIView(_ sceneView: SCNView, context: Context) {
         print("updateUIView called")
+        
+        // Coordinator에 SCNView 참조 업데이트
+        context.coordinator.setSceneView(sceneView)
         
         sceneView.removeGestureRecognizer(context.coordinator.gestureRecognizer)
         
@@ -93,6 +99,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
         // motionManager를 Coordinator로 이동
         private let motionManager = CMMotionManager()
         
+        // SCNView 참조 저장
+        private weak var sceneView: SCNView?
+        
         init(world: FZCardViewWorld, cardSideChangeHandler: @escaping (FZCardViewCardSide) -> Void) {
             self.world = world
             self.cardSideChangeHandler = cardSideChangeHandler
@@ -100,12 +109,60 @@ struct FZCardView: UIViewRepresentable, Equatable {
             super.init()
             
             self.gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(Coordinator.handlePanGesture(_:)))
+            
+            // 앱 상태 변화 감지를 위한 NotificationCenter 옵저버 등록
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appWillResignActive),
+                name: UIApplication.willResignActiveNotification,
+                object: nil
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(appDidBecomeActive),
+                name: UIApplication.didBecomeActiveNotification,
+                object: nil
+            )
         }
         
         deinit {
+            // NotificationCenter 옵저버 제거
+            NotificationCenter.default.removeObserver(self)
+            
             // 자이로스코프 및 기타 리소스 정리
             stopMomentum()
             motionManager.stopDeviceMotionUpdates()
+        }
+        
+        // 앱이 백그라운드로 갈 때
+        @objc private func appWillResignActive() {
+            // SCNView 렌더링 일시정지
+            sceneView?.isPlaying = false
+            sceneView?.pause(nil)
+
+            // 자이로스코프 중지
+            if motionManager.isDeviceMotionActive {
+                motionManager.stopDeviceMotionUpdates()
+            }
+            
+            // 모멘텀 애니메이션 중지
+            stopMomentum()
+        }
+        
+        // 앱이 포그라운드로 돌아올 때
+        @objc private func appDidBecomeActive() {
+            // SCNView 렌더링 재개
+            sceneView?.isPlaying = true
+            sceneView?.play(nil)
+
+            // 자이로스코프 재시작
+            setupMotionUpdates()
+        }
+        
+        // SCNView 참조 설정 메서드
+        func setSceneView(_ view: SCNView) {
+            self.sceneView = view
         }
         
         // 자이로스코프 설정을 Coordinator로 이동
