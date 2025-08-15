@@ -134,21 +134,21 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
         }
     }
     
-    /*
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
         // 읽기 요청 처리
         if request.characteristic.uuid == characteristic?.uuid {
-            if let data = identity.data(using: .utf8) {
-                request.value = data
-                peripheral.respond(to: request, withResult: .success)
-            } else {
+            guard let identity = self.identity,
+                  let data = identity.data(using: .utf8) else  {
                 peripheral.respond(to: request, withResult: .invalidHandle)
+                return
             }
+            
+            request.value = data
+            peripheral.respond(to: request, withResult: .success)
         } else {
             peripheral.respond(to: request, withResult: .attributeNotFound)
         }
     }
-     */
     
     func peripheralManager(_ peripheral: CBPeripheralManager, willRestoreState dict: [String : Any]) {
         // 앱이 종료됐다가 복원될 때 호출됨

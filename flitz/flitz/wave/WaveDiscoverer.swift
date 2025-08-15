@@ -93,6 +93,7 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        logger.debug("Connected to peripheral: \(peripheral.identifier)")
         peripheral.delegate = self
         peripheral.discoverServices([FlitzWaveServiceID.default.rawValue])
     }
@@ -107,7 +108,7 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
         // restore scanning state
         if dict[CBCentralManagerRestoredStateScanServicesKey] is [CBUUID] {
             // restart scanning
-            self.start()
+            // self.start()
         }
         
         guard let peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey] as? [CBPeripheral] else {
@@ -131,18 +132,19 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
 
 extension WaveDiscoverer: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
+        logger.debug("Discovered services for peripheral: \(peripheral.identifier)")
         guard let service = peripheral.services?.first else {
             self.centralManager.cancelPeripheralConnection(peripheral)
             return
         }
 
         peripheral.discoverCharacteristics([FlitzWaveServiceID.default.rawValue], for: service)
-
-        
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: (any Error)?) {
+        logger.debug("Discovered characteristics for service: \(service.uuid) in peripheral: \(peripheral.identifier)")
         guard let characteristic = service.characteristics?.first else {
+            logger.warning("No characteristics found for service: \(service.uuid)")
             self.centralManager.cancelPeripheralConnection(peripheral)
             return
         }
@@ -157,6 +159,7 @@ extension WaveDiscoverer: CBPeripheralDelegate {
         }
         
         guard let id = String(data: characteristic.value!, encoding: .utf8) else {
+            logger.warning("Failed to decode session ID from characteristic value")
             return
         }
         
