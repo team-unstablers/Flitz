@@ -59,5 +59,4 @@ struct WaveCardManagerView: View {
             }
         }
     }
-    
 }

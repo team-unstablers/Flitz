@@ -18,37 +18,17 @@ class FZCardViewWorld {
     let scene: SCNScene = SCNScene()
     let mainCamera: SCNNode = SCNNode()
     let modelNode: SCNNode = SCNNode()
-    let lightNode: SCNNode = SCNNode()
+    let mainLightNode: SCNNode = SCNNode()  // 주 광원 (Directional)
+    let ambientLightNode: SCNNode = SCNNode()  // 환경광
+    let fillLightNode: SCNNode = SCNNode()  // 보조 광원
     
-    private var cardIdCounter: Int = 0
-    private(set) var cardArena: Set<FZCardViewCardInstance> = []
+    // private(set) var cardArena: Set<FZCardViewCardInstance> = []
+    private(set) var cardArena: [String: FZCardViewCardInstance] = [:]
+    private(set) var cardOrder: [String] = []
     
-    // Glow effect properties
-    private(set) var glowTechnique: SCNTechnique?
-    private var displayLink: CADisplayLink?
-    private var startTime: TimeInterval = 0
-    private var glowEnabled: Bool = false
-    
-    // Glow parameters
-    var glowColor: SCNVector3 = SCNVector3(1.0, 0.9, 0.8) {
-        didSet {
-            updateGlowParameters()
-        }
-    }
-    var glowIntensity: Float = 0.35 {
-        didSet {
-            updateGlowParameters()
-        }
-    }
-    var glowRadius: Float = 3.0 {
-        didSet {
-            updateGlowParameters()
-        }
-    }
-    var glowThreshold: Float = 0.0 {
-        didSet {
-            updateGlowParameters()
-        }
+    var currentCard: FZCardViewCardInstance? {
+        guard let firstId = cardOrder.first else { return nil }
+        return cardArena[firstId]
     }
     
     init() {
@@ -68,30 +48,52 @@ class FZCardViewWorld {
     private func setupLight() {
         let supportsXDR = UIDevice.supportsXDR
         
-        let envLight = SCNLight()
-        envLight.type = .ambient
-        envLight.intensity = supportsXDR ? 650 : 500
-        envLight.temperature = 6500
+        // 1. 주 광원 (Directional Light) - SceneKit 기본 라이팅의 핵심
+        let mainLight = SCNLight()
+        mainLight.type = .directional
+        mainLight.intensity = supportsXDR ? 1000 : 800
+        mainLight.temperature = 6500 // 주광색
+        mainLight.castsShadow = true
+        mainLight.shadowMode = .deferred
+        mainLight.shadowSampleCount = 8
+        mainLight.shadowRadius = 3
+        mainLight.shadowColor = UIColor.black.withAlphaComponent(0.5)
         
-        scene.rootNode.light = envLight
+        mainLightNode.light = mainLight
+        mainLightNode.position = SCNVector3(x: 0, y: 30, z: 60)
+        // 약간 아래를 향하도록 회전 (위에서 비스듬히 비추는 효과)
+        mainLightNode.eulerAngles = SCNVector3(x: deg2rad(-45), y: 0, z: 0)
         
+        // 2. 환경광 (Ambient Light) - 전체적인 기본 밝기
+        let ambientLight = SCNLight()
+        ambientLight.type = .ambient
+        ambientLight.intensity = supportsXDR ? 300 : 200
+        ambientLight.temperature = 6500
         
-        let light = SCNLight()
-        light.type = .omni
-        light.intensity = supportsXDR ? 250 : 150
-        light.temperature = 6500 // 주광색
+        ambientLightNode.light = ambientLight
         
-        lightNode.light = light
-        lightNode.position = SCNVector3(x: 0, y: 0, z: 40)
+        // 3. 보조 광원 (Fill Light) - 그림자를 부드럽게
+        let fillLight = SCNLight()
+        fillLight.type = .omni
+        fillLight.intensity = supportsXDR ? 150 : 100
+        fillLight.temperature = 5500 // 약간 따뜻한 색
         
-        scene.rootNode.addChildNode(lightNode)
+        fillLightNode.light = fillLight
+        fillLightNode.position = SCNVector3(x: -20, y: 10, z: 40)
+        
+        // Scene에 추가
+        scene.rootNode.addChildNode(mainLightNode)
+        scene.rootNode.addChildNode(ambientLightNode)
+        scene.rootNode.addChildNode(fillLightNode)
     }
     
     private func setupMainCamera() {
         let supportsXDR = UIDevice.supportsXDR
         
         mainCamera.camera = SCNCamera()
-        mainCamera.position = SCNVector3(x: 0, y: 0, z: 10)
+        mainCamera.position = SCNVector3(x: 0, y: 0, z: 15)
+        mainCamera.camera?.focalLength = 35
+        //mainCamera.camera?
         mainCamera.camera?.wantsHDR = supportsXDR
         mainCamera.camera?.wantsExposureAdaptation = supportsXDR
         
@@ -108,119 +110,91 @@ class FZCardViewWorld {
         // enableGlow(true)
     }
 
-    // 광원 위치 업데이트 메서드
+    // 광원 위치 업데이트 메서드 (자이로스코프 입력으로 주 광원 이동)
     func updateLightPosition(x: Float, y: Float, z: Float) {
         SCNTransaction.begin()
         SCNTransaction.animationDuration = 0.1 // 부드러운 전환
         
-        lightNode.position = SCNVector3(x: x, y: y, z: z)
+        // 주 광원 위치 업데이트 (directional light이므로 위치와 각도 모두 조정)
+        mainLightNode.position = SCNVector3(x: x, y: 30 + y, z: 100)
+        
+        // 빛의 방향도 약간 조정 (기울기에 따라)
+        mainLightNode.eulerAngles = SCNVector3(
+            x: deg2rad(-45 + y * 0.5), 
+            y: deg2rad(x * 0.5), 
+            z: 0
+        )
+        
+        // 보조 광원도 약간 이동 (반대 방향으로)
+        fillLightNode.position = SCNVector3(x: -20 - x * 0.5, y: 10 - y * 0.3, z: 40)
         
         SCNTransaction.commit()
     }
     
-    // MARK: - Glow Effect Methods
-    
-    private func setupGlowEffect() {
-        guard self.glowTechnique == nil else {
-            print("Glow technique already set up")
-            return
-        }
-        
-        // Load the glow technique from plist
-        guard let techniqueURL = Bundle.main.url(forResource: "CardGlowTechnique", withExtension: "plist"),
-              let techniqueDictionary = NSDictionary(contentsOf: techniqueURL) as? [String: Any] else {
-            print("Failed to load glow technique plist")
-            return
-        }
-        
-        // Create SCNTechnique with the dictionary
-        glowTechnique = SCNTechnique(dictionary: techniqueDictionary)
-        
-        
-        // Apply initial parameters
-        updateGlowParameters()
-    }
-    
-    func enableGlow(_ enabled: Bool) {
-        glowEnabled = enabled
-        
-        if enabled {
-            // Apply technique to camera
-            // mainCamera.camera?.technique = glowTechnique
-            startGlowAnimation()
-        } else {
-            // Remove technique
-            mainCamera.camera?.technique = nil
-            stopGlowAnimation()
-        }
-    }
-    
-    private func startGlowAnimation() {
-        guard displayLink == nil else { return }
-        
-        startTime = CACurrentMediaTime()
-        displayLink = CADisplayLink(target: self, selector: #selector(updateGlowAnimation))
-        displayLink?.add(to: .main, forMode: .default)
-    }
-    
-    private func stopGlowAnimation() {
-        displayLink?.invalidate()
-        displayLink = nil
-    }
-    
-    @objc private func updateGlowAnimation() {
-        guard let technique = glowTechnique else { return }
-        
-        let currentTime = CACurrentMediaTime() - startTime
-        glowTechnique?.setValue(Float(currentTime), forKey: "time")
-        glowTechnique?.setValue(glowThreshold, forKey: "threshold")
-        glowTechnique?.setValue(glowRadius, forKey: "radius")
-        glowTechnique?.setValue(glowIntensity, forKey: "intensity")
-        glowTechnique?.setValue(glowColor, forKey: "glowColor")
-
-        
-        print(Float(currentTime))
-    }
-    
-    private func updateGlowParameters() {
-        guard let technique = glowTechnique else { return }
-        
-        /*
-        // Create a uniform struct matching GlowUniforms in the shader
-        var uniforms: [String: Any] = [:]
-        uniforms["threshold"] = glowThreshold
-        uniforms["radius"] = glowRadius
-        uniforms["glowColor"] = glowColor
-        uniforms["intensity"] = glowIntensity
-        uniforms["time"] = Float(0.0) // Will be updated by animation
-         */
-        
-        // Set individual symbols
-        glowTechnique?.setValue(glowThreshold, forKey: "threshold")
-        glowTechnique?.setValue(glowRadius, forKey: "radius")
-        glowTechnique?.setValue(glowIntensity, forKey: "intensity")
-        glowTechnique?.setValue(glowColor, forKey: "glowColor")
-    }
-    
-    func setGlowColor(r: Float, g: Float, b: Float) {
-        glowColor = SCNVector3(r, g, b)
-    }
-    
+    @available(*, deprecated, message: "use spawn(card:forId:) instead")
     func spawn(card: Flitz.Card) -> FZCardViewCardInstance {
-        let id = cardIdCounter
-        cardIdCounter += 1
+        let uuid = UUID().uuidString
         
+        return spawn(card: card, forId: uuid)
+    }
+    
+    func spawn(card: Flitz.Card, forId id: String) -> FZCardViewCardInstance {
         let instance = FZCardViewCardInstance(id: id, world: self, card: card)
-        cardArena.insert(instance)
+        cardArena[id] = instance
         
         instance.setup()
         instance.attachToScene()
         
+        cardOrder.append(id)
+        
+        self.reorder()
+        
         return instance
     }
     
+    func reorder() {
+        guard let cube = modelNode.childNode(withName: "Cube", recursively: true) else {
+            print("cannot find Cube node in modelNode")
+            return
+        }
+        
+        // cube의 z축 길이를 구한다
+        let zLength = cube.boundingBox.max.x - cube.boundingBox.min.x
+        print(zLength)
+        
+        let yLength = cube.boundingBox.max.y - cube.boundingBox.min.y
+
+        var zPosition: Float = -yLength
+        
+        for (index, id) in cardOrder.enumerated() {
+            if index == 0 {
+                
+            } else {
+                if let card = cardArena[id] {
+                    let xOffset = Float.random(in: -0.15...0.15)
+                    let yOffset = Float.random(in: -0.15...0.15)
+                    
+                    let deg = Float.random(in: 2.0...6.0) * (index % 2 == 0 ? -1 : 1)
+                    card.modelNode.eulerAngles.x = deg2rad(90.0 + deg)
+                    
+                    print(card.rootNode)
+                    
+                    let zOffset = -((Float(index) * zLength) + 0.05)
+                    card.rootNode.position = SCNVector3(x: xOffset, y: yOffset, z: zPosition + zOffset)
+                    
+                    zPosition += zOffset
+                }
+            }
+        }
+    }
+    
     fileprivate func remove(card: FZCardViewCardInstance) {
-        self.cardArena.remove(card)
+        self.cardArena.removeValue(forKey: card.id)
+    }
+    
+    
+    fileprivate func remove(id: String) {
+        self.cardArena.removeValue(forKey: id)
     }
 }
 
@@ -247,7 +221,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         return referenceNode
     }
     
-    let id: Int
+    let id: String
     
     let world: FZCardViewWorld
     let card: Flitz.Card
@@ -268,7 +242,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         return rootNode.parent != nil
     }
     
-    init(id: Int, world: FZCardViewWorld, card: Flitz.Card) {
+    init(id: String, world: FZCardViewWorld, card: Flitz.Card) {
         self.id = id
         self.world = world
         self.card = card
@@ -362,7 +336,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         //
         material2.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material2.diffuse.contents = UIColor.white
-        material2.diffuse.intensity = 0.5
+        material2.diffuse.intensity = 1.0
         
         material2.lightingModel = .physicallyBased
         

@@ -232,7 +232,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
         }
         
         @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-            let modelNode = world.modelNode
+            guard let cardInstance = world.currentCard,
+                  let modelNode = cardInstance.modelNode
+            else {
+                return
+            }
+            
             let currentTime = Date()
             
             let translation = gesture.translation(in: gesture.view)
@@ -285,7 +290,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
         }
 
         @objc private func updateMomentum() {
-            let modelNode = world.modelNode
+            guard let cardInstance = world.currentCard,
+                  let modelNode = cardInstance.modelNode
+            else {
+                stopMomentum()
+                return
+            }
 
             // 모멘텀 감소율
             let friction: CGFloat = 0.95
@@ -329,10 +339,12 @@ struct FZCardView: UIViewRepresentable, Equatable {
         cardInstance.updateContent()
         
         // Enable glow effect with customization
+        /*
         world.setGlowColor(r: 1.0, g: 0.8, b: 0.9)  // Soft pink glow
         world.glowIntensity = 2.0
         world.glowRadius = 3.0
         world.enableGlow(true)
+         */
         
         return world
     }()

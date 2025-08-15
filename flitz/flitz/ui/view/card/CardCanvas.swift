@@ -61,6 +61,7 @@ struct CardCanvas: View {
                         .scaledToFill()
                         .if(asNormalMap) { view in
                             view.applyNormalMapShader()
+                                .blur(radius: 1.0)
                         }
                 case .origin(let id, _):
                     if let image = assetsLoader.images[id] {
@@ -69,13 +70,14 @@ struct CardCanvas: View {
                             .scaledToFill()
                             .if(asNormalMap) { view in
                                 view.applyNormalMapShader()
+                                    .blur(radius: 1.0)
                             }
                     } else {
                         Rectangle().fill(.white)
                     }
                 }
             } else {
-                Rectangle().fill([.gray, .blue, .red].randomElement()!)
+                Rectangle().fill([.gray, .blue, .red, .yellow, .green, .purple, .pink, .orange, .indigo, .mint].randomElement()!)
             }
         }
         .fixedSize()

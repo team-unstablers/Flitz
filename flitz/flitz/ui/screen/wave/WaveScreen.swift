@@ -40,7 +40,7 @@ struct WaveScreen: View {
                 if selectedTabId == "exchanged" {
                     ExchangedCards()
                 } else if selectedTabId == "liked-cards" {
-                    EmptyView()
+                    FZCardViewEx()
                 } else if selectedTabId == "my-cards" {
                     CardManagerView()
                 }
