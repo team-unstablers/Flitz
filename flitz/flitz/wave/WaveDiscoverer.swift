@@ -19,6 +19,7 @@ class WaveDiscoverer: NSObject {
     
     var centralManager: CBCentralManager!
     
+    private var discoveredPeripheralIds: Set<UUID> = []
     private var peripherals: Set<CBPeripheral> = []
     
     weak var delegate: WaveDiscovererDelegate?
@@ -78,6 +79,11 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if (self.peripherals.contains(peripheral)) {
+            return
+        }
+        
+        if (self.discoveredPeripheralIds.contains(peripheral.identifier)) {
+            // already discovered
             return
         }
         
@@ -157,6 +163,8 @@ extension WaveDiscoverer: CBPeripheralDelegate {
         guard let id = String(data: characteristic.value!, encoding: .utf8) else {
             return
         }
+        
+        self.discoveredPeripheralIds.insert(peripheral.identifier)
         
         print("discovered \(id)")
         self.delegate?.discoverer(self,
