@@ -35,7 +35,7 @@ class FZCardViewWorld {
     private func setupLight() {
         let envLight = SCNLight()
         envLight.type = .ambient
-        envLight.intensity = 800
+        envLight.intensity = 1200
         envLight.temperature = 6500 // 주광색
         
         scene.rootNode.light = envLight
@@ -43,7 +43,7 @@ class FZCardViewWorld {
         
         let light = SCNLight()
         light.type = .omni
-        light.intensity = 400
+        light.intensity = 800
         light.temperature = 6500 // 주광색
         
         lightNode.light = light
@@ -55,6 +55,8 @@ class FZCardViewWorld {
     private func setupMainCamera() {
         mainCamera.camera = SCNCamera()
         mainCamera.position = SCNVector3(x: 0, y: 0, z: 10)
+        mainCamera.camera?.wantsHDR = true
+        mainCamera.camera?.wantsExposureAdaptation = true
         
         scene.rootNode.addChildNode(mainCamera)
     }
@@ -211,6 +213,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         material.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material.diffuse.contents = showNormalMap ? normalMap : mainTexture
+        material.diffuse.intensity = 1.0
         
         material.normal.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material.normal.contents = normalMap
@@ -231,6 +234,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         //
         material2.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material2.diffuse.contents = UIColor.white
+        material2.diffuse.intensity = 0.5
         
         material2.lightingModel = .physicallyBased
         

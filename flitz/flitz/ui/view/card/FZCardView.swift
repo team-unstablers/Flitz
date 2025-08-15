@@ -184,12 +184,15 @@ struct FZCardView: UIViewRepresentable, Equatable {
             let maxOffset: Float = 10.0
             
             let xRoll = Float(motion.attitude.roll) * 2.0
-            let yPitch = Float(motion.attitude.pitch) * 2.0
+            let yPitch = Float(motion.attitude.pitch)
+            
             
             // 기본 위치에서 기울기에 따라 ±maxOffset 이동
             let lightX = -xRoll * maxOffset
-            let lightY = yPitch * maxOffset
-            let lightZ: Float = 40.0 // 기본 Z 위치 유지
+            
+            // 0.4 ~ 1
+            let lightY = (1.0 - yPitch.clamp(inRange: 0.4...1, outRange: 0.0...1.0)).clamp(inRange: 0.0...1.0, outRange: -20.0...20.0)
+            let lightZ: Float = 60.0 // 기본 Z 위치 유지
             
             world.updateLightPosition(x: lightX, y: lightY, z: lightZ)
         }
