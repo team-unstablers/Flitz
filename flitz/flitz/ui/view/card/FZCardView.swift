@@ -180,20 +180,37 @@ struct FZCardView: UIViewRepresentable, Equatable {
         }
         
         private func updateLightPosition(with motion: CMDeviceMotion) {
-            // 자이로스코프 데이터를 광원 위치로 변환
-            // 기기의 기울기에 따라 -10~10 범위의 값으로 변환
+            // 중력 벡터를 사용하여 기기의 실제 기울기 계산
+            let gravity = motion.gravity
+            
+            // 중력 벡터를 정규화 (길이를 1로)
+            let magnitude = sqrt(gravity.x * gravity.x + gravity.y * gravity.y + gravity.z * gravity.z)
+            guard magnitude > 0 else { return }
+            
+            let normalizedGravityX = gravity.x / magnitude
+            let normalizedGravityY = gravity.y / magnitude
+            let normalizedGravityZ = gravity.z / magnitude
+            
+            // 화면 기준 기울기 계산
+            // X축: 좌우 기울기 (gravity.x는 화면의 좌우 기울기를 나타냄)
+            // Y축: 앞뒤 기울기 (gravity.z는 화면이 위를 향하는지 아래를 향하는지)
+            
             let maxOffset: Float = 10.0
             
-            let xRoll = Float(motion.attitude.roll) * 2.0
-            let yPitch = Float(motion.attitude.pitch)
+            // 화면 좌우 기울기에 따른 조명 X 위치
+            // gravity.x가 양수면 오른쪽으로 기울어짐, 음수면 왼쪽으로 기울어짐
+            let lightX = Float(normalizedGravityX) * maxOffset * 2.0
             
+            // 화면 앞뒤 기울기에 따른 조명 Y 위치
+            // gravity.z가 -1에 가까우면 화면이 위를 향함 (정상 사용)
+            // gravity.z가 0에 가까우면 화면이 세워짐
+            // gravity.z가 1에 가까우면 화면이 아래를 향함
             
-            // 기본 위치에서 기울기에 따라 ±maxOffset 이동
-            let lightX = -xRoll * maxOffset
+            // 기기가 수평일 때 (gravity.z ≈ -1): lightY = 0
+            // 기기가 세워질 때 (gravity.z ≈ 0): lightY가 gravity.y에 따라 변화
+            let tiltFactor = 1.0 - abs(normalizedGravityZ) // 0(수평) ~ 1(수직)
+            let lightY = Float(normalizedGravityY * tiltFactor).clamp(inRange: -0.5...0.0, outRange: -25.0...25.0)
             
-            // 0.4 ~ 1
-            //let lightY = (1.0 - yPitch.clamp(inRange: 0.4...1, outRange: 0.0...1.0)).clamp(inRange: 0.0...1.0, outRange: -20.0...20.0)
-            let lightY = yPitch.clamp(inRange: 0.4...1, outRange: -20.0...20.0)
             let lightZ: Float = 60.0 // 기본 Z 위치 유지
             
             world.updateLightPosition(x: lightX, y: lightY, z: lightZ)
