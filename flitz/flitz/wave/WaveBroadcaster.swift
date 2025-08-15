@@ -17,7 +17,7 @@ class WaveBroadcaster: NSObject {
     private var service: CBMutableService?
     private var characteristic: CBMutableCharacteristic?
     
-    var identity: String = ""
+    var identity: String? = nil
     
     weak var delegate: WaveBroadcasterDelegate?
 
@@ -40,7 +40,7 @@ class WaveBroadcaster: NSObject {
     }
     
     func start() {
-        if identity.isEmpty {
+        guard let identity = self.identity else {
             print("cannot start: identity is empty")
             return
         }
@@ -51,10 +51,10 @@ class WaveBroadcaster: NSObject {
             return
         }
         
-        setupService()
+        setupService(with: identity)
     }
     
-    private func setupService() {
+    private func setupService(with identity: String) {
         let serviceID = FlitzWaveServiceID.default.rawValue
         
         // 기존 서비스 정리
@@ -66,7 +66,7 @@ class WaveBroadcaster: NSObject {
         let characteristic = CBMutableCharacteristic(
             type: serviceID,
             properties: [.read],  // .notify가 있어야 하나?
-            value: self.identity.data(using: .utf8),
+            value: identity.data(using: .utf8),
             permissions: [.readable]
         )
         
@@ -75,6 +75,14 @@ class WaveBroadcaster: NSObject {
         self.characteristic = characteristic
         
         self.peripheralManager.add(service)
+        
+        // 광고 시작 - 백그라운드 호환 설정
+        let advertisementData: [String: Any] = [
+            CBAdvertisementDataServiceUUIDsKey: [service.uuid],
+            // CBAdvertisementDataLocalNameKey: nil
+        ]
+        
+        peripheralManager.startAdvertising(advertisementData)
     }
     
     func stop() {
@@ -91,9 +99,7 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
         switch peripheral.state {
         case .poweredOn:
             print("Bluetooth is powered on")
-            if !identity.isEmpty {
-                setupService()
-            }
+            self.start()
         case .poweredOff:
             print("Bluetooth is powered off")
         case .resetting:
@@ -116,14 +122,6 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
         }
         
         print("Service added successfully")
-        
-        // 광고 시작 - 백그라운드 호환 설정
-        let advertisementData: [String: Any] = [
-            CBAdvertisementDataServiceUUIDsKey: [service.uuid],
-            // CBAdvertisementDataLocalNameKey: nil
-        ]
-        
-        peripheralManager.startAdvertising(advertisementData)
     }
     
     func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
@@ -134,6 +132,7 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
         }
     }
     
+    /*
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
         // 읽기 요청 처리
         if request.characteristic.uuid == characteristic?.uuid {
@@ -147,6 +146,7 @@ extension WaveBroadcaster: CBPeripheralManagerDelegate {
             peripheral.respond(to: request, withResult: .attributeNotFound)
         }
     }
+     */
     
     func peripheralManager(_ peripheral: CBPeripheralManager, willRestoreState dict: [String : Any]) {
         // 앱이 종료됐다가 복원될 때 호출됨

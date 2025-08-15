@@ -32,7 +32,7 @@ class WaveCommunicator: NSObject {
     var discoverer: WaveDiscoverer!
     var broadcaster: WaveBroadcaster!
     
-    var identity: String {
+    var identity: String? {
         get {
             return broadcaster.identity
         }
@@ -70,10 +70,14 @@ class WaveCommunicator: NSObject {
     }
     
     func start() async throws {
+        guard self.identity == nil, !self.isActive else {
+            return
+        }
+        
         let session = try await client.startWaveDiscovery()
         self.identity = session.session_id
         
-        print("starting wave with identity: \(self.identity)")
+        print("starting wave with identity: \(session.session_id)")
         
         locationReporter.startMonitoring()
         
@@ -82,18 +86,21 @@ class WaveCommunicator: NSObject {
         
         self.isActive = true
         
-        delegate?.communicator(self, didStart: self.identity)
+        delegate?.communicator(self, didStart: session.session_id)
     }
     
     func stop() async throws {
-        let identity = broadcaster.identity
+        guard let identity = self.identity else {
+            return
+        }
         
+        try await client.stopWaveDiscovery()
+
         broadcaster.stop()
         discoverer.stop()
         
         self.isActive = false
-
-        try await client.stopWaveDiscovery()
+        self.identity = nil
         
         delegate?.communicator(self, didStop: identity)
     }
@@ -103,8 +110,13 @@ class WaveCommunicator: NSObject {
 
 extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
     func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
+        guard let identity = self.identity else {
+            print("WaveCommunicator: No active session to report discovery")
+            return
+        }
+        
         let args = ReportWaveDiscoveryArgs(
-            session_id: self.identity,
+            session_id: identity,
             discovered_session_id: sessionId,
             
             latitude: location?.coordinate.latitude,
