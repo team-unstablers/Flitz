@@ -66,17 +66,19 @@ class FZCardViewWorld {
     }
 
     private func setupLight() {
+        let supportsHDR = UIDevice.supportsHDR
+        
         let envLight = SCNLight()
         envLight.type = .ambient
-        envLight.intensity = 800
-        envLight.temperature = 6500 // 주광색
+        envLight.intensity = supportsHDR ? 650 : 450
+        envLight.temperature = 6500
         
         scene.rootNode.light = envLight
         
         
         let light = SCNLight()
         light.type = .omni
-        light.intensity = 600
+        light.intensity = supportsHDR ? 250 : 150
         light.temperature = 6500 // 주광색
         
         lightNode.light = light
@@ -86,10 +88,12 @@ class FZCardViewWorld {
     }
     
     private func setupMainCamera() {
+        let supportsHDR = UIDevice.supportsHDR
+        
         mainCamera.camera = SCNCamera()
         mainCamera.position = SCNVector3(x: 0, y: 0, z: 10)
-        mainCamera.camera?.wantsHDR = true
-        mainCamera.camera?.wantsExposureAdaptation = true
+        mainCamera.camera?.wantsHDR = supportsHDR
+        mainCamera.camera?.wantsExposureAdaptation = supportsHDR
         
         scene.rootNode.addChildNode(mainCamera)
     }

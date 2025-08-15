@@ -140,6 +140,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         // 앱이 백그라운드로 갈 때
         @objc private func appWillResignActive() {
             // SCNView 렌더링 일시정지
+            world.scene.isPaused = true
             sceneView?.isPlaying = false
             sceneView?.pause(nil)
 
@@ -155,6 +156,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
         // 앱이 포그라운드로 돌아올 때
         @objc private func appDidBecomeActive() {
             // SCNView 렌더링 재개
+            world.scene.isPaused = false
             sceneView?.isPlaying = true
             sceneView?.play(nil)
 
