@@ -14,23 +14,23 @@
 		<dict/>
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Flitz 앱 개발을 위하여 로컬 네트워크에 액세스합니다. (이 메시지는 실제 프로덕션 환경에서 표시되어선 안됩니다)</string>
+	<string>NSLocalNetworkUsageDescription</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansKR.ttf</string>
 	</array>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>fixme</string>
+	<string>NSBluetoothPeripheralUsageDescription</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>fixme</string>
+	<string>NSBluetoothAlwaysUsageDescription</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>fixme</string>
+	<string>NSLocationWhenInUseUsageDescription</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>fixme</string>
+	<string>NSLocationAlwaysUsageDescription</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>fixme</string>
+	<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Flitz에서 연락처 미리 차단 기능을 사용하기 위해 휴대폰 연락처에 액세스하려 합니다.</string>
+	<string>NSContactsUsageDescription</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
