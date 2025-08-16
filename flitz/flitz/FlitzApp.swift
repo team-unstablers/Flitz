@@ -15,6 +15,7 @@ struct FlitzApp: App {
     var body: some Scene {
         WindowGroup {
             FlitzAppMain()
+                .colorScheme(.light)
                 .font(.fzMain)
         }
     }
