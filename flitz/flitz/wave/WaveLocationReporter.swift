@@ -72,7 +72,7 @@ extension WaveLocationReporter: CLLocationManagerDelegate {
         case .authorizedAlways:
             locationManager.allowsBackgroundLocationUpdates = true
             locationManager.showsBackgroundLocationIndicator = true
-            locationManager.pausesLocationUpdatesAutomatically = false
+            // locationManager.pausesLocationUpdatesAutomatically = false
             break
             
         default:
