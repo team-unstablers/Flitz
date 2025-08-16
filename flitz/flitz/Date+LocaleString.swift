@@ -15,4 +15,12 @@ extension Date {
         formatter.locale = Locale.current
         return formatter.string(from: self)
     }
+    
+    var localeDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale.current
+        return formatter.string(from: self)
+    }
 }

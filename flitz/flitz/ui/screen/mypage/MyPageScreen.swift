@@ -62,9 +62,7 @@ struct MyPageScreen: View {
                         
                         HStack {
                             MyPageHeaderButton(iconName: "NoticeIcon", title: "공지사항") {
-                                withAnimation {
-                                    appState.assertionFailureReason = .mitmDetected
-                                }
+                                appState.navState.append(.noticeList)
                             }
                             
                             // vertical line
