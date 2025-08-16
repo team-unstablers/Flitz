@@ -102,6 +102,13 @@ struct FZAPIEndpoint: RawRepresentable {
     static let contactTriggersBulkCreate = FZAPIEndpoint(rawValue: "/contact-triggers/bulk-create/")
     static let contactTriggersAll = FZAPIEndpoint(rawValue: "/contact-triggers/all/")
     // safety end
+    
+    // notice start
+    static let notices = FZAPIEndpoint(rawValue: "/notices/")
+    static func notice(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/notices/\(id)/")
+    }
+    // notice end
 
     func urlString(for server: String) -> String {
         return "\(server)\(self.rawValue)"
