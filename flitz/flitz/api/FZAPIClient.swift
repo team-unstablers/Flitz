@@ -84,8 +84,8 @@ class FZAPIClient {
     }
     
     func prevPage<T: Codable>(_ pagination: Paginated<T>) async throws -> Paginated<T>? {
-        guard let next = pagination.next,
-              let url = URL(string: next) else {
+        guard let previous = pagination.previous,
+              let url = URL(string: previous) else {
             return nil
         }
         
