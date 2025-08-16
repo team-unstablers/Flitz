@@ -53,6 +53,8 @@ struct RootNavigation: View {
                             
                         case .noticeList:
                             NoticeListScreen()
+                        case .noticeDetail(let noticeId):
+                            NoticeDetailScreen(noticeId: noticeId)
                             
                         default:
                             EmptyView()
