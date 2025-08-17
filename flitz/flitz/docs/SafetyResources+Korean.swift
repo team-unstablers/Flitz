@@ -30,11 +30,16 @@ extension SafetyResources {
                                                                    subtitle: "안전을 위해 앱 이용을 당장 중단하고, 도움을 받는 것을 권장해요.",
                                                                    message: "Flitz는 성인들을 위한 공간이기 때문에, 청소년 여러분들이 이 앱을 이용하면 위험한 상황에 처할 수 있어요."))
         
+        static let flitzMinorSafety = SafetyResource(name: "왜 Flitz는 청소년이 사용할 수 없나요?",
+                                                     description: "만약 당신이 청소년이라면, Flitz 이용을 중단해주세요.",
+                                                     url: FlitzDocs.ko.extras.minorSafety.url)
+        
         static let allCases: [SafetyResource] = [
             chingusai,
             lsangdam,
             transgenderOrKr,
-            ddingdong
+            ddingdong,
+            flitzMinorSafety
         ]
     }
 }
