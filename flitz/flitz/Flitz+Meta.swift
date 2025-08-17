@@ -6,5 +6,5 @@
 //
 
 extension Flitz {
-    static let version = "0.9.0-preflight"
+    static let version = "0.9.0-prelude"
 }

@@ -103,17 +103,20 @@ struct MyPageScreen: View {
                     
                     VStack(spacing: 0) {
                         FZPageSectionTitle(title: "고객 지원 및 도움말")
-                        FZPageSectionActionItem("Flitz 도움말 보기") {
-                            print("TODO: navigate to change password screen")
+                        FZPageSectionActionItem("베타 테스트(Prelude 버전)에 대해 알아보기") {
+                            openURL(URL(string: "http://docs.flitz.cards/help/prelude/")!)
                         }
-                        FZPageSectionActionItem("고객 지원에 문의하기") {
+                        FZPageSectionActionItem("베타 테스트에 대한 피드백 보내기") {
                             
                         }
                         FZPageSectionActionItem("개인정보 보호정책") {
-                            
+                            openURL(URL(string: "https://docs.flitz.cards/legal/kr/privacy-policy.html")!)
+                        }
+                        FZPageSectionActionItem("위치기반서비스 이용약관") {
+                            openURL(URL(string: "https://docs.flitz.cards/legal/kr/tos-location.html")!)
                         }
                         FZPageSectionActionItem("서비스 약관") {
-                            
+                            openURL(URL(string: "https://docs.flitz.cards/legal/kr/tos.html")!)
                         }
                     }
                     .padding(.horizontal, 16)

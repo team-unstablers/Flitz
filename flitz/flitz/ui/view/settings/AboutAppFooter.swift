@@ -39,7 +39,7 @@ struct AboutAppFooter: View {
 
             Group {
                 Text("Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다.")
-                Text("Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://google.com)에서 확인할 수 있습니다.")
+                Text("Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다.")
             }
                 .font(.small)
                 .foregroundStyle(.black.opacity(0.8))

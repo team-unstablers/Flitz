@@ -116,7 +116,7 @@ struct ContactsBlockSettingsSection: View {
                         
                         Text("이 기능을 사용하면 연락처 정보가 ".byCharWrapping) + Text("복호화 불가능한 형태로 해시 처리되어 Flitz 서버에 저장됩니다.".byCharWrapping).bold() + Text(" 또한, ".byCharWrapping) + Text("전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다.").bold()
                         
-                        Text("[해시 (단방향 암호화)란 무엇인가요?](https://google.com)")
+                        Text("[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)")
                             .font(.small)
                             .padding(.vertical, 4)
                     }
