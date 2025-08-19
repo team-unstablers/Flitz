@@ -20,7 +20,7 @@ class WaveDiscoverer: NSObject {
     
     var centralManager: CBCentralManager!
     
-    private var discoveredPeripheralIds: Set<UUID> = []
+    private var discoveredPeripheralIds: [UUID: Date] = [:]
     private var peripherals: Set<CBPeripheral> = []
     
     weak var delegate: WaveDiscovererDelegate?
@@ -52,7 +52,7 @@ class WaveDiscoverer: NSObject {
     }
     
     func markAsDiscovered(_ uuid: UUID) {
-        self.discoveredPeripheralIds.insert(uuid)
+        self.discoveredPeripheralIds[uuid] = Date.now
     }
 }
 
@@ -89,10 +89,13 @@ extension WaveDiscoverer: CBCentralManagerDelegate {
             return
         }
         
-        if (self.discoveredPeripheralIds.contains(peripheral.identifier)) {
-            // already discovered
+        if let discoveredAt = self.discoveredPeripheralIds[peripheral.identifier],
+           // 30 minutes
+           Date.now.timeIntervalSince(discoveredAt) < 30 * 60 {
+            // recently discovered, ignore
             return
         }
+        
         
         self.peripherals.insert(peripheral)
         central.connect(peripheral)
