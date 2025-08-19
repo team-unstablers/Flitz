@@ -36,15 +36,15 @@ struct FZAPIServerHost: RawRepresentable, Codable, Hashable {
 #endif
     }
     
-    static let production = FZAPIServerHost(rawValue: "https://api-prod.flitz.cards")
+    static let production = FZAPIServerHost(rawValue: "https://prod.api.flitz.cards")
     
 #if DEBUG
-    static let development = FZAPIServerHost(rawValue: "http://192.168.250.230:8000")
+    static let development = FZAPIServerHost(rawValue: "https://api-dev.flitz.cards")
     static let local = FZAPIServerHost(rawValue: "http://cheese-mbpr14.local:8000")
 #endif
     
 #if DEBUG
-    static let `default` = Self.local
+    static let `default` = Self.development
 #else
     static let `default` = Self.production
 #endif
