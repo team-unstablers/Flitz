@@ -9,7 +9,7 @@ import Foundation
 
 extension String {
     var asISO8601Date: Date? {
-        let fmt = Date.ISO8601FormatStyle(includingFractionalSeconds: true)
+        let fmt = Date.ISO8601FormatStyle(includingFractionalSeconds: true, timeZone: .autoupdatingCurrent)
         return try? fmt.parse(self)
     }
 }
