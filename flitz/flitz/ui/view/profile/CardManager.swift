@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 class CardManagerViewModel: ObservableObject {
     @Published
-    var cardMetas: [FZSimpleCard] = []
+    var cards: [FZCard] = []
     
     @Published
     var renderCaches: [String: UIImage] = [:]
@@ -20,9 +20,9 @@ class CardManagerViewModel: ObservableObject {
     /// 내 카드 목록을 가져옵니다.
     func fetchCards() async {
         do {
-            let cardMetas = try await self.client.cards()
+            let cards = try await self.client.cards()
             
-            self.cardMetas = cardMetas.results
+            self.cards = cards.results
             await prerenderCard()
         } catch {
             print(error)
@@ -33,10 +33,8 @@ class CardManagerViewModel: ObservableObject {
         let assetsLoader = AssetsLoader.global
         let renderer = FZCardViewSwiftUICardRenderer()
         
-        for cardMeta in self.cardMetas {
+        for card in self.cards {
             do {
-                let card = try await self.client.card(by: cardMeta.id)
-                
                 do {
                     try await assetsLoader.resolveAll(from: card.content)
                 } catch {
@@ -45,10 +43,9 @@ class CardManagerViewModel: ObservableObject {
                 
                 let mainTexture = try renderer.render(card: card.content)
                 
-                
-                renderCaches[cardMeta.id] = mainTexture
+                renderCaches[card.id] = mainTexture
             } catch {
-                print("[CardManagerViewModel] Failed to prerender card \(cardMeta.id): \(error)")
+                print("[CardManagerViewModel] Failed to prerender card \(card.id): \(error)")
             }
         }
     }
@@ -87,7 +84,7 @@ struct CardManagerView: View {
             
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(viewModel.cardMetas) { card in
+                    ForEach(viewModel.cards) { card in
                         Button {
                             appState.currentModal = .cardDetail(cardId: card.id)
                         } label: {

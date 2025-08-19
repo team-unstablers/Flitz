@@ -9,8 +9,8 @@ import Foundation
 import Alamofire
 
 extension FZAPIClient {
-    func cards() async throws -> Paginated<FZSimpleCard> {
-        return try await self.request(to: .cards, expects: Paginated<FZSimpleCard>.self)
+    func cards() async throws -> Paginated<FZCard> {
+        return try await self.request(to: .cards, expects: Paginated<FZCard>.self)
     }
     
     func receivedCards() async throws -> Paginated<FZCardDistribution> {

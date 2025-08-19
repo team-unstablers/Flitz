@@ -9,15 +9,13 @@ import Foundation
 
 struct FZCardDistribution: Codable, Identifiable {
     var id: String
-    var card: FZSimpleCard
+    var card: FZCard
     var user: FZUser
 }
 
-struct FZSimpleCard: Codable, Identifiable {
+struct FZCardFavoriteItem: Codable, Identifiable {
     var id: String
-    var title: String
-    var created_at: String
-    var updated_at: String
+    var card: FZCard
 }
 
 struct FZCard: Codable, Identifiable {
