@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+@MainActor
+class WaveCardPreviewViewModel: ObservableObject {
+    @Published
+    var world: FZCardViewWorld
+    
+    @Published
+    var cardInstance: FZCardViewCardInstance? = nil
+    
+    init() {
+        self.world = FZCardViewWorld()
+        self.world.setup()
+    }
+    
+    func setup(with card: FZCard) async {
+        try? await AssetsLoader.global.resolveAll(from: card.content)
+        
+        self.cardInstance = self.world.spawn(card: card.content, forId: card.id)
+        self.cardInstance?.updateContent()
+    }
+}
+    
+
 struct WaveCardPreview: View {
     @EnvironmentObject
     var appState: RootAppState
@@ -17,81 +39,34 @@ struct WaveCardPreview: View {
     @Binding
     var client: FZAPIClient
     
-    var distributionId: String
-    
-    var cardId: String
-    
+    let distribution: FZCardDistribution
     var dismissHandler: () -> Void
     
-    @State
-    var world: FZCardViewWorld = {
-        let world = FZCardViewWorld()
-        world.setup()
-        
-        return world
-    }()
-    
-    
-    @State
-    var showNormalMap: Bool = false
-    
-    @State
-    var card: Flitz.Card?
-    
-    @State
-    var cardMeta: FZCard?
-    
+    @StateObject
+    var viewModel = WaveCardPreviewViewModel()
+   
     var body: some View {
         ZStack(alignment: .bottom) {
-            FZCardView(world: $world, enableGesture: true)
-                .displayCard($card, to: $world, showNormalMap: $showNormalMap)
+            FZCardView(world: $viewModel.world, enableGesture: true)
                 .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
                 .onTapGesture {
-                    guard let cardMeta = self.cardMeta,
-                          let user = cardMeta.user
-                    else {
-                        return
-                    }
-                    
-                    appState.currentModal = .userProfile(userId: user.id)
+                    appState.currentModal = .userProfile(userId: distribution.card.user!.id)
                 }
-                
-            ECController(distributionId: distributionId) { _ in
-                dismissHandler()
+                .if (distribution.reveal_phase == .blurry) { view in
+                    view.blur(radius: 16)
+                }
+            
+            // 이거 여기가 아니라 부모에 있어야 됨
+            if distribution.reveal_phase == .revealed {
+                ECController(distributionId: distribution.id) { _ in
+                    dismissHandler()
+                }
+                    .offset(x: 0, y: -60)
             }
-                .offset(x: 0, y: -60)
         }
         .onAppear {
-            self.fetchCard()
-        }
-    }
-    
-    func fetchCard() {
-        Task {
-            do {
-                let card = try await client.card(by: cardId)
-                do {
-                    try await assetsLoader.resolveAll(from: card.content)
-                } catch {
-                    print(error)
-                }
-                
-                DispatchQueue.main.async {
-                    self.card = card.content
-                    self.cardMeta = card
-                }
-            } catch {
-                print(error)
-            }
-        }
-    }
-    
-    func setCardAsMain() {
-        Task {
-            do {
-                try await client.setCardAsMain(which: cardId)
-            } catch {
-                print(error)
+            Task {
+                await self.viewModel.setup(with: self.distribution.card)
             }
         }
     }

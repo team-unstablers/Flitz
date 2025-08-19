@@ -9,6 +9,7 @@ import Combine
 import SwiftUI
 
 extension FZCardView {
+    @available(*, deprecated, message: "to disaplay card, use FZCardViewEx() instead")
     func displayCard(_ card: Binding<Flitz.Card?>, to world: Binding<FZCardViewWorld>, showNormalMap: Binding<Bool> = .constant(false)) -> some View {
         self
             .equatable()

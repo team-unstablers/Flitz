@@ -17,6 +17,14 @@ extension FZAPIClient {
         return try await self.request(to: .cardsDistribution, expects: Paginated<FZCardDistribution>.self)
     }
     
+    func favoritedCards() async throws -> Paginated<FZCardFavoriteItem> {
+        return try await self.request(to: .cardFavorites, expects: Paginated<FZCardFavoriteItem>.self)
+    }
+    
+    func deleteFavoriteCard(by id: String) async throws {
+        _ = try await self.request(to: .cardFavorite(id: id), expects: Ditch.self, method: .delete)
+    }
+    
     func markAsLike(which distributionId: String) async throws {
         _ = try await self.request(to: .like(distributionId: distributionId), expects: Ditch.self, method: .put)
     }

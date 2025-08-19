@@ -43,8 +43,7 @@ struct WaveCardManagerView: View {
                 TabView(selection: $viewModel.selection) {
                     ForEach(viewModel.distributions) { distribution in
                         WaveCardPreview(client: $viewModel.client,
-                                        distributionId: distribution.id,
-                                        cardId: distribution.card.id) {
+                                        distribution: distribution) {
                             viewModel.distributions.removeAll { $0.id == distribution.id }
                         }
                             .tag(distribution.id)

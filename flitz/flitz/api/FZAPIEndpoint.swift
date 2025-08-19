@@ -32,6 +32,7 @@ struct FZAPIEndpoint: RawRepresentable {
     // card start
     static let cards = FZAPIEndpoint(rawValue: "/cards/")
     static let cardsDistribution = FZAPIEndpoint(rawValue: "/cards/distribution/")
+    static let cardFavorites = FZAPIEndpoint(rawValue: "/cards/favorites/")
 
     static func card(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/cards/\(id)/")
@@ -51,6 +52,10 @@ struct FZAPIEndpoint: RawRepresentable {
     
     static func dislike(distributionId: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/cards/distribution/\(distributionId)/dislike/")
+    }
+    
+    static func cardFavorite(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/cards/favorites/\(id)/")
     }
     // card end
     

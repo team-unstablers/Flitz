@@ -12,6 +12,7 @@ struct WaveScreen: View {
         FZTab(id: "exchanged", title: "최근"),
         FZTab(id: "liked-cards", title: "보관함"),
         FZTab(id: "my-cards", title: "내 카드"),
+        FZTab(id: "debug-screen", title: "디버그"),
     ]
     
     @EnvironmentObject
@@ -40,9 +41,11 @@ struct WaveScreen: View {
                 if selectedTabId == "exchanged" {
                     ExchangedCards()
                 } else if selectedTabId == "liked-cards" {
-                    FZCardViewEx()
+                    FavoritedCards()
                 } else if selectedTabId == "my-cards" {
                     CardManagerView()
+                } else if selectedTabId == "debug-screen" {
+                    FZCardViewEx()
                 }
             }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
