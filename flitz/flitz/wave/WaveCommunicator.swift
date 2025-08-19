@@ -111,7 +111,7 @@ class WaveCommunicator: NSObject {
 }
 
 extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
-    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?) {
+    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?, peripheral uuid: UUID) {
         guard let identity = self.identity else {
             logger.warning("WaveCommunicator: No active session to report discovery")
             return
@@ -130,6 +130,7 @@ extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
         Task {
             do {
                 try await self.client.reportWaveDiscovery(args)
+                discoverer.markAsDiscovered(uuid)
             } catch {
                 logger.error("\(error)")
             }

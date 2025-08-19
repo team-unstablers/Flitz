@@ -9,7 +9,7 @@ import CoreBluetooth
 import CoreLocation
 
 protocol WaveDiscovererDelegate: AnyObject {
-    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?)
+    func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?, peripheral uuid: UUID)
 }
 
 class WaveDiscoverer: NSObject {
@@ -47,6 +47,12 @@ class WaveDiscoverer: NSObject {
     
     func stop() {
         self.centralManager.stopScan()
+        
+        self.discoveredPeripheralIds.removeAll()
+    }
+    
+    func markAsDiscovered(_ uuid: UUID) {
+        self.discoveredPeripheralIds.insert(uuid)
     }
 }
 
@@ -163,12 +169,11 @@ extension WaveDiscoverer: CBPeripheralDelegate {
             return
         }
         
-        self.discoveredPeripheralIds.insert(peripheral.identifier)
-        
         logger.info("discovered \(id)")
         self.delegate?.discoverer(self,
                                   didDiscover: id,
-                                  from: locationReporter.location)
+                                  from: locationReporter.location,
+                                  peripheral: peripheral.identifier)
     }
 }
 
