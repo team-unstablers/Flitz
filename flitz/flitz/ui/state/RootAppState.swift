@@ -93,6 +93,22 @@ class RootAppState: ObservableObject {
             }
         }
     }
+    
+    func logout() {
+        FZAPIContext.reset()
+        
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key.description)
+        }
+        
+        self.client = FZAPIClient(context: .load())
+        
+        // kill self
+        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            exit(0)
+        }
+    }
 }
 
 extension RootAppState: @preconcurrency WaveCommunicatorDelegate {

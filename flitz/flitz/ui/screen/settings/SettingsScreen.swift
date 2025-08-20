@@ -40,7 +40,7 @@ struct SettingsScreen: View {
                     }
                     
                     FZPageSectionActionItem("로그아웃") {
-                        
+                        RootAppState.shared.logout()
                     }
                     
                     FZPageSectionActionItem("Flitz 계정 삭제하기") {
