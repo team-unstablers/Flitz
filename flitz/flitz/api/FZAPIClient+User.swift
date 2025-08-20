@@ -44,6 +44,17 @@ extension FZAPIClient {
                                       parameters: args)
     }
     
+    func selfSettings() async throws -> FZUserSettings {
+        return try await self.request(to: .selfSettings, expects: FZUserSettings.self)
+    }
+    
+    func saveSelfSettings(_ args: FZUserSettings) async throws -> FZUserSettings {
+        return try await self.request(to: .selfSettings,
+                                      expects: FZUserSettings.self,
+                                      method: .patch,
+                                      parameters: args)
+    }
+
     func selfWaveSafetyZone() async throws -> FZUserWaveSafetyZone {
         return try await self.request(to: .selfWaveSafetyZone, expects: FZUserWaveSafetyZone.self)
     }

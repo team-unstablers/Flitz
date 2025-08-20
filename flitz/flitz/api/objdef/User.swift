@@ -202,3 +202,12 @@ struct FZUserWaveSafetyZone: Codable {
                                             enable_wave_after_exit: true)
 #endif
 }
+
+struct FZUserSettings: Codable {
+    let messaging_notifications_enabled: Bool
+    let match_notifications_enabled: Bool
+    let notice_notifications_enabled: Bool
+    let marketing_notifications_enabled: Bool
+    
+    let marketing_notifications_enabled_at: String?
+}

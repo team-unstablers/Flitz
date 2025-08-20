@@ -14,22 +14,8 @@ struct SettingsScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                VStack(spacing: 0) {
-                    FZPageSectionTitle(title: "알림 설정")
-                    FZPageSectionItem("채팅 알림 받기") {
-                        Toggle("", isOn: .constant(false))
-                    }
-                    FZPageSectionItem("매칭 알림 받기") {
-                        Toggle("", isOn: .constant(true))
-                    }
-                    FZPageSectionItem("중요한 공지 알림 받기") {
-                        Toggle("", isOn: .constant(true))
-                    }
-                    FZPageSectionItem("쓸데없는 알림 받기") {
-                        Toggle("", isOn: .constant(true))
-                    }
-                }
-                .padding(.horizontal, 16)
+                NotificationSettingsSection()
+                    .padding(.horizontal, 16)
                 
                 FZPageSectionDivider()
                 
