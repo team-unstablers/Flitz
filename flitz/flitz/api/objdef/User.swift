@@ -58,7 +58,7 @@ struct FZUserOnlineStatus: RawRepresentable, Codable, Equatable {
     var rawValue: String
     
     static let online = FZUserOnlineStatus(rawValue: "online")
-    static let recent = FZUserOnlineStatus(rawValue: "recent")
+    static let recently = FZUserOnlineStatus(rawValue: "recently")
     static let offline = FZUserOnlineStatus(rawValue: "offline")
     
     init(rawValue: RawValue) {
@@ -73,7 +73,7 @@ struct FZUserOnlineStatus: RawRepresentable, Codable, Equatable {
         switch self {
         case .online:
             return NSLocalizedString("fzapi.user.online_status.online", comment: "온라인")
-        case .recent:
+        case .recently:
             return NSLocalizedString("fzapi.user.online_status.recent", comment: "최근 접속")
         case .offline:
             return NSLocalizedString("fzapi.user.online_status.offline", comment: "오프라인")
@@ -121,7 +121,7 @@ struct FZUser: Codable, Identifiable {
                               bio: "안녕하세요! Flitz 개발자입니다.",
                               hashtags: ["Flitz", "SwiftUI"],
                               
-                              online_status: .recent,
+                              online_status: .recently,
                               fuzzy_distance: .nearest,
 
                               profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4")
