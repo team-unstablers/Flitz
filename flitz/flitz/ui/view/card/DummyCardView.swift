@@ -20,7 +20,7 @@ struct DummyCardView: View {
     
     
     var body: some View {
-        FZCardView(world: $world, enableGesture: true, gestureRecognizer: nil)
+        FZCardView(world: world, enableGesture: true, gestureRecognizer: nil)
             .displayCard(card, to: $world)
     }
 }

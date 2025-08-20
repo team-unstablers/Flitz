@@ -48,7 +48,7 @@ struct FZCardViewEx: View {
     
     var body: some View {
         VStack {
-            FZCardView(world: $viewModel.world, enableGesture: true, gestureRecognizer: nil)
+            FZCardView(world: viewModel.world, enableGesture: true, gestureRecognizer: nil)
             // .displayCard(card, to: $world)
             Button("Add Card") {
                 let newCard = Flitz.Card()

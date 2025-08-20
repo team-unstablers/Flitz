@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FZCardDistributionRevealPhase: RawRepresentable, Codable {
+struct FZCardDistributionRevealPhase: RawRepresentable, Codable, Equatable {
     var rawValue: Int
     
     init(rawValue: Int) {
@@ -22,6 +22,10 @@ struct FZCardDistributionRevealPhase: RawRepresentable, Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(rawValue)
+    }
+    
+    static func ==(lhs: FZCardDistributionRevealPhase, rhs: FZCardDistributionRevealPhase) -> Bool {
+        return lhs.rawValue == rhs.rawValue
     }
     
     static let hidden = Self.init(rawValue: 0)

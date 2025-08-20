@@ -72,6 +72,40 @@ class WaveCardManagerViewModel: ObservableObject {
             self.cardInstances.append(cardInstance)
         }
     }
+    
+    func pop() {
+        guard let current = self.current else {
+            return
+        }
+        
+        self.world.pop()
+        self.distributions.removeAll { $0.id == current.id }
+        self.cardInstances.removeAll { $0.id == current.id }
+    }
+        
+}
+
+struct WaveCardNotRevealed: View {
+    var body: some View {
+        VStack() {
+            Text("아직은 카드를 볼 수 없어요")
+                .font(.heading2)
+                .bold()
+                .foregroundStyle(Color.Grayscale.gray8)
+            
+            Text("시간이 지나면 카드를 볼 수 있게 될 거에요.\n조금만 기다려 주세요!")
+                .multilineTextAlignment(.center)
+                .font(.main)
+                .foregroundStyle(Color.Grayscale.gray7)
+        }
+        .padding()
+        .background {
+            BlurEffectView(style: .extraLight)
+        }
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.24), radius: 16)
+        .padding(.bottom, 32)
+    }
 }
 
 struct WaveCardPreview: View {
@@ -87,47 +121,40 @@ struct WaveCardPreview: View {
     var body: some View {
         if let distribution = viewModel.current {
             ZStack(alignment: .bottom) {
-                FZCardView(world: $viewModel.world, enableGesture: true)
+                FZCardView(world: viewModel.world, enableGesture: true)
                     .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
                     .onTapGesture {
-                        guard distribution.reveal_phase == .revealed else {
-                            return
-                        }
-                        
-                        appState.currentModal = .userProfile(userId: distribution.card.user!.id)
+                         guard distribution.reveal_phase == .revealed else {
+                             return
+                         }
+                         
+                         appState.currentModal = .userProfile(userId: distribution.card.user!.id)
+                    }
+                    .onAppear {
+                        Self._printChanges()
                     }
                 
                 // 이거 여기가 아니라 부모에 있어야 됨
                 if distribution.reveal_phase == .revealed {
                     ECController(distributionId: distribution.id) { _ in
-                        viewModel.world.pop()
-                        viewModel.distributions.removeAll { $0.id == distribution.id }
-                        viewModel.cardInstances.removeAll { $0.id == distribution.id }
+                        viewModel.pop()
                     }
                     .offset(x: 0, y: -60)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .move(edge: .bottom).combined(with: .opacity)
+                    ))
                 }
                 
                 if distribution.reveal_phase == .blurry {
-                    VStack() {
-                        Text("아직은 카드를 볼 수 없어요")
-                            .font(.heading2)
-                            .bold()
-                            .foregroundStyle(Color.Grayscale.gray8)
-                        
-                        Text("시간이 지나면 카드를 볼 수 있게 될 거에요.\n조금만 기다려 주세요!")
-                            .multilineTextAlignment(.center)
-                            .font(.main)
-                            .foregroundStyle(Color.Grayscale.gray7)
-                    }
-                    .padding()
-                    .background {
-                        BlurEffectView(style: .extraLight)
-                    }
-                    .cornerRadius(12)
-                    .shadow(color: .black.opacity(0.24), radius: 16)
-                    .padding(.bottom, 32)
+                    WaveCardNotRevealed()
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                            removal: .move(edge: .bottom).combined(with: .opacity)
+                        ))
                 }
             }
+            .animation(.easeInOut(duration: 0.3), value: distribution.reveal_phase)
         }
     }
 }

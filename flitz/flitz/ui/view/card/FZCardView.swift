@@ -20,8 +20,6 @@ enum FZCardViewCardSide {
 }
 
 struct FZCardView: UIViewRepresentable, Equatable {
-    
-    @Binding
     var world: FZCardViewWorld
     
     var enableGesture: Bool = true
@@ -350,7 +348,7 @@ struct FZCardView: UIViewRepresentable, Equatable {
     }()
     
     VStack {
-        FZCardView(world: .constant(world))
+        FZCardView(world: world)
             .equatable()
     }
     .background(.black)

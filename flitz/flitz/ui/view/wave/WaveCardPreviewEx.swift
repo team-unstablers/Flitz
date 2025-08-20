@@ -23,7 +23,7 @@ struct WaveCardPreviewEx: View {
     }()
     
     var body: some View {
-        FZCardView(world: $world, enableGesture: true)
+        FZCardView(world: world, enableGesture: true)
             .displayCard($card, to: $world, showNormalMap: .constant(false))
             .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
             .onAppear {

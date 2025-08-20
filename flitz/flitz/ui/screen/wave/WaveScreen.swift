@@ -31,6 +31,8 @@ struct WaveScreen: View {
     var cardManagerViewModel = CardManagerViewModel()
     
     var body: some View {
+        let _ = Self._printChanges()
+        
         VStack(spacing: 0) {
             MainTitlebar {
                 NotificationButton(badged: false) {
