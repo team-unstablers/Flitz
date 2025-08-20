@@ -14,6 +14,14 @@ extension FZAPIClient {
         return try await self.request(to: .user(id: id), expects: FZUser.self)
     }
     
+    func blockUser(id: String) async throws {
+        _ = try await self.request(to: .userBlock(id: id), expects: Ditch.self, method: .put)
+    }
+    
+    func unblockUser(id: String) async throws {
+        _ = try await self.request(to: .userBlock(id: id), expects: Ditch.self, method: .delete)
+    }
+
     func fetchSelf() async throws -> FZSelfUser {
         return try await self.request(to: .user(id: "self"), expects: FZSelfUser.self)
     }

@@ -94,7 +94,7 @@ struct MyPageScreen: View {
                             appState.navState.append(.protectionSettings)
                         }
                         FZPageSectionActionItem("차단된 사용자") {
-                            
+                            appState.navState.append(.blockedUsers)
                         }
                     }
                     .padding(.horizontal, 16)

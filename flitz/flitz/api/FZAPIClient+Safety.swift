@@ -6,6 +6,10 @@
 //
 
 extension FZAPIClient {
+    func blocksList() async throws -> Paginated<FZUserBlock> {
+        return try await self.request(to: .blocks, expects: Paginated<FZUserBlock>.self)
+    }
+    
     func contactTriggersList() async throws -> Paginated<FZContactsTrigger> {
         return try await self.request(to: .contactTriggers, expects: Paginated<FZContactsTrigger>.self)
     }

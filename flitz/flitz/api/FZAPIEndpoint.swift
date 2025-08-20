@@ -24,6 +24,10 @@ struct FZAPIEndpoint: RawRepresentable {
         return FZAPIEndpoint(rawValue: "/users/\(id)/")
     }
     
+    static func userBlock(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/users/\(id)/block/")
+    }
+    
     static let selfProfileImage = FZAPIEndpoint(rawValue: "/users/self/profile-image/")
     static let selfIdentity = FZAPIEndpoint(rawValue: "/users/self/identity/")
     static let selfWaveSafetyZone = FZAPIEndpoint(rawValue: "/users/self/wave-safety-zone/")
@@ -97,6 +101,8 @@ struct FZAPIEndpoint: RawRepresentable {
     // messaging end
     
     // safety start
+    static let blocks = FZAPIEndpoint(rawValue: "/blocks/")
+    
     static let contactTriggers = FZAPIEndpoint(rawValue: "/contact-triggers/")
     
     static func contactTrigger(triggerId: String) -> FZAPIEndpoint {

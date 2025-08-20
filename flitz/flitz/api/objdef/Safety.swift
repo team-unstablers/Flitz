@@ -7,6 +7,11 @@
 
 import Foundation
 
+struct FZUserBlock: Codable {
+    let id: String
+    let blocked_user: FZUser
+}
+
 struct FZContactsTriggerEnabled: Codable {
     let is_enabled: Bool
 }

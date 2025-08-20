@@ -149,21 +149,61 @@ struct UserProfileModalProfileImage: View {
     }
 }
 
+
+struct UserProfileModalMenuButton<Content: View>: View {
+    var size: CGFloat = 36
+    
+    @ViewBuilder
+    var content: () -> Content
+    
+    var body: some View {
+        Menu {
+            content()
+        } label: {
+            VStack {
+                Image("ECMenu")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+            }
+            .frame(width: size, height: size)
+            .background(.white)
+            .cornerRadius(size / 2)
+            .compositingGroup()
+            .shadow(color: .black.opacity(0.25), radius: 2, x: 0, y: 2)
+            .hapticFeedback()
+        }
+        .menuOrder(.fixed)
+    }
+}
+
 struct UserProfileModalBody: View {
     var profile: FZUser
     var extraSpacing: CGFloat = 0
     
+    var onDismiss: (() -> Void)? = nil
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
-            ScrollView(.horizontal) {
-                HStack {
-                    if let profileImageUrl = profile.profile_image_url {
-                        UserProfileModalProfileImage(url: profileImageUrl, size: 140)
+            HStack(alignment: .bottom) {
+                if let profileImageUrl = profile.profile_image_url {
+                    UserProfileModalProfileImage(url: profileImageUrl, size: 140)
+                }
+                Spacer()
+                UserProfileModalMenuButton {
+                    Button("사용자 신고하기", role: .destructive) {
+                        print("TODO")
+                    }
+                    Button("사용자 차단하기", role: .destructive) {
+                        Task {
+                            await self.blockUser()
+                            onDismiss?()
+                        }
                     }
                 }
-                .padding(16)
             }
+            .padding(16)
             .zIndex(2)
 
             VStack(spacing: 0) {
@@ -197,6 +237,19 @@ struct UserProfileModalBody: View {
             .compositingGroup()
             .shadow(radius: 16)
         }
+    }
+    
+    func blockUser() async {
+        let client = RootAppState.shared.client
+        
+        do {
+            try await client.blockUser(id: profile.id)
+        } catch {
+            print("[UserProfileModalBody] Failed to block user: \(error)")
+        }
+        
+        // HACK: reset navigation state to close the modal
+        RootAppState.shared.navState = []
     }
 }
 
@@ -232,7 +285,7 @@ struct UserProfileModal: View {
                 }
             
             if let profile = viewModel.profile {
-                UserProfileModalBody(profile: profile, extraSpacing: max(0, -dragOffset.height))
+                UserProfileModalBody(profile: profile, extraSpacing: max(0, -dragOffset.height), onDismiss: onDismiss)
                     .offset(y: max(0, dragOffset.height))
                     .opacity(opacity)
                     .gesture(
