@@ -10,6 +10,18 @@ import Foundation
 import Alamofire
 
 class FZAPIClient {
+    let session: Session = {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpMaximumConnectionsPerHost = 10
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 10
+        configuration.httpShouldSetCookies = false
+        configuration.waitsForConnectivity = true
+        configuration.multipathServiceType = .handover
+        
+        return Session(configuration: configuration)
+    }()
+    
     var context: FZAPIContext
     
     init(context: FZAPIContext) {
@@ -27,11 +39,11 @@ class FZAPIClient {
             "Authorization": "Bearer \(context.token ?? "")"
         ] : nil
         
-        let response = AF.request(url,
-                                  method: method,
-                                  parameters: parameters,
-                                  encoder: method == .get ? URLEncodedFormParameterEncoder.default : JSONParameterEncoder.default,
-                                  headers: headers)
+        let response = session.request(url,
+                                       method: method,
+                                       parameters: parameters,
+                                       encoder: method == .get ? URLEncodedFormParameterEncoder.default : JSONParameterEncoder.default,
+                                       headers: headers)
             .validate()
         
         

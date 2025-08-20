@@ -229,15 +229,28 @@ class ProfileEditViewModel: ObservableObject {
     }
     
     func loadProfile() async {
+        if let cachedProfile = RootAppState.shared.profile {
+            self.intermediate = FZIntermediateUser.from(cachedProfile, nil)
+        }
+        
+        guard let apiClient = self.apiClient else {
+            return
+        }
+        
         do {
-            guard let profile = try await apiClient?.fetchSelf() else {
+            async let profile = apiClient.fetchSelf()
+            async let identity = apiClient.selfIdentity()
+            
+            let result = try? await (profile, identity)
+            
+            guard let fetchedProfile = result?.0 else {
                 // ?
                 return
             }
             
-            let identity = try? await apiClient?.selfIdentity()
+            let fetchedIdentity = result?.1
             
-            self.intermediate = FZIntermediateUser.from(profile, identity)
+            self.intermediate = FZIntermediateUser.from(fetchedProfile, fetchedIdentity)
         } catch {
             // Handle error appropriately
         }
@@ -275,7 +288,6 @@ class ProfileEditViewModel: ObservableObject {
             hashtags: intermediate.hashtags
         )
         
-        _ = try await apiClient.patchSelf(args)
         
         let identityArgs = FZUserIdentity(
             gender: intermediate.gender.asBitMaskValue,
@@ -286,7 +298,11 @@ class ProfileEditViewModel: ObservableObject {
             trans_prefers_safe_match: intermediate.enableTransSafeMatch
         )
         
-        _ = try await apiClient.patchSelfIdentity(identityArgs)
+        
+        async let patchProfile = apiClient.patchSelf(args)
+        async let patchIdentity = apiClient.patchSelfIdentity(identityArgs)
+        
+        _ = try await (patchProfile, patchIdentity)
     }
 }
 
@@ -681,8 +697,10 @@ struct ProfileEditScreen: View {
                 } else {
                     Button("저장") {
                         Task {
-                            try? await viewModel.saveProfileImage()
-                            try? await viewModel.saveProfile()
+                            async let saveImage = viewModel.saveProfileImage()
+                            async let saveProfile = viewModel.saveProfile()
+                            
+                            _ = try? await (saveImage, saveProfile)
                             
                             appState.loadProfile()
                             

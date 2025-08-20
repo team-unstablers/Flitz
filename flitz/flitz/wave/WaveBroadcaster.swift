@@ -36,7 +36,7 @@ class WaveBroadcaster: NSObject {
         
         self.peripheralManager = CBPeripheralManager(
             delegate: self,
-            queue: nil,
+            queue: .global(qos: .background),
             options: options
         )
     }

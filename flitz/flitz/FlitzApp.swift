@@ -16,6 +16,7 @@ struct FlitzApp: App {
         WindowGroup {
             FlitzAppMain()
                 .colorScheme(.light)
+                .tintColor(Color.Brand.main0)
                 .font(.fzMain)
         }
     }

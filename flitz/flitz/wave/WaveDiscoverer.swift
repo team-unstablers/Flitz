@@ -32,7 +32,7 @@ class WaveDiscoverer: NSObject {
         
         self.centralManager = CBCentralManager(
             delegate: self,
-            queue: nil,
+            queue: .global(qos: .background),
             options: [
                 CBCentralManagerOptionShowPowerAlertKey: true,
                 CBCentralManagerOptionRestoreIdentifierKey: Self.RESTORE_IDENTIFIER

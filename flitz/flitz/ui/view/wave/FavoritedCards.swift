@@ -30,25 +30,35 @@ class FavoritedCardsViewModel: ObservableObject {
     }
     
     func prerenderCard() async {
-        let assetsLoader = AssetsLoader.global
         let renderer = FZCardViewSwiftUICardRenderer()
         
-        for favorite in self.favorites {
-            do {
-                do {
-                    try await assetsLoader.resolveAll(from: favorite.card.content)
-                } catch {
-                    print(error)
+        await withTaskGroup { group in
+            for favorite in self.favorites {
+                group.addTask {
+                    await self.prerenderCard(favorite.card, using: renderer)
                 }
-                
-                let mainTexture = try renderer.render(card: favorite.card.content, options: [])
-                
-                renderCaches[favorite.card.id] = mainTexture
-            } catch {
-                print("[CardManagerViewModel] Failed to prerender card \(favorite.card.id): \(error)")
             }
         }
     }
+    
+    func prerenderCard(_ card: FZCard, using renderer: FZCardViewCardRenderer) async {
+        let assetsLoader = AssetsLoader.global
+        
+        do {
+            try await assetsLoader.resolveAll(from: card.content)
+        } catch {
+            print(error)
+        }
+        
+        do {
+            let mainTexture = try renderer.render(card: card.content, options: [])
+            
+            renderCaches[card.id] = mainTexture
+        } catch {
+            print("[CardManagerViewModel] Failed to prerender card \(card.id): \(error)")
+        }
+    }
+    
 }
 
 

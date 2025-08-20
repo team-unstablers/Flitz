@@ -9,6 +9,8 @@ import SwiftUI
 
 extension Color {
     struct Brand {
+        static let main0 = Color(r8: 51, g8: 51, b8: 51, a: 1)
+        
         /// Main Orange 0
         static let orange0 = Color(hex: 0xFEAF92)
         /// Main Blue 0

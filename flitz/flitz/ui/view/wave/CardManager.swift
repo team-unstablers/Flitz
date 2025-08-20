@@ -23,32 +23,42 @@ class CardManagerViewModel: ObservableObject {
             let cards = try await self.client.cards()
             
             self.cards = cards.results
-            await prerenderCard()
+            await prerenderAllCards()
         } catch {
             print(error)
         }
     }
     
-    func prerenderCard() async {
-        let assetsLoader = AssetsLoader.global
+    func prerenderAllCards() async {
         let renderer = FZCardViewSwiftUICardRenderer()
         
-        for card in self.cards {
-            do {
-                do {
-                    try await assetsLoader.resolveAll(from: card.content)
-                } catch {
-                    print(error)
+        await withTaskGroup { group in
+            for card in self.cards {
+                group.addTask {
+                    await self.prerenderCard(card, using: renderer)
                 }
-                
-                let mainTexture = try renderer.render(card: card.content, options: [])
-                
-                renderCaches[card.id] = mainTexture
-            } catch {
-                print("[CardManagerViewModel] Failed to prerender card \(card.id): \(error)")
             }
         }
     }
+    
+    func prerenderCard(_ card: FZCard, using renderer: FZCardViewCardRenderer) async {
+        let assetsLoader = AssetsLoader.global
+        
+        do {
+            try await assetsLoader.resolveAll(from: card.content)
+        } catch {
+            print(error)
+        }
+        
+        do {
+            let mainTexture = try renderer.render(card: card.content, options: [])
+            
+            renderCaches[card.id] = mainTexture
+        } catch {
+            print("[CardManagerViewModel] Failed to prerender card \(card.id): \(error)")
+        }
+    }
+    
     
     func newCard() async {
         do {
