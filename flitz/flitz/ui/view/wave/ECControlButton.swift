@@ -40,7 +40,7 @@ struct ECControlButton<Content: View>: View {
             }
             .frame(width: size.size, height: size.size)
             .background(
-                BlurEffectView(style: .regular)
+                BlurEffectView(style: .light)
                     .clipShape(Circle())
             )
             .compositingGroup()

@@ -130,7 +130,7 @@ struct CardPreview: View {
         let renderer = FZCardViewSwiftUICardRenderer()
         
         guard let card = self.card,
-              let mainTexture = try? renderer.render(card: card) else {
+              let mainTexture = try? renderer.render(card: card, options: []) else {
             print("Failed to render card")
             return
         }

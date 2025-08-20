@@ -168,14 +168,16 @@ class FZCardViewWorld {
         
         for (index, id) in cardOrder.enumerated() {
             if index == 0 {
-                
+                if let card = cardArena[id] {
+                    card.rootNode.position = SCNVector3(x: 0.0, y: 0.0, z: 0.0)
+                }
             } else {
                 if let card = cardArena[id] {
                     let xOffset = Float.random(in: -0.15...0.15)
                     let yOffset = Float.random(in: -0.15...0.15)
                     
                     let deg = Float.random(in: 2.0...6.0) * (index % 2 == 0 ? -1 : 1)
-                    card.modelNode.eulerAngles.x = deg2rad(90.0 + deg)
+                    // card.modelNode.eulerAngles.x = deg2rad(90.0 + deg)
                     
                     print(card.rootNode)
                     
@@ -188,13 +190,44 @@ class FZCardViewWorld {
         }
     }
     
+    func pop() {
+        guard let firstId = cardOrder.first,
+              let card = cardArena[firstId] else {
+            print("No cards to pop")
+            return
+        }
+        
+        SCNTransaction.begin()
+        card.rootNode.castsShadow = false
+        SCNTransaction.commit()
+
+        SCNTransaction.begin()
+        SCNTransaction.animationDuration = 1
+        
+        card.rootNode.position.y = -10
+        card.rootNode.opacity = 0
+        
+        self.cardOrder.remove(at: 0)
+        self.reorder()
+        
+        SCNTransaction.completionBlock = {
+            card.destroy()
+            SCNTransaction.completionBlock = nil
+            SCNTransaction.animationDuration = 0
+        }
+        
+        SCNTransaction.commit()
+    }
+
     fileprivate func remove(card: FZCardViewCardInstance) {
         self.cardArena.removeValue(forKey: card.id)
+        self.cardOrder.removeAll { $0 == card.id }
     }
     
     
     fileprivate func remove(id: String) {
         self.cardArena.removeValue(forKey: id)
+        self.cardOrder.removeAll { $0 == id }
     }
 }
 
@@ -225,6 +258,8 @@ class FZCardViewCardInstance: Identifiable, Hashable {
     
     let world: FZCardViewWorld
     let card: Flitz.Card
+    
+    var shouldDisplayBlurry: Bool = false
     
     let rootNode = SCNNode()
     var modelNode: SCNReferenceNode!
@@ -277,9 +312,14 @@ class FZCardViewCardInstance: Identifiable, Hashable {
     @MainActor
     func updateContent() {
         let renderer = FZCardViewSwiftUICardRenderer()
+        var options = FZCardViewCardRendererOptions()
         
-        guard let mainTexture = try? renderer.render(card: card),
-              let normalMap = try? renderer.renderNormalMap(card: card)
+        if self.shouldDisplayBlurry {
+            options.insert(.renderBlurry)
+        }
+        
+        guard let mainTexture = try? renderer.render(card: card, options: options),
+              let normalMap = try? renderer.render(card: card, options: options.union(.renderNormalMap))
         else {
             print("Failed to render content")
             return

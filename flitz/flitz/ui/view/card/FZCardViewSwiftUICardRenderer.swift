@@ -10,20 +10,20 @@ import Foundation
 import SwiftUI
 
 class FZCardViewSwiftUICardRenderer: FZCardViewCardRenderer {
-    func render(card: Flitz.Card) throws -> UIImage {
-        let view = CardCanvas(background: card.background, elements: .constant(card.elements))
-        let renderer = ImageRenderer(content: view)
-        renderer.scale = 2.0
-        
-        guard let image = renderer.uiImage else {
-            throw FZCardViewError.renderFailed
-        }
-        
-        return image
+    
+    @ViewBuilder
+    private func buildView(card: Flitz.Card, options: FZCardViewCardRendererOptions) -> some View {
+        CardCanvas(background: card.background, elements: .constant(card.elements), asNormalMap: options.contains(.renderNormalMap))
+            .if(options.contains(.renderBlurry)) {
+                $0
+                    .compositingGroup()
+                    .blur(radius: 24)
+            }
     }
     
-    func renderNormalMap(card: Flitz.Card) throws -> UIImage {
-        let view = CardCanvas(background: card.background, elements: .constant(card.elements), asNormalMap: true)
+    func render(card: Flitz.Card, options: FZCardViewCardRendererOptions) throws -> UIImage {
+        let view = buildView(card: card, options: options)
+        
         let renderer = ImageRenderer(content: view)
         renderer.scale = 2.0
         

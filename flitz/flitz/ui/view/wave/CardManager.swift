@@ -41,7 +41,7 @@ class CardManagerViewModel: ObservableObject {
                     print(error)
                 }
                 
-                let mainTexture = try renderer.render(card: card.content)
+                let mainTexture = try renderer.render(card: card.content, options: [])
                 
                 renderCaches[card.id] = mainTexture
             } catch {

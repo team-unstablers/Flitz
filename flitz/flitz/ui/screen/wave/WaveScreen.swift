@@ -21,6 +21,15 @@ struct WaveScreen: View {
     @State
     var selectedTabId: String = Self.tabs.first!.id
     
+    @StateObject
+    var waveCardManagerViewModel = WaveCardManagerViewModel()
+    
+    @StateObject
+    var favoritedCardsViewModel = FavoritedCardsViewModel()
+    
+    @StateObject
+    var cardManagerViewModel = CardManagerViewModel()
+    
     var body: some View {
         VStack(spacing: 0) {
             MainTitlebar {
@@ -39,11 +48,11 @@ struct WaveScreen: View {
             
             VStack(spacing: 0) {
                 if selectedTabId == "exchanged" {
-                    ExchangedCards()
+                    WaveCardManagerView(viewModel: waveCardManagerViewModel)
                 } else if selectedTabId == "liked-cards" {
-                    FavoritedCards()
+                    FavoritedCards(viewModel: favoritedCardsViewModel)
                 } else if selectedTabId == "my-cards" {
-                    CardManagerView()
+                    CardManagerView(viewModel: cardManagerViewModel)
                 } else if selectedTabId == "debug-screen" {
                     FZCardViewEx()
                 }

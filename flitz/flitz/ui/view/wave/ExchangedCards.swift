@@ -46,7 +46,7 @@ struct ECController: View {
 
             ECControlButton(size: .large) {
                 Task {
-                    try? await RootAppState.shared.client.markAsLike(which: distributionId)
+                    // try? await RootAppState.shared.client.markAsLike(which: distributionId)
                 }
                 
                 dismissHandler(distributionId)

@@ -41,7 +41,7 @@ class FavoritedCardsViewModel: ObservableObject {
                     print(error)
                 }
                 
-                let mainTexture = try renderer.render(card: favorite.card.content)
+                let mainTexture = try renderer.render(card: favorite.card.content, options: [])
                 
                 renderCaches[favorite.card.id] = mainTexture
             } catch {
