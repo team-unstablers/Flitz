@@ -81,13 +81,24 @@ struct FavoritedCards: View {
                         } label: {
                             if let renderedCardImage = viewModel.renderCaches[favorite.card.id] {
                                 // Rendered card image is available
-                                Image(uiImage: renderedCardImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    .padding()
-                                    .shadow(color: .black.opacity(0.25), radius: 8)
-                                    .contentShape(RoundedRectangle(cornerRadius: 6))
+                                VStack {
+                                    Image(uiImage: renderedCardImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                                        .padding()
+                                        .shadow(color: .black.opacity(0.25), radius: 8)
+                                        .contentShape(RoundedRectangle(cornerRadius: 6))
+                                    if let user = favorite.card.user {
+                                        HStack(spacing: 4) {
+                                            ProfileImage(url: user.profile_image_url, size: 24)
+                                            
+                                            Text(user.display_name)
+                                                .semibold()
+                                                .lineLimit(1)
+                                        }
+                                    }
+                                }
                             } else {
                                 // Placeholder while rendering
                                 VStack {
@@ -105,7 +116,7 @@ struct FavoritedCards: View {
                         // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
                         .padding()
                         .contextMenu {
-                            Button("카드 삭제하기") {
+                            Button("보관함에서 삭제하기", role: .destructive) {
                                 Task {
                                     do {
                                         try await viewModel.client.deleteFavoriteCard(by: favorite.id)
