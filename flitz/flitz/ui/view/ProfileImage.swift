@@ -14,7 +14,7 @@ struct ProfileImage: View {
     var body: some View {
         if let urlString = url,
            let url = URL(string: urlString) {
-            AsyncImage(url: url) { image in
+            CachedAsyncImage(url: url) { image in
                 image
                     .resizable()
                     .frame(width: size, height: size)
