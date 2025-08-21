@@ -137,7 +137,7 @@ struct WaveSafetyZoneSettingsSection: View {
                             .padding(.bottom, 4)
                     }
                     
-                    Text("안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다.".byCharWrapping)
+                    Text("안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견하거나 카드 교환을 할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다.".byCharWrapping)
                 }
             }
         }
