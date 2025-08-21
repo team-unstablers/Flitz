@@ -91,7 +91,7 @@ struct FavoritedCards: View {
                                         .contentShape(RoundedRectangle(cornerRadius: 6))
                                     if let user = favorite.card.user {
                                         HStack(spacing: 4) {
-                                            ProfileImage(url: user.profile_image_url, size: 24)
+                                            ProfileImage(url: user.profile_image_url, userId: user.id, size: 24)
                                             
                                             Text(user.display_name)
                                                 .semibold()

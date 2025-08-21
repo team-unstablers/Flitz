@@ -430,6 +430,7 @@ struct ConversationScreen: View {
                                     ? viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
                                     : false,
                                 onAttachmentTap: { attachmentId in
+                                    composeAreaFocused = false
                                     appState.navState.append(RootNavigationItem.attachment(conversationId: viewModel.conversationId, attachmentId: attachmentId))
                                 }
                             )
@@ -523,11 +524,13 @@ struct ConversationScreen: View {
                     HStack {
                         ProfileImage(
                             url: opponent.user.profile_image_url,
+                            userId: opponent.user.id,
                             size: 36
                         )
                         Text(opponent.user.display_name).bold()
                     }
                         .onTapGesture {
+                            composeAreaFocused = false
                             appState.currentModal = .userProfile(userId: opponent.user.id)
                         }
                 } else {

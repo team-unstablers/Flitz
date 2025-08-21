@@ -18,7 +18,7 @@ struct UserBlockItem: View {
     var body: some View {
         HStack(alignment: .center) {
             HStack {
-                ProfileImage(url: block.blocked_user.profile_image_url)
+                ProfileImage(url: block.blocked_user.profile_image_url, userId: block.blocked_user.id)
                     .padding(.trailing, 4)
                 VStack(alignment: .leading, spacing: 0) {
                     Text(block.blocked_user.display_name)

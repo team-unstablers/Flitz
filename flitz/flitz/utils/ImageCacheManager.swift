@@ -26,6 +26,7 @@ class ImageCacheManager {
         let cache = URLCache(memoryCapacity: memoryCapacity, diskCapacity: diskCapacity)
         configuration.urlCache = cache
         
+        
         imageCache = AutoPurgingImageCache(
             memoryCapacity: UInt64(memoryCapacity),
             preferredMemoryUsageAfterPurge: UInt64(memoryCapacity / 2)

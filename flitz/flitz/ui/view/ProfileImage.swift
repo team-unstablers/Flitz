@@ -9,12 +9,28 @@ import SwiftUI
 
 struct ProfileImage: View {
     var url: String?
+    var identifier: String?
+    
     var size: CGFloat = 56
+    
+    init(url: String?, size: CGFloat = 56) {
+        self.url = url
+        self.identifier = nil
+        
+        self.size = size
+    }
+    
+    init(url: String?, userId: String, size: CGFloat = 56) {
+        self.url = url
+        self.identifier = "user:profile_image:\(userId)"
+        
+        self.size = size
+    }
     
     var body: some View {
         if let urlString = url,
            let url = URL(string: urlString) {
-            CachedAsyncImage(url: url) { image in
+            CachedAsyncImage(url: url, identifier: identifier) { image in
                 image
                     .resizable()
                     .frame(width: size, height: size)

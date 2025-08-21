@@ -18,6 +18,7 @@ struct ProfileButton: View {
             HStack(spacing: 12) {
                 ProfileImage(
                     url: profile.profile_image_url,
+                    userId: profile.id,
                     size: 60
                 )
                 

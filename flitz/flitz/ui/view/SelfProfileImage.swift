@@ -15,7 +15,7 @@ struct SelfProfileImage: View {
     
     var body: some View {
         if let profile = appState.profile {
-            ProfileImage(url: profile.profile_image_url, size: size)
+            ProfileImage(url: profile.profile_image_url, userId: profile.id, size: size)
         } else {
             ProgressView()
                 .frame(width: size, height: size)

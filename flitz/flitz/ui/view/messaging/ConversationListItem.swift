@@ -40,8 +40,10 @@ struct ConversationListItem: View {
     var body: some View {
         HStack(alignment: .top) {
             HStack {
-                ProfileImage(url: opponent?.user.profile_image_url)
-                    .padding(.trailing, 4)
+                if let opponent = opponent {
+                    ProfileImage(url: opponent.user.profile_image_url, userId: opponent.user.id)
+                        .padding(.trailing, 4)
+                }
                 VStack(alignment: .leading, spacing: 0) {
                     Text(opponent?.user.display_name ?? "알 수 없음")
                         .font(.heading3)
