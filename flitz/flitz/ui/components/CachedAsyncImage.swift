@@ -17,7 +17,13 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     
     @State private var image: UIImage?
     @State private var isLoading = false
+    @State private var hasTriedLoading = false
+    @State private var loadFailed = false
+    @State private var retryCount = 0
     @State private var loadingTask: DataRequest?
+    
+    private let maxRetries = 3
+    private let retryDelay: TimeInterval = 2.0
     
     init(
         url: URL?,
@@ -35,11 +41,23 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 content(SwiftUI.Image(uiImage: image))
             } else if isLoading {
                 placeholder()
-            } else {
+            } else if !hasTriedLoading {
                 placeholder()
                     .onAppear {
                         loadImage()
                     }
+            } else if loadFailed && retryCount < maxRetries {
+                placeholder()
+                    .onAppear {
+                        Task {
+                            try? await Task.sleep(nanoseconds: UInt64(retryDelay * 1_000_000_000))
+                            if loadFailed && retryCount < maxRetries {
+                                loadImage()
+                            }
+                        }
+                    }
+            } else {
+                placeholder()
             }
         }
         .onDisappear {
@@ -51,12 +69,15 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
         guard let url = url, !isLoading else { return }
         
         isLoading = true
+        hasTriedLoading = true
+        loadFailed = false
         
         let imageCache = ImageCacheManager.shared.imageCache
         
         if let cachedImage = imageCache.image(for: URLRequest(url: url), withIdentifier: nil) {
             self.image = cachedImage
             self.isLoading = false
+            self.loadFailed = false
             return
         }
         
@@ -65,12 +86,19 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
             .responseImage(imageScale: UIScreen.main.scale) { response in
                 isLoading = false
                 
-                if case .success(let loadedImage) = response.result {
+                switch response.result {
+                case .success(let loadedImage):
                     imageCache.add(loadedImage, for: URLRequest(url: url), withIdentifier: nil)
                     
                     withAnimation(.easeInOut(duration: 0.2)) {
                         self.image = loadedImage
                     }
+                    self.loadFailed = false
+                    self.retryCount = 0
+                    
+                case .failure:
+                    self.loadFailed = true
+                    self.retryCount += 1
                 }
             }
     }
