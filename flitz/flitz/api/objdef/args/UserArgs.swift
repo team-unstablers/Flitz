@@ -12,3 +12,8 @@ struct PatchSelfArgs: Codable {
     
     let hashtags: [String]
 }
+
+struct UserPasswdArgs: Codable {
+    let old_password: String
+    let new_password: String
+}

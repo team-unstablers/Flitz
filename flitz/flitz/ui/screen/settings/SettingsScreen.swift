@@ -22,7 +22,7 @@ struct SettingsScreen: View {
                 VStack(spacing: 0) {
                     FZPageSectionTitle(title: "계정 관리")
                     FZPageSectionActionItem("비밀번호 변경") {
-                        
+                        appState.navState.append(.passwd)
                     }
                     
                     FZPageSectionActionItem("로그아웃") {

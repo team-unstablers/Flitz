@@ -10,3 +10,8 @@ import Foundation
 struct Ditch: Codable {
     // void
 }
+
+struct SimpleResponse: Codable {
+    let is_success: Bool
+    let reason: String?
+}

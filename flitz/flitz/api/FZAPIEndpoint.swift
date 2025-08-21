@@ -30,6 +30,7 @@ struct FZAPIEndpoint: RawRepresentable {
     
     static let selfProfileImage = FZAPIEndpoint(rawValue: "/users/self/profile-image/")
     static let selfSettings = FZAPIEndpoint(rawValue: "/users/self/settings/")
+    static let selfPasswd = FZAPIEndpoint(rawValue: "/users/self/passwd/")
     static let selfIdentity = FZAPIEndpoint(rawValue: "/users/self/identity/")
     static let selfWaveSafetyZone = FZAPIEndpoint(rawValue: "/users/self/wave-safety-zone/")
     // user end

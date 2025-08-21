@@ -22,6 +22,7 @@ enum RootNavigationItem: Hashable {
     case editProfile
     case protectionSettings
     case blockedUsers
+    case passwd
     
     case noticeList
     case noticeDetail(noticeId: String)
@@ -53,6 +54,8 @@ struct RootNavigation: View {
                             ProtectionSettingsScreen()
                         case .blockedUsers:
                             ManageUserBlockScreen()
+                        case .passwd:
+                            PasswdScreen()
                             
                         case .noticeList:
                             NoticeListScreen()
