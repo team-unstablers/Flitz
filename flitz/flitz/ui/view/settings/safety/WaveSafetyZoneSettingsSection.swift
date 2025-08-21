@@ -113,29 +113,31 @@ struct WaveSafetyZoneSettingsSection: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            FZPageSectionTitle(title: "자동으로 Wave 끄기 (베타)")
+            FZPageSectionTitle(title: "안전 구역 설정 (베타)")
             if viewModel.busyInitial {
                 ProgressView()
                     .padding(.vertical, 8)
             } else {
-                FZPageSectionItem("자동으로 Wave 끄기 (베타)") {
+                FZPageSectionItem("안전 구역 기능 켜기 (베타)") {
                     Toggle("", isOn: $viewModel.intermediate.isEnabled)
                 }
-                FZPageSectionItem("장소에서 벗어나면 다시 Wave 켜기") {
+                /*
+                FZPageSectionItem("안전 구역에서 벗어나면 다시 Wave 켜기") {
                     Toggle("", isOn: $viewModel.intermediate.enableWaveAfterExit)
                 }
-                FZPageSectionActionItem("위치 지정하기") {
+                 */
+                FZPageSectionActionItem("안전 구역 지정하기") {
                     viewModel.locationSheetPresented = true
                 }
                 
                 
                 FZPageSectionNote() {
                     if viewModel.intermediate.isEnabled && (viewModel.intermediate.latitude == nil || viewModel.intermediate.longitude == nil) {
-                        (Text("아직 위치를 지정하지 않았습니다!").bold() + Text(" '위치 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다.".byCharWrapping))
+                        (Text("아직 안전 구역을 지정하지 않았습니다!").bold() + Text(" '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다.".byCharWrapping))
                             .padding(.bottom, 4)
                     }
                     
-                    Text("특정 장소에 도착하면, 자동으로 Wave를 끄고 오프라인 상태로 전환합니다. 오프라인 상태에서는 상대방이 당신을 발견하거나 Wave할 수 없게 됩니다.".byCharWrapping)
+                    Text("안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다.".byCharWrapping)
                 }
             }
         }

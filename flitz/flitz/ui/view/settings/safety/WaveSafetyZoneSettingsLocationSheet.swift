@@ -66,7 +66,7 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                             Text("1000m")
                         }
                         
-                        Button("끄기 구역 삭제") {
+                        Button("안전 구역 삭제") {
                             picked = nil
                         }
                             .foregroundStyle(.red)
@@ -84,7 +84,7 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                     Map(position: $position) {
                         if let p = picked {
                             Marker(coordinate: p) {
-                                Text("Wave 끄기 구역\n(반경 \(Int(radius))m)")
+                                Text("안전 구역\n(반경 \(Int(radius))m)")
                             }
                             MapCircle(center: p, radius: radius)               // ← 300m
                                 .foregroundStyle(.blue.opacity(0.18))       // 채우기
@@ -143,7 +143,7 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
             }
             .padding()
             .toolbarVisibility(.visible, for: .navigationBar)
-            .navigationTitle("Wave 끄기 구역 설정")
+            .navigationTitle("안전 구역 설정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
