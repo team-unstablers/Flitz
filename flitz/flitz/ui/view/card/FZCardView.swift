@@ -38,6 +38,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
         // cameraNode.camera?.wantsHDR = true
         
         sceneView.scene = world.scene
+        sceneView.isPlaying = true
+        // sceneView.rendersContinuously = true
+                    
         sceneView.pointOfView = world.mainCamera
         // sceneView.technique = world.glowTechnique
         
@@ -51,7 +54,9 @@ struct FZCardView: UIViewRepresentable, Equatable {
         context.coordinator.setSceneView(sceneView)
         
         // 자이로스코프 업데이트 설정
-        context.coordinator.setupMotionUpdates()
+        if (UIApplication.shared.applicationState == .active) {
+            context.coordinator.setupMotionUpdates()
+        }
         
         return sceneView
     }
@@ -70,12 +75,22 @@ struct FZCardView: UIViewRepresentable, Equatable {
         }
         
         
-        if (sceneView.scene !== world.scene) {
-            sceneView.scene = world.scene
-        }
-        
-        if (sceneView.pointOfView !== world.mainCamera) {
-            sceneView.pointOfView = world.mainCamera
+        if (UIApplication.shared.applicationState == .active) {
+            if (sceneView.scene !== world.scene) {
+                sceneView.scene = world.scene
+            }
+            
+            if (sceneView.pointOfView !== world.mainCamera) {
+                sceneView.pointOfView = world.mainCamera
+            }
+        } else {
+            sceneView.scene = nil
+            sceneView.isPlaying = false
+            
+            sceneView.preferredFramesPerSecond = 0
+            sceneView.pause(nil)
+
+            world.scene.isPaused = true
         }
     }
     
