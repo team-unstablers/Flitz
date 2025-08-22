@@ -30,7 +30,7 @@ struct SettingsScreen: View {
                     }
                     
                     FZPageSectionActionItem("Flitz 계정 삭제하기") {
-                        
+                        appState.navState.append(.deactivateAccount)
                     }
                 }
                 .padding(.horizontal, 16)

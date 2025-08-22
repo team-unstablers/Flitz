@@ -103,11 +103,7 @@ class RootAppState: ObservableObject {
         
         self.client = FZAPIClient(context: .load())
         
-        // kill self
-        UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            exit(0)
-        }
+
     }
 }
 
