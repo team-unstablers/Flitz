@@ -27,6 +27,7 @@ struct SettingsScreen: View {
                     
                     FZPageSectionActionItem("로그아웃") {
                         RootAppState.shared.logout()
+                        appState.navState.append(.logoutCompleted(reason: .byUser))
                     }
                     
                     FZPageSectionActionItem("Flitz 계정 삭제하기") {

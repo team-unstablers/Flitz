@@ -178,6 +178,50 @@
     "host" : {
 
     },
+    "logout.reason.description.by_another_session" : {
+      "comment" : "다른 세션에 의해 로그아웃됨 / 설명 (다른 기기에서 접속하여 로그아웃 되었습니다)",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 기기에서 접속하여 로그아웃 되었습니다.\n아래 버튼을 누르면 Flitz 앱을 종료합니다."
+          }
+        }
+      }
+    },
+    "logout.reason.description.by_user" : {
+      "comment" : "사용자에 의해 로그아웃됨 / 설명 (로그아웃이 완료되었습니다.)",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성공적으로 로그아웃 되었습니다.\n아래 버튼을 누르면 Flitz 앱을 종료합니다."
+          }
+        }
+      }
+    },
+    "logout.reason.title.by_another_session" : {
+      "comment" : "다른 세션에 의해 로그아웃됨 / 타이틀 (다른 기기에서 접속하여 로그아웃 되었습니다)",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 기기에서 접속하였습니다"
+          }
+        }
+      }
+    },
+    "logout.reason.title.by_user" : {
+      "comment" : "사용자에 의해 로그아웃됨 / 타이틀 (로그아웃 되었습니다)",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃 되었습니다"
+          }
+        }
+      }
+    },
     "rot: %@ scl: %@" : {
       "localizations" : {
         "ko" : {
@@ -214,6 +258,9 @@
 
     },
     "계정 삭제하기" : {
+
+    },
+    "계정을 비활성화하려면 계정 비밀번호를 입력해주세요." : {
 
     },
     "공지사항" : {
@@ -258,6 +305,9 @@
     "로그아웃 되었으므로 앱을 다시 기동하여 주십시오. (죄송합니다! 💦💦)" : {
 
     },
+    "로그아웃 완료" : {
+
+    },
     "로그인" : {
 
     },
@@ -294,10 +344,16 @@
     "비밀번호 변경" : {
 
     },
+    "비밀번호 입력" : {
+
+    },
     "비밀번호 찾기" : {
 
     },
     "비밀번호를 다시 한번 입력해 주세요" : {
+
+    },
+    "비밀번호를 입력하세요" : {
 
     },
     "비밀번호를 입력해 주세요" : {

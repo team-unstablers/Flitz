@@ -25,6 +25,7 @@ enum RootNavigationItem: Hashable {
     case passwd
     case deactivateAccount
     case deactivateCompleted
+    case logoutCompleted(reason: LogoutReason)
     
     case noticeList
     case noticeDetail(noticeId: String)
@@ -62,6 +63,8 @@ struct RootNavigation: View {
                             ConfirmDeactivateScreen()
                         case .deactivateCompleted:
                             DeactivateCompletedScreen()
+                        case .logoutCompleted(let reason):
+                            LogoutCompletedScreen(reason: reason)
                             
                         case .noticeList:
                             NoticeListScreen()
