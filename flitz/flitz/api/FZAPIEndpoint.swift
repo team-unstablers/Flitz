@@ -33,6 +33,7 @@ struct FZAPIEndpoint: RawRepresentable {
     static let selfPasswd = FZAPIEndpoint(rawValue: "/users/self/passwd/")
     static let selfIdentity = FZAPIEndpoint(rawValue: "/users/self/identity/")
     static let selfWaveSafetyZone = FZAPIEndpoint(rawValue: "/users/self/wave-safety-zone/")
+    static let selfDeactivate = FZAPIEndpoint(rawValue: "/users/self/deactivate/")
     // user end
     
     // card start

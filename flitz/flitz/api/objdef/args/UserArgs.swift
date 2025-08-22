@@ -17,3 +17,8 @@ struct UserPasswdArgs: Codable {
     let old_password: String
     let new_password: String
 }
+
+struct UserDeactivationArgs: Codable {
+    let password: String
+    let feedback: String?
+}

@@ -58,6 +58,10 @@ extension FZAPIClient {
     func passwd(_ args: UserPasswdArgs) async throws -> SimpleResponse {
         return try await self.request(to: .selfPasswd, expects: SimpleResponse.self, method: .post, parameters: args)
     }
+    
+    func deactivateSelf(_ args: UserDeactivationArgs) async throws -> SimpleResponse {
+        return try await self.request(to: .selfDeactivate, expects: SimpleResponse.self, method: .post, parameters: args)
+    }
 
     func selfWaveSafetyZone() async throws -> FZUserWaveSafetyZone {
         return try await self.request(to: .selfWaveSafetyZone, expects: FZUserWaveSafetyZone.self)

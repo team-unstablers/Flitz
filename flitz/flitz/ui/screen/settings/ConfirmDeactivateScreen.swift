@@ -169,28 +169,32 @@ struct ConfirmDeactivateScreen: View {
     private func deactivateAccount(password: String) async {
         busy = true
         
-        // TODO: 실제 비밀번호 검증 및 계정 삭제 API 호출
-        // 예시:
-        // do {
-        //     try await apiClient.deactivateAccount(password: password, feedback: feedbackText)
-        //     appState.navState.append(.deactivateCompleted)
-        // } catch {
-        //     errorMessage = "비밀번호가 올바르지 않습니다."
-        //     busy = false
-        //     return
-        // }
-        
-        // 임시 코드 (3초 대기 시뮬레이션)
-        try? await Task.sleep(for: .seconds(3))
-        
-        if password == "1234" { // 임시 검증
-            appState.navState.append(.deactivateCompleted)
-        } else {
-            errorMessage = "비밀번호가 올바르지 않습니다."
+        defer {
             busy = false
         }
         
-        passwordInput = ""
+        // 그냥 왠지 2초 정도 기다려주는게 좋을 것 같아서...
+        try? await Task.sleep(for: .seconds(2))
+        
+        do {
+            let client = appState.client
+            
+            let args = UserDeactivationArgs(
+                password: password,
+                feedback: feedbackText
+            )
+            let response = try await client.deactivateSelf(args)
+            
+            if !response.is_success {
+                errorMessage = response.reason ?? "알 수 없는 오류가 발생하였습니다"
+                return
+            }
+            
+            appState.logout()
+            appState.navState.append(.deactivateCompleted)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 
