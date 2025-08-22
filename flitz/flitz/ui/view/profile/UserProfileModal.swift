@@ -183,6 +183,9 @@ struct UserProfileModalBody: View {
     
     var onDismiss: (() -> Void)? = nil
     
+    @State
+    var isFlagSheetVisible: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             
@@ -191,9 +194,9 @@ struct UserProfileModalBody: View {
                     UserProfileModalProfileImage(url: profileImageUrl, size: 140)
                 }
                 Spacer()
-                UserProfileModalMenuButton {
+                UserProfileModalMenuButton() {
                     Button("사용자 신고하기", role: .destructive) {
-                        print("TODO")
+                        isFlagSheetVisible = true
                     }
                     Button("사용자 차단하기", role: .destructive) {
                         Task {
@@ -236,6 +239,13 @@ struct UserProfileModalBody: View {
             .clipShape(PartRoundedRectangle(corners: [.topLeading, .topTrailing], cornerRadii: 20))
             .compositingGroup()
             .shadow(radius: 16)
+        }
+        .sheet(isPresented: $isFlagSheetVisible) {
+            UserFlagSheet(userId: profile.id) {
+                
+            } submitAction: { blocked in
+                
+            }
         }
     }
     

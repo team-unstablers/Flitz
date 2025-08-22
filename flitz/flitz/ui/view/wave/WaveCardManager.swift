@@ -136,7 +136,7 @@ struct WaveCardPreview: View {
                 
                 // 이거 여기가 아니라 부모에 있어야 됨
                 if distribution.reveal_phase == .revealed {
-                    ECController(distributionId: distribution.id) { _ in
+                    ECController(distribution: distribution) { _ in
                         viewModel.pop()
                     }
                     .offset(x: 0, y: -60)

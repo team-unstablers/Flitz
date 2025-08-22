@@ -76,19 +76,20 @@ struct ECControlMenu<Label: View, Content: View>: View {
 }
 
 struct ECController: View {
-    var distributionId: String
+    var distribution: FZCardDistribution
     
     var dismissHandler: (String) -> Void
+    
+    @State
+    var isFlagSheetVisible: Bool = false
     
     var body: some View {
         HStack {
             Spacer()
             ECControlButton(size: .large) {
                 Task {
-                    try? await RootAppState.shared.client.markAsDislike(which: distributionId)
+                    await dislike()
                 }
-                
-                dismissHandler(distributionId)
             } content: {
                 Image("ECSkip")
                     .resizable()
@@ -102,7 +103,7 @@ struct ECController: View {
             ECControlMenu(size: .medium) {
                 // TODO: icon
                 Button("카드 신고하기", role: .destructive) {
-                    print("TODO")
+                    isFlagSheetVisible = true
                 }
             } label: {
                 Image("ECMenu")
@@ -116,10 +117,8 @@ struct ECController: View {
 
             ECControlButton(size: .large) {
                 Task {
-                    try? await RootAppState.shared.client.markAsLike(which: distributionId)
+                    await like()
                 }
-                
-                dismissHandler(distributionId)
             } content: {
                 Image("ECHeart")
                     .resizable()
@@ -129,6 +128,25 @@ struct ECController: View {
             }
             Spacer()
         }
+        .sheet(isPresented: $isFlagSheetVisible) {
+            CardFlagSheet(cardId: distribution.card.id) {
+                isFlagSheetVisible = false
+            } submitAction: { blocked in
+                isFlagSheetVisible = false
+            }
+        }
+    }
+    
+    @MainActor
+    func dislike() async {
+        try? await RootAppState.shared.client.markAsDislike(which: distribution.id)
+        dismissHandler(distribution.id)
+    }
+    
+    @MainActor
+    func like() async {
+        try? await RootAppState.shared.client.markAsLike(which: distribution.id)
+        dismissHandler(distribution.id)
     }
 }
 
