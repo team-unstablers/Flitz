@@ -15,18 +15,58 @@ class FavoritedCardsViewModel: ObservableObject {
     @Published
     var renderCaches: [String: UIImage] = [:]
     
+    @Published var hasMoreData = true
+    
+    private var currentPage: Paginated<FZCardFavoriteItem>?
+    private var isLoading = false
+    
     var client: FZAPIClient = RootAppState.shared.client
     
     func fetchFavorites() async {
+        guard !isLoading else { return }
+        
+        isLoading = true
         do {
-            let favorites = try await self.client.favoritedCards()
-            
-            // FIXME: support pagination
-            self.favorites = favorites.results
+            let page = try await self.client.favoritedCards()
+            self.currentPage = page
+            self.favorites = page.results
+            self.hasMoreData = page.next != nil
             await prerenderCard()
         } catch {
             print(error)
         }
+        isLoading = false
+    }
+    
+    func loadMore() async {
+        guard let currentPage = currentPage,
+              let nextUrl = currentPage.next,
+              !isLoading else { return }
+        
+        isLoading = true
+        do {
+            guard let page = try await client.nextPage(currentPage) else {
+                return
+            }
+            self.currentPage = page
+            
+            let newFavorites = page.results
+            self.favorites.append(contentsOf: newFavorites)
+            self.hasMoreData = page.next != nil
+            
+            // Prerender only new cards
+            let renderer = FZCardViewSwiftUICardRenderer()
+            await withTaskGroup { group in
+                for favorite in newFavorites {
+                    group.addTask {
+                        await self.prerenderCard(favorite.card, using: renderer)
+                    }
+                }
+            }
+        } catch {
+            print("[FavoritedCardsViewModel] Failed to load more favorites: \(error)")
+        }
+        isLoading = false
     }
     
     func prerenderCard() async {
@@ -73,62 +113,69 @@ struct FavoritedCards: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ScrollView {
-                LazyVGrid(columns: columns) {
-                    ForEach(viewModel.favorites) { favorite in
-                        Button {
-                            appState.currentModal = .cardDetail(cardId: favorite.card.id)
-                        } label: {
-                            if let renderedCardImage = viewModel.renderCaches[favorite.card.id] {
-                                // Rendered card image is available
-                                VStack {
-                                    Image(uiImage: renderedCardImage)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                                        .padding()
-                                        .shadow(color: .black.opacity(0.25), radius: 8)
-                                        .contentShape(RoundedRectangle(cornerRadius: 6))
-                                    if let user = favorite.card.user {
-                                        HStack(spacing: 4) {
-                                            ProfileImage(url: user.profile_image_url, userId: user.id, size: 24)
-                                            
-                                            Text(user.display_name)
-                                                .semibold()
-                                                .lineLimit(1)
-                                        }
-                                    }
+            FZInfiniteGridView(
+                data: viewModel.favorites,
+                columns: columns,
+                hasMoreData: $viewModel.hasMoreData,
+                spacing: 0,
+                onLoadMore: {
+                    await viewModel.loadMore()
+                }
+            ) { favorite in
+                Button {
+                    appState.currentModal = .cardDetail(cardId: favorite.card.id)
+                } label: {
+                    if let renderedCardImage = viewModel.renderCaches[favorite.card.id] {
+                        // Rendered card image is available
+                        VStack {
+                            Image(uiImage: renderedCardImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 6))
+                                .padding()
+                                .shadow(color: .black.opacity(0.25), radius: 8)
+                                .contentShape(RoundedRectangle(cornerRadius: 6))
+                            if let user = favorite.card.user {
+                                HStack(spacing: 4) {
+                                    ProfileImage(url: user.profile_image_url, userId: user.id, size: 24)
+                                    
+                                    Text(user.display_name)
+                                        .semibold()
+                                        .lineLimit(1)
                                 }
-                            } else {
-                                // Placeholder while rendering
-                                VStack {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                }
-                                    .frame(width: 150, height: 200)
-                                    .contentShape(RoundedRectangle(cornerRadius: 6))
                             }
                         }
-                        .buttonStyle(.plain)
-                        .tag(favorite.id)
-                        .cornerRadius(15)
-                        .frame(width: 150, height: 200)
-                        // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
-                        .padding()
-                        .contextMenu {
-                            Button("보관함에서 삭제하기", role: .destructive) {
-                                Task {
-                                    do {
-                                        try await viewModel.client.deleteFavoriteCard(by: favorite.id)
-                                        await viewModel.fetchFavorites()
-                                    } catch {
-                                        print("Failed to delete favorite card: \(error)")
-                                    }
-                                }
+                    } else {
+                        // Placeholder while rendering
+                        VStack {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                        }
+                            .frame(width: 150, height: 200)
+                            .contentShape(RoundedRectangle(cornerRadius: 6))
+                    }
+                }
+                .buttonStyle(.plain)
+                .tag(favorite.id)
+                .cornerRadius(15)
+                .frame(width: 150, height: 200)
+                // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
+                .padding()
+                .contextMenu {
+                    Button("보관함에서 삭제하기", role: .destructive) {
+                        Task {
+                            do {
+                                try await viewModel.client.deleteFavoriteCard(by: favorite.id)
+                                await viewModel.fetchFavorites()
+                            } catch {
+                                print("Failed to delete favorite card: \(error)")
                             }
                         }
                     }
                 }
+            }
+            .refreshable {
+                await viewModel.fetchFavorites()
             }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
