@@ -56,6 +56,10 @@ class FZIntermediateMessageFlag: ObservableObject {
             result.insert(.minor)
         }
         
+        if reasonOther {
+            result.insert(.other)
+        }
+        
         return result
     }
 }

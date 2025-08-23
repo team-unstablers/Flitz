@@ -131,9 +131,12 @@ struct ECController: View {
             Spacer()
         }
         .sheet(isPresented: $isFlagSheetVisible) {
-            CardFlagSheet(cardId: distribution.card.id) {
+            CardFlagSheet(cardId: distribution.card.id, userId: distribution.card.user!.id) {
                 isFlagSheetVisible = false
             } submitAction: { blocked in
+                Task {
+                    await self.dislike()
+                }
                 isFlagSheetVisible = false
             }
         }

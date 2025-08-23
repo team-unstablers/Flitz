@@ -25,6 +25,36 @@ class FZIntermediateUserFlag: ObservableObject {
     
     @Published
     var feedbackText: String = ""
+    
+    func validate() -> Bool {
+        return reasonInappropriateProfile || reasonImpersonation || reasonIllegalContents || reasonMinor || (reasonOther && !feedbackText.isEmpty)
+    }
+    
+    func reasons() -> Set<FlagUserReason> {
+        var result = Set<FlagUserReason>()
+        
+        if reasonInappropriateProfile {
+            result.insert(.inappropriateProfile)
+        }
+        
+        if reasonImpersonation {
+            result.insert(.impersonation)
+        }
+        
+        if reasonIllegalContents {
+            result.insert(.illegalContents)
+        }
+        
+        if reasonMinor {
+            result.insert(.minor)
+        }
+        
+        if reasonOther {
+            result.insert(.other)
+        }
+        
+        return result
+    }
 }
 
 struct UserFlagSheet: View {
@@ -108,6 +138,7 @@ struct UserFlagSheet: View {
 
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .disabled(busy)
                 }
                 .padding()
             }
@@ -122,16 +153,53 @@ struct UserFlagSheet: View {
                     Button("취소") {
                         dismissAction()
                     }
+                    .disabled(busy)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("신고 보내기", role: .destructive) {
-                        submitAction(blockImmediately)
+                        Task {
+                            await performPost()
+                        }
                     }
                     .bold()
+                    .disabled(!intermediate.validate() || busy)
                 }
             }
         }
+    }
+    
+    @MainActor
+    func performPost() async {
+        busy = true
+        
+        defer {
+            busy = false
+        }
+        
+        let client = appState.client
+        
+        do {
+            let args = FlagUserArgs(
+                message: nil,
+                reason: Array(intermediate.reasons()),
+                user_description: intermediate.feedbackText
+            )
+            
+            let response = try await client.flagUser(id: userId, args: args)
+        } catch {
+            print(error)
+        }
+        
+        if blockImmediately {
+            do {
+                try await client.blockUser(id: userId)
+            } catch {
+                print(error)
+            }
+        }
+        
+        submitAction(blockImmediately)
     }
 }
 

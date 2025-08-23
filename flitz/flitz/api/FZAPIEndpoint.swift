@@ -28,6 +28,11 @@ struct FZAPIEndpoint: RawRepresentable {
         return FZAPIEndpoint(rawValue: "/users/\(id)/block/")
     }
     
+    
+    static func flagUser(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/users/\(id)/flag/")
+    }
+
     static let selfProfileImage = FZAPIEndpoint(rawValue: "/users/self/profile-image/")
     static let selfSettings = FZAPIEndpoint(rawValue: "/users/self/settings/")
     static let selfPasswd = FZAPIEndpoint(rawValue: "/users/self/passwd/")
@@ -45,6 +50,10 @@ struct FZAPIEndpoint: RawRepresentable {
         return FZAPIEndpoint(rawValue: "/cards/\(id)/")
     }
     
+    static func flagCard(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/cards/\(id)/flag/")
+    }
+
     static func setCardAsMain(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/cards/\(id)/set-as-main/")
     }

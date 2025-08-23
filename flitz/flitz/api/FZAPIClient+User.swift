@@ -21,7 +21,14 @@ extension FZAPIClient {
     func unblockUser(id: String) async throws {
         _ = try await self.request(to: .userBlock(id: id), expects: Ditch.self, method: .delete)
     }
-
+    
+    func flagUser(id: String, args: FlagUserArgs) async throws -> SimpleResponse {
+        return try await self.request(to: .flagUser(id: id),
+                                      expects: SimpleResponse.self,
+                                      method: .post,
+                                      parameters: args)
+    }
+    
     func fetchSelf() async throws -> FZSelfUser {
         return try await self.request(to: .user(id: "self"), expects: FZSelfUser.self)
     }

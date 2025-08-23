@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FlagConversationReason: RawRepresentable, Codable, Equatable, Hashable {
+struct FlagCardReason: RawRepresentable, Codable, Equatable, Hashable {
     var rawValue: String
     
     init(rawValue: String) {
@@ -30,12 +30,12 @@ struct FlagConversationReason: RawRepresentable, Codable, Equatable, Hashable {
     static let illegalContents = Self.init(rawValue: "ILLEGAL_CONTENTS")
     static let minor = Self.init(rawValue: "MINOR")
     static let other = Self.init(rawValue: "OTHER")
-
+                                              
 }
 
-struct FlagConversationArgs: Codable {
+struct FlagCardArgs: Codable {
     let message: String?
     
-    let reason: [FlagConversationReason]
+    let reason: [FlagCardReason]
     let user_description: String?
 }

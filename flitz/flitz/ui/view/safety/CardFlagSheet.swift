@@ -28,6 +28,40 @@ class FZIntermediateCardFlag: ObservableObject {
     
     @Published
     var feedbackText: String = ""
+    
+    func validate() -> Bool {
+        return reasonOffensiveContents || reasonPornographicContents || reasonImpersonation || reasonIllegalContents || reasonMinor || (reasonOther && !feedbackText.isEmpty)
+    }
+    
+    func reasons() -> Set<FlagCardReason> {
+        var result = Set<FlagCardReason>()
+        
+        if reasonOffensiveContents {
+            result.insert(.offensive)
+        }
+        
+        if reasonPornographicContents {
+            result.insert(.pornographic)
+        }
+        
+        if reasonImpersonation {
+            result.insert(.impersonation)
+        }
+        
+        if reasonIllegalContents {
+            result.insert(.illegalContents)
+        }
+        
+        if reasonMinor {
+            result.insert(.minor)
+        }
+        
+        if reasonOther {
+            result.insert(.other)
+        }
+        
+        return result
+    }
 }
 
 struct CardFlagSheet: View {
@@ -44,6 +78,7 @@ struct CardFlagSheet: View {
     var blockImmediately: Bool = true
 
     let cardId: String
+    let userId: String
     
     var dismissAction: () -> Void
     var submitAction: (Bool) -> Void
@@ -115,6 +150,7 @@ struct CardFlagSheet: View {
                         .toggleStyle(FZCheckboxToggleStyle())
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .disabled(busy)
                 }
                 .padding()
             }
@@ -129,16 +165,53 @@ struct CardFlagSheet: View {
                     Button("취소") {
                         dismissAction()
                     }
+                    .disabled(busy)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("신고 보내기", role: .destructive) {
-                        submitAction(blockImmediately)
+                        Task {
+                            await performPost()
+                        }
                     }
                     .bold()
+                    .disabled(!intermediate.validate() || busy)
                 }
             }
         }
+    }
+    
+    @MainActor
+    func performPost() async {
+        busy = true
+        
+        defer {
+            busy = false
+        }
+        
+        let client = appState.client
+        
+        do {
+            let args = FlagCardArgs(
+                message: nil,
+                reason: Array(intermediate.reasons()),
+                user_description: intermediate.feedbackText
+            )
+            
+            let response = try await client.flagCard(id: cardId, args: args)
+        } catch {
+            print(error)
+        }
+        
+        if blockImmediately {
+            do {
+                try await client.blockUser(id: userId)
+            } catch {
+                print(error)
+            }
+        }
+        
+        submitAction(blockImmediately)
     }
 }
 
@@ -146,7 +219,7 @@ struct CardFlagSheet: View {
     VStack {
         
     }.sheet(isPresented: .constant(true)) {
-        CardFlagSheet(cardId: "12345") {
+        CardFlagSheet(cardId: "12345", userId: "1234") {
             
         } submitAction: { blocked in
             

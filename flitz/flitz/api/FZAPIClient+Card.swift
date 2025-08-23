@@ -37,6 +37,14 @@ extension FZAPIClient {
         return try await self.request(to: .card(id: id), expects: FZCard.self)
     }
     
+    func flagCard(id: String, args: FlagCardArgs) async throws -> SimpleResponse {
+        return try await self.request(to: .flagCard(id: id),
+                                      expects: SimpleResponse.self,
+                                      method: .post,
+                                      parameters: args)
+    }
+    
+    
     func setCardAsMain(which cardId: String) async throws {
         _ = try await self.request(to: .setCardAsMain(id: cardId), expects: Ditch.self, method: .put)
     }
