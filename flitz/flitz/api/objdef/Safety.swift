@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FZUserBlock: Codable {
+struct FZUserBlock: Codable, Identifiable {
     let id: String
     let blocked_user: FZUser
 }

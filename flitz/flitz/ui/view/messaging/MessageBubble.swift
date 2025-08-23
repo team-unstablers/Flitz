@@ -29,10 +29,16 @@ struct MessageMetadataIndicator: View {
 }
 
 struct MessageBubble: View {
+    @Environment(\.conversationId)
+    var conversationId: String
+    
     let message: DirectMessage
     let isFromCurrentUser: Bool
     let isRead: Bool
     var onAttachmentTap: ((String) -> Void)? = nil
+    
+    @State
+    var isFlagSheetVisible = false
     
     private var bubbleColor: Color {
         isFromCurrentUser ? Color.blue : Color.gray.opacity(0.2)
@@ -52,6 +58,21 @@ struct MessageBubble: View {
             VStack(alignment: isFromCurrentUser ? .trailing : .leading) {
                 contentView
                     .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .contextMenu {
+                        if isFromCurrentUser {
+                            Button("메시지 삭제", role: .destructive) {
+                                /*
+                                Task {
+                                    await viewModel.deleteMessage(id: message.id.uuidString)
+                                }
+                                 */
+                            }
+                        } else {
+                            Button("메시지 신고", role: .destructive) {
+                                isFlagSheetVisible = true
+                            }
+                        }
+                    }
             }
             
             if !isFromCurrentUser {
@@ -60,6 +81,17 @@ struct MessageBubble: View {
             }
         }
         .padding(.horizontal, 8)
+        .sheet(isPresented: $isFlagSheetVisible) {
+            MessageFlagSheet(
+                conversationId: conversationId,
+                messageId: message.id.uuidString,
+                userId: message.sender
+            ) {
+                isFlagSheetVisible = false
+            } submitAction: { _ in
+                isFlagSheetVisible = false
+            }
+        }
     }
     
     @ViewBuilder

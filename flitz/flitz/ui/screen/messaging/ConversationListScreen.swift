@@ -103,15 +103,6 @@ struct ConversationListScreen: View {
                         }
                     ) { conversation in
                         ConversationListItem(conversation: conversation)
-                            .contextMenu {
-                                Button("대화에서 나가기") {
-                                    viewModel.deleteConversation(id: conversation.id)
-                                }
-                                
-                                Button("대화 신고하기", role: .destructive) {
-                                    // TODO: 신고 기능 구현
-                                }
-                            }
                             .onTapGesture {
                                 appState.navState.append(.conversation(conversationId: conversation.id))
                             }

@@ -81,6 +81,10 @@ struct FZAPIEndpoint: RawRepresentable {
         return FZAPIEndpoint(rawValue: "/conversations/\(id)/")
     }
     
+    static func flagConversation(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/conversations/\(id)/flag/")
+    }
+
     static func messages(conversationId: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/messages/")
     }

@@ -37,6 +37,9 @@ struct ConversationListItem: View {
         conversation.participants.first { $0.user.id != userId }
     }
     
+    @State
+    var isFlagSheetVisible = false
+    
     var body: some View {
         HStack(alignment: .top) {
             HStack {
@@ -67,6 +70,30 @@ struct ConversationListItem: View {
             .padding(.vertical, 12)
             .contentShape(Rectangle())
             .overlay(Divider(), alignment: .bottom)
+            .contextMenu {
+                Button("사용자 차단하기", role: .destructive) {
+                    
+                }
+                
+                Button("대화 신고하기", role: .destructive) {
+                    isFlagSheetVisible = true
+                }
+            }
+            .sheet(isPresented: $isFlagSheetVisible) {
+                if let opponent = opponent {
+                    MessageFlagSheet(
+                        conversationId: conversation.id,
+                        messageId: nil,
+                        userId: opponent.user.id
+                    ) {
+                        isFlagSheetVisible = false
+                    } submitAction: { _ in
+                        isFlagSheetVisible = false
+                    }
+                } else {
+                    EmptyView()
+                }
+            }
     }
 }
 

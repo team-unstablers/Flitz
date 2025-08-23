@@ -28,6 +28,36 @@ class FZIntermediateMessageFlag: ObservableObject {
     
     @Published
     var feedbackText: String = ""
+    
+    func validate() -> Bool {
+        return reasonOffensiveContents || reasonPornographicContents || reasonImpersonation || reasonIllegalContents || reasonMinor || (reasonOther && !feedbackText.isEmpty)
+    }
+    
+    func reasons() -> Set<FlagConversationReason> {
+        var result = Set<FlagConversationReason>()
+        
+        if reasonOffensiveContents {
+            result.insert(.offensive)
+        }
+        
+        if reasonPornographicContents {
+            result.insert(.pornographic)
+        }
+        
+        if reasonImpersonation {
+            result.insert(.impersonation)
+        }
+        
+        if reasonIllegalContents {
+            result.insert(.illegalContents)
+        }
+        
+        if reasonMinor {
+            result.insert(.minor)
+        }
+        
+        return result
+    }
 }
 
 struct MessageFlagSheet: View {
@@ -44,7 +74,9 @@ struct MessageFlagSheet: View {
     var blockImmediately: Bool = true
 
     let conversationId: String
-    let messageId: String
+    let messageId: String?
+    
+    let userId: String
     
     var dismissAction: () -> Void
     var submitAction: (Bool) -> Void
@@ -113,9 +145,9 @@ struct MessageFlagSheet: View {
                             Text("신고 후 이 사용자를 곧바로 차단할래요")
                         }
                         .toggleStyle(FZCheckboxToggleStyle())
-
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .disabled(busy)
                 }
                 .padding()
             }
@@ -130,16 +162,53 @@ struct MessageFlagSheet: View {
                     Button("취소") {
                         dismissAction()
                     }
+                    .disabled(busy)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("신고 보내기", role: .destructive) {
-                        submitAction(blockImmediately)
+                        Task {
+                            await performPost()
+                        }
                     }
                     .bold()
+                    .disabled(!intermediate.validate() || busy)
                 }
             }
         }
+    }
+    
+    @MainActor
+    func performPost() async {
+        busy = true
+        
+        defer {
+            busy = false
+        }
+        
+        let client = appState.client
+        
+        do {
+            let args = FlagConversationArgs(
+                message: messageId,
+                reason: Array(intermediate.reasons()),
+                user_description: intermediate.feedbackText
+            )
+            
+            let response = try await client.flagConversation(id: conversationId, args: args)
+        } catch {
+            print(error)
+        }
+        
+        if blockImmediately {
+            do {
+                try await client.blockUser(id: userId)
+            } catch {
+                print(error)
+            }
+        }
+        
+        submitAction(blockImmediately)
     }
 }
 
@@ -147,7 +216,7 @@ struct MessageFlagSheet: View {
     VStack {
         
     }.sheet(isPresented: .constant(true)) {
-        MessageFlagSheet(conversationId: "12345", messageId: "1234") {
+        MessageFlagSheet(conversationId: "12345", messageId: "1234", userId: "1234") {
             
         } submitAction: { blocked in
             

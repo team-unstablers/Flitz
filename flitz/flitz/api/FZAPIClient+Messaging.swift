@@ -68,6 +68,13 @@ extension FZAPIClient {
                                    method: .delete)
     }
     
+    func flagConversation(id: String, args: FlagConversationArgs) async throws -> SimpleResponse {
+        return try await self.request(to: .flagConversation(id: id),
+                                      expects: SimpleResponse.self,
+                                      method: .post,
+                                      parameters: args)
+    }
+    
     func messages(conversationId: String) async throws -> Paginated<DirectMessage> {
         return try await self.request(to: .messages(conversationId: conversationId), 
                                       expects: Paginated<DirectMessage>.self)

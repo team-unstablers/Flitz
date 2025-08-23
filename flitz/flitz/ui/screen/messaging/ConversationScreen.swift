@@ -439,18 +439,6 @@ struct ConversationScreen: View {
                             .listRowSeparator(.hidden)
                             .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
                             .listRowBackground(Color.clear)
-                            .contextMenu {
-                                if viewModel.isFromCurrentUser(message) {
-                                    Button("메시지 삭제", role: .destructive) {
-                                        Task {
-                                            await viewModel.deleteMessage(id: message.id.uuidString)
-                                        }
-                                    }
-                                } else {
-                                    Button("메시지 신고", role: .destructive) {
-                                    }
-                                }
-                            }
                             .onAppear {
                                 // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
                                 if message.id == viewModel.messages[safe: 2]?.id {
