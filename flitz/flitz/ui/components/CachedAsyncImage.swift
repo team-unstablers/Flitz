@@ -21,7 +21,6 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     @State private var hasTriedLoading = false
     @State private var loadFailed = false
     @State private var retryCount = 0
-    @State private var loadingTask: DataRequest?
     
     private let maxRetries = 3
     private let retryDelay: TimeInterval = 2.0
@@ -47,7 +46,9 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
             } else if !hasTriedLoading {
                 placeholder()
                     .onAppear {
-                        loadImage()
+                        Task {
+                            await loadImage()
+                        }
                     }
             } else if loadFailed && retryCount < maxRetries {
                 placeholder()
@@ -55,7 +56,9 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                         Task {
                             try? await Task.sleep(nanoseconds: UInt64(retryDelay * 1_000_000_000))
                             if loadFailed && retryCount < maxRetries {
-                                loadImage()
+                                Task {
+                                    await loadImage()
+                                }
                             }
                         }
                     }
@@ -63,47 +66,30 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 placeholder()
             }
         }
-        .onDisappear {
-            loadingTask?.cancel()
-        }
     }
     
-    private func loadImage() {
+    @MainActor
+    private func loadImage() async {
         guard let url = url, !isLoading else { return }
         
         isLoading = true
         hasTriedLoading = true
         loadFailed = false
         
-        let imageCache = ImageCacheManager.shared.imageCache
+        defer {
+            isLoading = false
+        }
         
-        if let cachedImage = imageCache.image(for: URLRequest(url: url), withIdentifier: self.identifier) {
-            self.image = cachedImage
-            self.isLoading = false
-            self.loadFailed = false
+        let cacheStorage = ImageCacheStorage.shared
+        let identifier = identifier ?? "rawurl:\(url.hashValue)"
+        
+        guard let cacheEntry = await cacheStorage.resolve(by: identifier, origin: url) else {
+            self.retryCount += 1
             return
         }
         
-        loadingTask = AF.request(url)
-            .validate()
-            .responseImage(imageScale: UIScreen.main.scale) { response in
-                isLoading = false
-                
-                switch response.result {
-                case .success(let loadedImage):
-                    imageCache.add(loadedImage, for: URLRequest(url: url), withIdentifier: self.identifier)
-                    
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        self.image = loadedImage
-                    }
-                    self.loadFailed = false
-                    self.retryCount = 0
-                    
-                case .failure:
-                    self.loadFailed = true
-                    self.retryCount += 1
-                }
-            }
+        image = UIImage(contentsOfFile: cacheEntry.url.path())
+        
     }
 }
 

@@ -28,7 +28,7 @@ extension Flitz.Renderer {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: element.size.width, height: element.size.height)
                 case .origin(let id, _):
-                    if let image = assetsLoader.images[id] {
+                    if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
                         SwiftUI.Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -58,7 +58,7 @@ extension Flitz.Renderer {
                         .frame(width: element.size.width, height: element.size.height)
                         .blur(radius: 1.5)
                 case .origin(let id, _):
-                    if let image = assetsLoader.images[id] {
+                    if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
                         SwiftUI.Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)

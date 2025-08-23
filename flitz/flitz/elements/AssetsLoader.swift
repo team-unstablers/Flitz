@@ -13,22 +13,27 @@ import UIKit
 import Alamofire
 import AlamofireImage
 
-class AssetsLoader: ObservableObject {
+class AssetsLoader {
     static let global = AssetsLoader()
     
-    @Published
-    private(set) public var images: [String: UIImage] = [:]
-    
+    let cacheStorage = ImageCacheStorage.shared
+
     init() {
     }
     
     func resolveAll(from card: Flitz.Card) async throws {
-        if let background = card.background {
-            try await self.resolve(image: background)
-        }
-        
-        for asset in card.collectImageAssets() {
-            try await self.resolve(image: asset)
+        await withThrowingTaskGroup { group in
+            if let background = card.background {
+                group.addTask {
+                    try await self.resolve(image: background)
+                }
+            }
+            
+            for asset in card.collectImageAssets() {
+                group.addTask {
+                    try await self.resolve(image: asset)
+                }
+            }
         }
     }
     
@@ -36,20 +41,18 @@ class AssetsLoader: ObservableObject {
         guard case .origin(let id, let url) = source else {
             return
         }
-
-        let response = await AF.request(url)
-            .serializingImage(imageScale: 1)
-            .response
         
-        let image = try response.result.get()
-        
-        DispatchQueue.main.async {
-            self.images[id] = image
-        }
+        let identifier = "fzcard:image:\(id)"
+        _ = await cacheStorage.resolve(by: identifier, origin: url)
     }
     
+    @available(*, deprecated, message: "CachedAsyncImage를 대신 사용하십시오.")
     func image(for id: String) -> UIImage? {
-        return images[id]
+        guard let entry = cacheStorage.resolve(by: id) else {
+            return nil
+        }
+        
+        return UIImage(contentsOfFile: entry.url.path())
     }
     
 }

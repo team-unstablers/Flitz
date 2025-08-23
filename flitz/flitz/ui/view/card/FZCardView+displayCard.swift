@@ -55,9 +55,11 @@ struct FZCardViewDisplayCard: ViewModifier {
             .onChange(of: showNormalMap) {
                 instance?.showNormalMap = showNormalMap
             }
+            /*
             .onChange(of: assetsLoader.images) {
                 instance?.updateContent()
             }
+             */
             .onAppear {
                 if let card = card {
                     instance = world.spawn(card: card)

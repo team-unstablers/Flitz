@@ -225,6 +225,11 @@ struct MyCardDetailModal: View {
                 await viewModel.loadCard()
             }
         }
+        .onChange(of: cardId) {
+            Task {
+                await viewModel.loadCard()
+            }
+        }
     }
     
     func dismiss() {

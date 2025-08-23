@@ -64,7 +64,7 @@ struct CardCanvas: View {
                                 .blur(radius: 1.0)
                         }
                 case .origin(let id, _):
-                    if let image = assetsLoader.images[id] {
+                    if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
