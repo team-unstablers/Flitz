@@ -9,27 +9,57 @@ import SwiftUI
 
 @MainActor
 class ManageUserBlockViewModel: ObservableObject {
-    @Published
-    var blocks: [FZUserBlock] = []
+    @Published var blocks: [FZUserBlock] = []
+    @Published var isLoading = false
+    @Published var hasMoreData = true
+    
+    private var currentPage: Paginated<FZUserBlock>?
+    private var apiClient: FZAPIClient?
+    
+    func configure(with apiClient: FZAPIClient) {
+        self.apiClient = apiClient
+        Task {
+            await loadBlockedUsers()
+        }
+    }
     
     func loadBlockedUsers() async {
-        #warning("pagination")
-        let client = RootAppState.shared.client
+        guard let apiClient = apiClient, !isLoading else { return }
         
+        isLoading = true
         do {
-            let blocks = try await client.blocksList()
-            
-            self.blocks = blocks.results
+            let page = try await apiClient.blocksList()
+            self.currentPage = page
+            self.blocks = page.results
+            self.hasMoreData = page.next != nil
         } catch {
             print("Failed to load blocked users: \(error)")
+        }
+        isLoading = false
+    }
+    
+    func loadMore() async {
+        guard let apiClient = apiClient,
+              let currentPage = currentPage,
+              let nextUrl = currentPage.next else { return }
+        
+        do {
+            guard let page = try await apiClient.nextPage(currentPage) else {
+                return
+            }
+            self.currentPage = page
+            self.blocks.append(contentsOf: page.results)
+            self.hasMoreData = page.next != nil
+        } catch {
+            print("Failed to load more blocked users: \(error)")
         }
     }
     
     func unblockUser(_ userId: String) async {
-        let client = RootAppState.shared.client
+        guard let apiClient = apiClient else { return }
         
         do {
-            try await client.unblockUser(id: userId)
+            try await apiClient.unblockUser(id: userId)
             self.blocks.removeAll { $0.blocked_user.id == userId }
         } catch {
             print("Failed to unblock user: \(error)")
@@ -38,26 +68,44 @@ class ManageUserBlockViewModel: ObservableObject {
 }
 
 struct ManageUserBlockScreen: View {
-    @StateObject
-    private var viewModel = ManageUserBlockViewModel()
+    @EnvironmentObject var appState: RootAppState
+    @StateObject private var viewModel = ManageUserBlockViewModel()
     
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(viewModel.blocks, id: \.id) { block in
+        ZStack {
+            if viewModel.isLoading && viewModel.blocks.isEmpty {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                FZInfiniteScrollView(
+                    data: viewModel.blocks,
+                    hasMoreData: $viewModel.hasMoreData,
+                    loadingView: {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                        .padding()
+                    },
+                    onLoadMore: {
+                        await viewModel.loadMore()
+                    }
+                ) { block in
                     UserBlockItem(block: block) {
                         Task {
                             await viewModel.unblockUser(block.blocked_user.id)
                         }
                     }
                 }
+                .refreshable {
+                    await viewModel.loadBlockedUsers()
+                }
             }
         }
         .navigationTitle("차단된 사용자")
-        .onAppear() {
-            Task {
-                await viewModel.loadBlockedUsers()
-            }
+        .onAppear {
+            viewModel.configure(with: appState.client)
         }
     }
 }

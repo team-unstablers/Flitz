@@ -12,7 +12,7 @@ import SwiftUI
 class ConversationListViewModel: ObservableObject {
     @Published var conversations: [DirectMessageConversation] = []
     @Published var isLoading = false
-    @Published var isLoadingMore = false
+    @Published var hasMoreData = true
     @Published var showDeleteAlert = false
     
     private var currentPage: Paginated<DirectMessageConversation>?
@@ -34,6 +34,7 @@ class ConversationListViewModel: ObservableObject {
             let page = try await apiClient.conversations()
             self.currentPage = page
             self.conversations = page.results
+            self.hasMoreData = page.next != nil
         } catch {
             print("[ConversationList] Failed to load conversations: \(error)")
         }
@@ -43,20 +44,18 @@ class ConversationListViewModel: ObservableObject {
     func loadMore() async {
         guard let apiClient = apiClient,
               let currentPage = currentPage,
-              let nextUrl = currentPage.next,
-              !isLoadingMore else { return }
+              let nextUrl = currentPage.next else { return }
         
-        isLoadingMore = true
         do {
             guard let page = try await apiClient.nextPage(currentPage) else {
                 return
             }
             self.currentPage = page
             self.conversations.append(contentsOf: page.results)
+            self.hasMoreData = page.next != nil
         } catch {
             print("[ConversationList] Failed to load more conversations: \(error)")
         }
-        isLoadingMore = false
     }
     
     func deleteConversation(id: String) {
@@ -88,46 +87,35 @@ struct ConversationListScreen: View {
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    List {
-                        ForEach(viewModel.conversations) { conversation in
-                            ConversationListItem(conversation: conversation)
-                                .contextMenu {
-                                    Button("대화에서 나가기") {
-                                        viewModel.deleteConversation(id: conversation.id)
-                                    }
-                                    
-                                    Button("대화 신고하기", role: .destructive) {
-                                        // TODO: 신고 기능 구현
-                                    }
-                                }
-                                .onTapGesture {
-                                    appState.navState.append(.conversation(conversationId: conversation.id))
-                                }
-                                .onAppear {
-                                    // 마지막 아이템이 나타나면 더 불러오기
-                                    if conversation.id == viewModel.conversations.last?.id {
-                                        Task {
-                                            await viewModel.loadMore()
-                                        }
-                                    }
-                                }
-                        }
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        
-                        // 로딩 인디케이터
-                        if viewModel.isLoadingMore {
+                    FZInfiniteScrollView(
+                        data: viewModel.conversations,
+                        hasMoreData: $viewModel.hasMoreData,
+                        loadingView: {
                             HStack {
                                 Spacer()
                                 ProgressView()
                                 Spacer()
                             }
                             .padding()
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        },
+                        onLoadMore: {
+                            await viewModel.loadMore()
                         }
+                    ) { conversation in
+                        ConversationListItem(conversation: conversation)
+                            .contextMenu {
+                                Button("대화에서 나가기") {
+                                    viewModel.deleteConversation(id: conversation.id)
+                                }
+                                
+                                Button("대화 신고하기", role: .destructive) {
+                                    // TODO: 신고 기능 구현
+                                }
+                            }
+                            .onTapGesture {
+                                appState.navState.append(.conversation(conversationId: conversation.id))
+                            }
                     }
-                    .listStyle(.plain)
                     .refreshable {
                         await viewModel.loadConversations()
                     }
@@ -198,6 +186,7 @@ class ConversationListPreviewViewModel: ConversationListViewModel {
         
 
         conversations = [conversation1, conversation2]
+        hasMoreData = false  // 프리뷰에서는 더 이상 데이터 없음
     }
 }
 #endif

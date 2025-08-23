@@ -11,7 +11,7 @@ public struct FZInfiniteScrollView<Data, Content, LoadingView>: View where Data:
     private let onLoadMore: () async -> Void
     
     @State private var isLoading = false
-    @State private var hasMoreData = true
+    @Binding var hasMoreData: Bool
     
     // Threshold for triggering load more (in points from bottom)
     private let loadThreshold: CGFloat
@@ -21,18 +21,21 @@ public struct FZInfiniteScrollView<Data, Content, LoadingView>: View where Data:
     /// Initialize infinite scroll view
     /// - Parameters:
     ///   - data: Collection of data items to display
+    ///   - hasMoreData: Binding to track if more data is available
     ///   - loadThreshold: Distance from bottom to trigger load more (default: 100)
     ///   - loadingView: View to show while loading more data
     ///   - onLoadMore: Async closure called when more data should be loaded
     ///   - content: View builder for each data item
     public init(
         data: Data,
+        hasMoreData: Binding<Bool>,
         loadThreshold: CGFloat = 100,
         @ViewBuilder loadingView: @escaping () -> LoadingView,
         onLoadMore: @escaping () async -> Void,
         @ViewBuilder content: @escaping (Data.Element) -> Content
     ) {
         self.data = data
+        self._hasMoreData = hasMoreData
         self.loadThreshold = loadThreshold
         self.loadingView = loadingView
         self.onLoadMore = onLoadMore
@@ -94,12 +97,14 @@ extension FZInfiniteScrollView where LoadingView == ProgressView<EmptyView, Empt
     /// Initialize with default ProgressView as loading indicator
     public init(
         data: Data,
+        hasMoreData: Binding<Bool>,
         loadThreshold: CGFloat = 100,
         onLoadMore: @escaping () async -> Void,
         @ViewBuilder content: @escaping (Data.Element) -> Content
     ) {
         self.init(
             data: data,
+            hasMoreData: hasMoreData,
             loadThreshold: loadThreshold,
             loadingView: { ProgressView() },
             onLoadMore: onLoadMore,
@@ -121,11 +126,13 @@ extension FZInfiniteScrollView where LoadingView == ProgressView<EmptyView, Empt
         @State private var items: [PreviewItem] = (1...20).map {
             PreviewItem(number: $0, color: Color.random)
         }
+        @State private var hasMoreData = true
         
         var body: some View {
             NavigationView {
                 FZInfiniteScrollView(
                     data: items,
+                    hasMoreData: $hasMoreData,
                     onLoadMore: {
                         // Simulate network delay
                         try? await Task.sleep(nanoseconds: 1_000_000_000)
@@ -138,6 +145,10 @@ extension FZInfiniteScrollView where LoadingView == ProgressView<EmptyView, Empt
                         
                         await MainActor.run {
                             items.append(contentsOf: newItems)
+                            // Stop loading after 100 items
+                            if items.count >= 100 {
+                                hasMoreData = false
+                            }
                         }
                     }
                 ) { item in
@@ -180,11 +191,13 @@ extension FZInfiniteScrollView where LoadingView == ProgressView<EmptyView, Empt
             )
         }
         @State private var isLoadingMore = false
+        @State private var hasMoreData = true
         
         var body: some View {
             NavigationView {
                 FZInfiniteScrollView(
                     data: posts,
+                    hasMoreData: $hasMoreData,
                     loadThreshold: 150,
                     loadingView: {
                         VStack(spacing: 8) {
@@ -215,6 +228,10 @@ extension FZInfiniteScrollView where LoadingView == ProgressView<EmptyView, Empt
                         await MainActor.run {
                             posts.append(contentsOf: newPosts)
                             isLoadingMore = false
+                            // Stop loading after 50 posts
+                            if posts.count >= 50 {
+                                hasMoreData = false
+                            }
                         }
                     }
                 ) { post in
