@@ -9,6 +9,7 @@ import SwiftUI
 
 enum RootModalItem: Hashable {
     case cardDetail(cardId: String)
+    case myCardDetail(cardId: String)
     case userProfile(userId: String)
 }
 
@@ -81,6 +82,10 @@ struct RootNavigation: View {
             if let modalItem = appState.currentModal {
                 switch modalItem {
                 case .cardDetail(let cardId):
+                    CardDetailModal(cardId: cardId) {
+                        appState.currentModal = nil
+                    }
+                case .myCardDetail(let cardId):
                     MyCardDetailModal(cardId: cardId) {
                         appState.currentModal = nil
                     }

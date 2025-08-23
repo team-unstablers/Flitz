@@ -177,9 +177,19 @@ struct UserProfileModalMenuButton<Content: View>: View {
     }
 }
 
+class UserProfileModalBodyGeometryHelper: ObservableObject {
+    @Published
+    var contentAreaSize: CGSize = .zero
+    
+}
+
 struct UserProfileModalBody: View {
     var profile: FZUser
+    
+    var geometryHelper: UserProfileModalBodyGeometryHelper?
+
     var extraSpacing: CGFloat = 0
+    var profileImageOpacity: Double = 1.0
     
     var onDismiss: (() -> Void)? = nil
     
@@ -208,27 +218,36 @@ struct UserProfileModalBody: View {
             }
             .padding(16)
             .zIndex(2)
+            .opacity(profileImageOpacity)
 
             VStack(spacing: 0) {
-                UserProfileModalDragArea()
-                
-                UserProfileModalProfileHeader(profile: profile)
-                
-                UserProfileModalDivider()
-                
-                UserProfileModalSection(title: "해시태그") {
-                    Text(profile.hashtags.map { "#" + $0 }.joined(separator: " "))
-                        .font(.fzMain)
-                        .foregroundStyle(.blue.opacity(0.8))
+                VStack(spacing: 0) {
+                    UserProfileModalDragArea()
+                    UserProfileModalProfileHeader(profile: profile)
                 }
-
-                UserProfileModalDivider()
-
-                UserProfileModalSection(title: "자기 소개") {
-                    Text(profile.bio)
-                        .font(.fzMain)
+                
+                
+                VStack(spacing: 0) {
+                    UserProfileModalDivider()
+                    
+                    UserProfileModalSection(title: "해시태그") {
+                        Text(profile.hashtags.map { "#" + $0 }.joined(separator: " "))
+                            .font(.fzMain)
+                            .foregroundStyle(.blue.opacity(0.8))
+                    }
+                    
+                    UserProfileModalDivider()
+                    
+                    UserProfileModalSection(title: "자기 소개") {
+                        Text(profile.bio)
+                            .font(.fzMain)
+                    }
                 }
-
+                .onGeometryChange(for: CGSize.self) { proxy in
+                    proxy.size
+                } action: { size in
+                    geometryHelper?.contentAreaSize = size
+                }
             }
             .padding(.bottom, 32)
             .padding(.bottom, extraSpacing)
@@ -295,7 +314,10 @@ struct UserProfileModal: View {
                 }
             
             if let profile = viewModel.profile {
-                UserProfileModalBody(profile: profile, extraSpacing: max(0, -dragOffset.height), onDismiss: onDismiss)
+                UserProfileModalBody(profile: profile,
+                                     geometryHelper: nil,
+                                     extraSpacing: max(0, -dragOffset.height),
+                                     onDismiss: onDismiss)
                     .offset(y: max(0, dragOffset.height))
                     .opacity(opacity)
                     .gesture(

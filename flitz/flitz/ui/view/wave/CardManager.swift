@@ -143,7 +143,7 @@ struct CardManagerView: View {
                 }
             ) { card in
                 Button {
-                    appState.currentModal = .cardDetail(cardId: card.id)
+                    appState.currentModal = .myCardDetail(cardId: card.id)
                 } label: {
                     if let renderedCardImage = viewModel.renderCaches[card.id] {
                         // Rendered card image is available
