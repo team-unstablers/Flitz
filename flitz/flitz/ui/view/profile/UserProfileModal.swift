@@ -275,7 +275,7 @@ struct UserProfileModalBody: View {
         .onGeometryChange(for: CGSize.self) { proxy in
             proxy.size
         } action: { size in
-            geometryHelper?.size = size
+            geometryHelper?.size = CGSize(width: size.width, height: size.height - extraSpacing)
         }
         .sheet(isPresented: $isFlagSheetVisible) {
             UserFlagSheet(userId: profile.id) {
