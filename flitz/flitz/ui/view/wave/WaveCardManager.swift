@@ -117,33 +117,49 @@ struct WaveCardPreview: View {
     
     @StateObject
     var viewModel: WaveCardManagerViewModel
-   
+    
+    @StateObject
+    var profileGeometryHelper = UserProfileModalBodyGeometryHelper()
+    
+    var profileOffsetY: CGFloat {
+        profileGeometryHelper.size.height - profileGeometryHelper.contentAreaSize.height - profileGeometryHelper.profileImageAreaSize.height
+    }
+
     var body: some View {
         if let distribution = viewModel.current {
             ZStack(alignment: .bottom) {
-                FZCardView(world: viewModel.world, enableGesture: true)
-                    .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
-                    .onTapGesture {
-                         guard distribution.reveal_phase == .revealed else {
-                             return
-                         }
-                         
-                         appState.currentModal = .userProfile(userId: distribution.card.user!.id)
-                    }
-                    .onAppear {
-                        Self._printChanges()
-                    }
-                
+                ZStack(alignment: .bottom) {
+                    FZCardView(world: viewModel.world, enableGesture: true)
+                        .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
+                        .onTapGesture {
+                            guard distribution.reveal_phase == .revealed else {
+                                return
+                            }
+                            
+                            appState.currentModal = .userProfile(userId: distribution.card.user!.id)
+                        }
+                        .onAppear {
+                            Self._printChanges()
+                        }
+                }
+                .padding(.bottom, profileOffsetY)
+
                 // 이거 여기가 아니라 부모에 있어야 됨
                 if distribution.reveal_phase == .revealed {
                     ECController(distribution: distribution) { _ in
                         viewModel.pop()
                     }
-                    .offset(x: 0, y: -60)
+                    .offset(x: 0, y: -(profileOffsetY + 30))
                     .transition(.asymmetric(
                         insertion: .move(edge: .bottom).combined(with: .opacity),
                         removal: .move(edge: .bottom).combined(with: .opacity)
                     ))
+                    
+                    if let user = distribution.card.user {
+                        BlurEffectView(style: .regular)
+                            .opacity(profileGeometryHelper.opacity)
+                        CollapseableUserProfile(profile: user, dismiss: nil, profileGeometryHelper: profileGeometryHelper)
+                    }
                 }
                 
                 if distribution.reveal_phase == .blurry {
@@ -154,7 +170,7 @@ struct WaveCardPreview: View {
                         ))
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: distribution.reveal_phase)
+                .animation(.easeInOut(duration: 0.3), value: distribution.reveal_phase)
         }
     }
 }

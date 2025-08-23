@@ -179,8 +179,16 @@ struct UserProfileModalMenuButton<Content: View>: View {
 
 class UserProfileModalBodyGeometryHelper: ObservableObject {
     @Published
+    var size: CGSize = .zero
+    
+    @Published
+    var profileImageAreaSize: CGSize = .zero
+    
+    @Published
     var contentAreaSize: CGSize = .zero
     
+    @Published
+    var opacity: Double = 1.0
 }
 
 struct UserProfileModalBody: View {
@@ -219,6 +227,11 @@ struct UserProfileModalBody: View {
             .padding(16)
             .zIndex(2)
             .opacity(profileImageOpacity)
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
+            } action: { size in
+                geometryHelper?.profileImageAreaSize = size
+            }
 
             VStack(spacing: 0) {
                 VStack(spacing: 0) {
@@ -246,7 +259,7 @@ struct UserProfileModalBody: View {
                 .onGeometryChange(for: CGSize.self) { proxy in
                     proxy.size
                 } action: { size in
-                    geometryHelper?.contentAreaSize = size
+                    geometryHelper?.contentAreaSize = CGSize(width: size.width, height: size.height + 32)
                 }
             }
             .padding(.bottom, 32)
@@ -258,6 +271,11 @@ struct UserProfileModalBody: View {
             .clipShape(PartRoundedRectangle(corners: [.topLeading, .topTrailing], cornerRadii: 20))
             .compositingGroup()
             .shadow(radius: 16)
+        }
+        .onGeometryChange(for: CGSize.self) { proxy in
+            proxy.size
+        } action: { size in
+            geometryHelper?.size = size
         }
         .sheet(isPresented: $isFlagSheetVisible) {
             UserFlagSheet(userId: profile.id) {

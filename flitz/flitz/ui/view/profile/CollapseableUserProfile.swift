@@ -14,7 +14,7 @@ struct CollapseableUserProfile: View {
     
     @StateObject
     var profileGeometryHelper = UserProfileModalBodyGeometryHelper()
-
+    
     @State
     private var isProfileCollapsed: Bool = true
     @State
@@ -22,7 +22,11 @@ struct CollapseableUserProfile: View {
     @State
     private var extraSpacing: CGFloat = 0.0
     @State
-    private var profileOpacity: Double = 0.0
+    private var profileOpacity: Double = 0.0 {
+        didSet {
+            profileGeometryHelper.opacity = profileOpacity
+        }
+    }
     
     var body: some View {
         UserProfileModalBody(
@@ -88,6 +92,10 @@ struct CollapseableUserProfile: View {
                             } else if value.translation.height > 80 {
                                 profileOpacity = 0
                                 self.dismiss?()
+                                
+                                if self.dismiss == nil {
+                                    dragOffset2 = .zero
+                                }
                             } else {
                                 dragOffset2 = .zero
                                 profileOpacity = 0

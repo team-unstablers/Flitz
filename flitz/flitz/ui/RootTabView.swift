@@ -18,6 +18,11 @@ struct RootTabView: View {
     @EnvironmentObject
     var appState: RootAppState
     
+    init() {
+        UITabBar.appearance().isTranslucent = false
+        UITabBar.appearance().backgroundColor = .white
+    }
+    
     var body: some View {
         ZStack {
             TabView(selection: $appState.currentTab) {
