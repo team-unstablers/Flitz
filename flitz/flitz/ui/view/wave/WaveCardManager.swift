@@ -121,6 +121,9 @@ struct WaveCardPreview: View {
     @StateObject
     var profileGeometryHelper = UserProfileModalBodyGeometryHelper()
     
+    @State
+    var shouldHideController: Bool = false
+    
     var profileOffsetY: CGFloat {
         profileGeometryHelper.size.height - profileGeometryHelper.contentAreaSize.height - profileGeometryHelper.profileImageAreaSize.height
     }
@@ -130,6 +133,17 @@ struct WaveCardPreview: View {
             ZStack(alignment: .bottom) {
                 ZStack(alignment: .bottom) {
                     FZCardView(world: viewModel.world, enableGesture: true)
+                        .simultaneousGesture(
+                            DragGesture()
+                                .onChanged { _ in
+                                    shouldHideController = true
+                                }
+                                .onEnded { _ in
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                        shouldHideController = false
+                                    }
+                                }
+                        )
                         .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
                         .onTapGesture {
                             guard distribution.reveal_phase == .revealed else {
@@ -149,6 +163,8 @@ struct WaveCardPreview: View {
                     ECController(distribution: distribution) { _ in
                         viewModel.pop()
                     }
+                    .opacity(shouldHideController ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.3), value: shouldHideController)
                     .offset(x: 0, y: -(profileOffsetY + 30))
                     .transition(.asymmetric(
                         insertion: .move(edge: .bottom).combined(with: .opacity),

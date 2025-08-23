@@ -188,7 +188,7 @@ class UserProfileModalBodyGeometryHelper: ObservableObject {
     var contentAreaSize: CGSize = .zero
     
     @Published
-    var opacity: Double = 1.0
+    var opacity: Double = 0.0
 }
 
 struct UserProfileModalBody: View {

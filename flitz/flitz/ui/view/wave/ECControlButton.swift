@@ -41,6 +41,7 @@ struct ECControlButton<Content: View>: View {
             .frame(width: size.size, height: size.size)
             .background(
                 BlurEffectView(style: .light)
+                    .background(.white.opacity(0.3))
                     .clipShape(Circle())
             )
             .compositingGroup()
@@ -66,6 +67,7 @@ struct ECControlMenu<Label: View, Content: View>: View {
             .frame(width: size.size, height: size.size)
             .background(
                 BlurEffectView(style: .light)
+                    .background(.white.opacity(0.3))
                     .clipShape(Circle())
             )
             .compositingGroup()
