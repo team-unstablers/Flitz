@@ -400,6 +400,17 @@ struct ConversationScreen: View {
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
     }
+    
+    // 두 메시지가 같은 날짜인지 확인하는 헬퍼 함수
+    private func isSameDay(_ message1: DirectMessage?, _ message2: DirectMessage?) -> Bool {
+        guard let date1 = message1?.created_at.asISO8601Date,
+              let date2 = message2?.created_at.asISO8601Date else {
+            return false
+        }
+        
+        let calendar = Calendar.current
+        return calendar.isDate(date1, inSameDayAs: date2)
+    }
    
     var body: some View {
         VStack(spacing: 0) {
@@ -422,7 +433,17 @@ struct ConversationScreen: View {
                             .listRowBackground(Color.clear)
                         }
                         
-                        ForEach(viewModel.messages) { message in
+                        ForEach(Array(viewModel.messages.enumerated()), id: \.element.id) { index, message in
+                            // 날짜가 바뀌면 날짜 인디케이터 표시
+                            if index == 0 || !isSameDay(viewModel.messages[index - 1], message) {
+                                if let messageDate = message.created_at.asISO8601Date {
+                                    DateSeparator(date: messageDate)
+                                        .listRowSeparator(.hidden)
+                                        .listRowInsets(EdgeInsets())
+                                        .listRowBackground(Color.clear)
+                                }
+                            }
+                            
                             MessageBubble(
                                 message: message,
                                 isFromCurrentUser: viewModel.isFromCurrentUser(message),
@@ -562,6 +583,29 @@ struct ConversationScreen: View {
         .environment(\.conversationId, viewModel.conversationId)
     }
     
+}
+
+// 날짜 구분 인디케이터 컴포넌트
+struct DateSeparator: View {
+    let date: Date
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            Text(date.localeDateString)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
+                .background(
+                    Capsule()
+                        .fill(Color(UIColor.systemBackground))
+                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
+                )
+            Spacer()
+        }
+        .padding(.vertical, 8)
+    }
 }
 
 // Array 안전 접근을 위한 Extension
