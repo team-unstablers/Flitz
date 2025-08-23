@@ -47,6 +47,7 @@ struct AboutAppFooter: View {
         .padding(16)
         .frame(maxWidth: .infinity)
         .background(Color.Grayscale.gray0.opacity(0.6))
+        .tintColor(.blue)
     }
 }
 

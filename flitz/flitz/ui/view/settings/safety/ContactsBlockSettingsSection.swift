@@ -119,6 +119,7 @@ struct ContactsBlockSettingsSection: View {
                         Text("[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)")
                             .font(.small)
                             .padding(.vertical, 4)
+                            .tintColor(.blue)
                     }
                 }
             }
