@@ -279,9 +279,10 @@ struct UserProfileModalBody: View {
         }
         .sheet(isPresented: $isFlagSheetVisible) {
             UserFlagSheet(userId: profile.id) {
-                
+                isFlagSheetVisible = false
             } submitAction: { blocked in
-                
+                isFlagSheetVisible = false
+                onDismiss?()
             }
         }
     }
