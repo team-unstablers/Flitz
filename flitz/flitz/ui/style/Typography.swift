@@ -58,14 +58,55 @@ extension UIFont {
     }
     
     static func setupUINavigationBarTypography() {
-        UINavigationBar.appearance()
-            .largeTitleTextAttributes = [
-                .font: UIFont.fzHeading1.bold(),
-            ]
-        UINavigationBar.appearance()
-            .titleTextAttributes = [
-                .font: UIFont.fzHeading3.bold(),
-            ]
+        let appearance = UINavigationBar.appearance()
+        
+        appearance.largeTitleTextAttributes = [
+            .font: UIFont.fzHeading1.bold(),
+        ]
+        
+        appearance.titleTextAttributes = [
+            .font: UIFont.fzHeading3.bold(),
+        ]
+        
+        let navigationBarAppearance = UINavigationBarAppearance()
+        
+        navigationBarAppearance.configureWithDefaultBackground()
+        
+        navigationBarAppearance.largeTitleTextAttributes = [
+            .font: UIFont.fzHeading1.bold(),
+        ]
+        
+        navigationBarAppearance.titleTextAttributes = [
+            .font: UIFont.fzHeading3.bold(),
+        ]
+
+        navigationBarAppearance.backButtonAppearance.normal.titleTextAttributes = [
+            .font: UIFont.fzMain,
+        ]
+        
+        let scrollEdgeAppearance = UINavigationBarAppearance()
+        
+        scrollEdgeAppearance.configureWithOpaqueBackground()
+                
+        scrollEdgeAppearance.largeTitleTextAttributes = [
+            .font: UIFont.fzHeading1.bold(),
+        ]
+        
+        scrollEdgeAppearance.titleTextAttributes = [
+            .font: UIFont.fzHeading3.bold(),
+        ]
+        
+        scrollEdgeAppearance.backButtonAppearance.normal.titleTextAttributes = [
+            .font: UIFont.fzMain,
+        ]
+        
+        scrollEdgeAppearance.shadowColor = .clear
+        
+        appearance.standardAppearance = navigationBarAppearance
+        appearance.compactAppearance = navigationBarAppearance
+        appearance.scrollEdgeAppearance = scrollEdgeAppearance
+        appearance.compactScrollEdgeAppearance = scrollEdgeAppearance
+        
     }
 }
 
