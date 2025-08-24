@@ -106,20 +106,20 @@ struct MessageBubble: View {
                     .background(bubbleColor)
             }
         case "attachment":
-            if let url = message.content.thumbnail_url ?? message.content.public_url,
-               let width = message.content.width,
-               let height = message.content.height {
+            if  let attachmentId = message.content.attachment_id,
+                let urlString = message.content.thumbnail_url ?? message.content.public_url,
+                let url = URL(string: urlString),
+                let width = message.content.width,
+                let height = message.content.height {
                 let originalSize = CGSize(width: width, height: height)
                 let scaledSize = originalSize.scaleInto(target: CGSize(width: 200, height: 200))
                 
                 VStack(spacing: 0) {
-                    ThumbnailPreview(url: url, size: scaledSize)
+                    ThumbnailPreview(attachmentId: attachmentId, url: url, size: scaledSize)
                 }
                     .frame(width: scaledSize.width, height: scaledSize.height)
                     .onTapGesture {
-                        if let attachmentId = message.content.attachment_id {
-                            onAttachmentTap?(attachmentId)
-                        }
+                        onAttachmentTap?(attachmentId)
                     }
             }
         default:
@@ -129,26 +129,19 @@ struct MessageBubble: View {
 }
 
 struct ThumbnailPreview: View {
-    let url: String
+    let attachmentId: String
+    let url: URL
     let size: CGSize
     
     var body: some View {
-        AsyncImage(url: URL(string: url)) { phase in
-            switch phase {
-            case .empty:
-                ProgressView()
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: size.width, maxHeight: size.height)
-            case .failure:
-                Image(systemName: "photo")
-                    .foregroundColor(.gray)
-                    .frame(width: size.width, height: size.height)
-            @unknown default:
-                EmptyView()
-            }
+        CachedAsyncImage(url: url, identifier: "message:attachment:\(attachmentId)") { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: size.width, maxHeight: size.height)
+        } placeholder: {
+            ProgressView()
+                .frame(width: size.width, height: size.height)
         }
         /*
         RoundedRectangle(cornerRadius: 8)

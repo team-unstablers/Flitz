@@ -346,18 +346,23 @@ class ConversationViewModel: ObservableObject {
     }
     
     private func prefetchImages(from messages: [DirectMessage]) {
-        let imageUrls = messages.compactMap { message -> URL? in
-            guard message.content.type == "attachment" else { return nil }
-            if let thumbnailUrl = message.content.thumbnail_url {
-                return URL(string: thumbnailUrl)
-            } else if let publicUrl = message.content.public_url {
-                return URL(string: publicUrl)
+        Task {
+            await withTaskGroup { group in
+                for message in messages.filter({ $0.content.type == "attachment" }) {
+                    guard let attachmentId = message.content.attachment_id,
+                          let thumbnailUrl = message.content.thumbnail_url,
+                          let url = URL(string: thumbnailUrl)
+                    else {
+                        continue
+                    }
+                    
+                    let identifier = "message:attachment:\(attachmentId)"
+                    
+                    group.addTask {
+                        await ImageCacheStorage.shared.resolve(by: identifier, origin: url)
+                    }
+                }
             }
-            return nil
-        }
-        
-        if !imageUrls.isEmpty {
-            ImageCacheManager.shared.prefetchImages(urls: imageUrls)
         }
     }
     
