@@ -40,6 +40,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 return .none
             }
         }
+        if type == "match" {
+            appState.conversationUpdated.send()
+            return .none
+        }
         
         // These options are the options that will be used when displaying a notification with the app in the foreground
         // for example, we will be able to display a badge on the app a banner alert will appear and we could play a sound
@@ -50,6 +54,29 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     // This function lets us do something when the user interacts with a notification
     // like log that they clicked it, or navigate to a specific screen
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        // FIXME
+        print("User interacted with notification")
+        print(response.notification.request.content.userInfo)
+        
+        let appState = RootAppState.shared
+        let userInfo = response.notification.request.content.userInfo
+        let type = userInfo["type"] as? String ?? "unknown"
+        
+        if type == "message" {
+            guard let conversationId = userInfo["conversation_id"] as? String else {
+                return
+            }
+            
+            appState.currentModal = nil
+            appState.currentTab = .messages
+            appState.navState = [.conversation(conversationId: conversationId)]
+        } else if type == "match" {
+            guard let conversationId = userInfo["conversation_id"] as? String else {
+                return
+            }
+            
+            appState.currentModal = nil
+            appState.currentTab = .messages
+            appState.navState = [.conversation(conversationId: conversationId)]
+        }
     }
 }
