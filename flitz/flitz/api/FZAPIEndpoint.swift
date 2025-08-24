@@ -14,8 +14,8 @@ struct FZAPIEndpoint: RawRepresentable {
         self.rawValue = rawValue
     }
     
-    static let token = FZAPIEndpoint(rawValue: "/auth/token/")
-    static let refreshToken = FZAPIEndpoint(rawValue: "/auth/token/refresh/")
+    static let token = FZAPIEndpoint(rawValue: "/auth/token")
+    static let refreshToken = FZAPIEndpoint(rawValue: "/auth/token/refresh")
 
     // user start
     static let register = FZAPIEndpoint(rawValue: "/users/register/")
