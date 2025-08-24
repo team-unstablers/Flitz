@@ -33,7 +33,7 @@ enum AssertionFailureReason {
     var asLocalizedDisplayText: String {
         switch self {
         case .mitmDetected:
-            return "인증서 고정에 실패했습니다"
+            return "인증서 고정 또는 mTLS 협상에 실패했습니다"
         case .other(let reason):
             return reason
         }
@@ -58,12 +58,20 @@ struct AssertionFailureDialogBody: View {
                     .bold()
                 
                 Group {
-                    Text("Flitz에서 사용자님의 안전을 위해 앱을 중단하였습니다.")
-                    Text(reason.description)
-                    Text("안전이 확보되었다고 생각되면 앱을 다시 시작해 주세요.")
+                    Text("Flitz에서 사용자님의 안전을 위해 앱을 중단하였습니다.".byCharWrapping)
+                    Text(reason.description.byCharWrapping)
+                    Text("안전이 확보되었다고 생각되면 앱을 다시 시작해 주세요.".byCharWrapping)
                 }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.fzMain)
+                
+                FZButton(size: .large) {
+                    Flitz.exitGracefully()
+                } label: {
+                    Text("Flitz 종료하기")
+                        .font(.fzHeading3)
+                        .semibold()
+                }
             }
             .frame(maxWidth: .infinity)
             .padding()
@@ -72,7 +80,7 @@ struct AssertionFailureDialogBody: View {
             .compositingGroup()
             .shadow(radius: 16)
         }
-        .padding(16)
+        .padding(24)
     }
 }
 
@@ -86,7 +94,7 @@ struct AssertionFailureDialog: View {
             
             VStack {
                 AssertionFailureDialogBody(reason: reason)
-                Text("ASSERTION FAILED (reason=\(reason.asDisplayText))\n\(reason.asLocalizedDisplayText)")
+                Text("FATAL ERROR (reason=\(reason.asDisplayText))\n\(reason.asLocalizedDisplayText)")
                     .multilineTextAlignment(.center)
                     .opacity(0.5)
                     .font(.system(size: 12))

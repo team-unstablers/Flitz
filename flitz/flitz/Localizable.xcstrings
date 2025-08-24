@@ -31,12 +31,12 @@
     "1000m" : {
 
     },
-    "ASSERTION FAILED (reason=%@)\n%@" : {
+    "FATAL ERROR (reason=%@)\n%@" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "ASSERTION FAILED (reason=%1$@)\n%2$@"
+            "value" : "FATAL ERROR (reason=%1$@)\n%2$@"
           }
         }
       }
@@ -57,9 +57,6 @@
 
     },
     "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다." : {
-
-    },
-    "Flitz에서 사용자님의 안전을 위해 앱을 중단하였습니다." : {
 
     },
     "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다." : {
@@ -423,9 +420,6 @@
 
     },
     "안전 구역 설정" : {
-
-    },
-    "안전이 확보되었다고 생각되면 앱을 다시 시작해 주세요." : {
 
     },
     "안전한 사람들하고만 매칭할래요" : {

@@ -13,6 +13,11 @@ enum FZAPIError: LocalizedError {
     case noRefreshToken
     case invalidToken
     case unauthorized
+    case invalidResponse
+    
+    case sslFailure
+    case killSwitchActivated
+    
     case networkError(underlying: Error)
     
     var errorDescription: String? {
@@ -27,6 +32,12 @@ enum FZAPIError: LocalizedError {
             return "Invalid token received"
         case .unauthorized:
             return "Unauthorized access"
+        case .invalidResponse:
+            return "Invalid response from server"
+        case .sslFailure:
+            return "SSL failure occurred"
+        case .killSwitchActivated:
+            return "Kill switch activated"
         case .networkError(let error):
             return "Network error: \(error.localizedDescription)"
         }
