@@ -16,6 +16,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         application.registerForRemoteNotifications()
         
+        UserDefaults.standard.register(defaults: [
+            "FlitzWaveEnabled": true,
+        ])
+        
         UNUserNotificationCenter.current().delegate = self
         
         UIFont.setupUINavigationBarTypography()
