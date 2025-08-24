@@ -38,6 +38,9 @@ class RootAppState: ObservableObject {
     @Published
     var assertionFailureReason: AssertionFailureReason? = nil
     
+    @Published
+    var conversationBadged: Bool = false
+    
     var conversationUpdated = PassthroughSubject<Void, Never>()
     
     init() {

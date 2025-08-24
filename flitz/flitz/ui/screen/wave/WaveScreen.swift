@@ -33,9 +33,11 @@ struct WaveScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             MainTitlebar {
+                /*
                 NotificationButton(badged: false) {
                     print("TODO: Implement notification screen")
                 }
+                 */
                 
                 FlitzWaveButton(isOn: appState.waveActive) {
                     self.toggleWave()

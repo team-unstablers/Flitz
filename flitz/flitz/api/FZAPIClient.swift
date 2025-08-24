@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import UIKit
 
 import Alamofire
 
 class FZAPIClient {
+    private let logger = createFZOSLogger("FZAPIClient")
     static var userAgent: String {
         let appVersion = Flitz.version
         let buildNumber = Flitz.build
@@ -46,9 +48,36 @@ class FZAPIClient {
     var context: FZAPIContext
     let interceptor = FZTokenRefreshInterceptor()
     
+    /// KILL SWITCH - true로 설정되면 모든 네트워크 요청을 차단합니다.
+    /// MITM 공격이 감지되었을 때 활성화 하십시오.
+    private var killSwitch: Bool = false
+
     init(context: FZAPIContext) {
         self.context = context
         self.interceptor.client = self
+    }
+    
+    private func handleRequestError(_ error: AFError?) throws {
+        guard let error = error else {
+            throw FZAPIError.invalidResponse
+        }
+        
+        let underlyingError = error.underlyingError
+        
+        if let urlError = underlyingError as? URLError {
+            if urlError.code == .secureConnectionFailed {
+                DispatchQueue.main.async {
+                    if UIApplication.shared.applicationState == .active {
+                        self.killSwitch = true
+                        RootAppState.shared.assertionFailureReason = .sslFailure
+                    }
+                }
+                
+                throw FZAPIError.sslFailure
+            }
+        }
+        
+        throw error
     }
     
     func request<Parameters: Encodable & Sendable, Response>(
@@ -62,6 +91,11 @@ class FZAPIClient {
             "Authorization": "Bearer \(context.token ?? "")"
         ] : nil
         
+        if killSwitch {
+            logger.fatal("KILL SWITCH ACTIVATED - Blocking all network requests")
+            throw FZAPIError.killSwitchActivated
+        }
+        
         let response = session.request(url,
                                        method: method,
                                        parameters: parameters,
@@ -70,27 +104,30 @@ class FZAPIClient {
                                        interceptor: (requiresAuth) ? interceptor : nil)
             .validate()
         
-        
+        // Ditch 타입일 경우 빈 응답 처리
         if type == Ditch.self {
-            let response = await response.serializingString().response
-            if let error = response.error {
-                throw error
+            let dataResponse = await response.serializingData().response
+            
+            if dataResponse.error != nil {
+                try handleRequestError(dataResponse.error)
             }
             
+            // 빈 응답이나 빈 JSON 객체 모두 Ditch로 처리
             return Ditch() as! Response
-        } else {
-            let response = await response.serializingDecodable(type).response
-            
-            guard let value = response.value else {
-                let error = response.error!
-                let underlyingError = error.underlyingError
-                
-                throw error
-            }
-            
-            return value
         }
+        
+        // 일반적인 Decodable 타입 처리
+        let serializingResponse = await response.serializingDecodable(type).response
+        
+        guard let value = serializingResponse.value else {
+            try handleRequestError(serializingResponse.error)
+            
+            throw FZAPIError.invalidResponse
+        }
+        
+        return value
     }
+    
  
         
     func request<Parameters: Encodable & Sendable, Response>(

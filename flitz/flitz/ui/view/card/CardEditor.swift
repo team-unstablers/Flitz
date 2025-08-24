@@ -37,7 +37,7 @@ struct CardEditor: View {
         }
         .background(.black)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarColor(.black)
+        .navigationBarTransparent(true)
         .animation(.default, value: isElementEditorPresented)
         .toolbarVisibility(isElementEditorPresented ? .hidden : .visible, for: .navigationBar)
         .toolbar {

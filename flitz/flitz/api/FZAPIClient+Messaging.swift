@@ -50,6 +50,10 @@ extension FZAPIClient {
         return try await self.request(to: .conversations, expects: Paginated<DirectMessageConversation>.self)
     }
     
+    func conversationsTotalUnreadCount() async throws -> DirectMessageTotalUnreadCount {
+        return try await self.request(to: .conversationsTotalUnreadCount, expects: DirectMessageTotalUnreadCount.self)
+    }
+
     func conversation(id: String) async throws -> DirectMessageConversation {
         return try await self.request(to: .conversation(id: id), expects: DirectMessageConversation.self)
     }

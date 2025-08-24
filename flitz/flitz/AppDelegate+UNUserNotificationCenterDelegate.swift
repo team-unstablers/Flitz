@@ -35,8 +35,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                 currentScreen == .conversation(conversationId: conversationId)
             )
             
+            appState.conversationUpdated.send()
+            
             if shouldNotDisplay {
-                appState.conversationUpdated.send()
                 return .none
             }
         }

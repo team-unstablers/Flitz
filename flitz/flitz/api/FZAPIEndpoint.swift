@@ -86,7 +86,8 @@ struct FZAPIEndpoint: RawRepresentable {
     
     // messaging start
     static let conversations = FZAPIEndpoint(rawValue: "/conversations/")
-    
+    static let conversationsTotalUnreadCount = FZAPIEndpoint(rawValue: "/conversations/total_unread_count/")
+
     static func conversation(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/conversations/\(id)/")
     }

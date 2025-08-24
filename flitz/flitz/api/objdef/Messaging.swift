@@ -63,3 +63,6 @@ struct DirectMessageAttachment: Codable, Identifiable {
     var updated_at: String
 }
 
+struct DirectMessageTotalUnreadCount: Codable {
+    let total_unread_count: Int
+}
