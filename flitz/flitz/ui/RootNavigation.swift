@@ -33,6 +33,9 @@ enum RootNavigationItem: Hashable {
 }
 
 struct RootNavigation: View {
+    @Environment(\.userId)
+    var userId: String
+    
     @EnvironmentObject
     var appState: RootAppState
     
@@ -46,7 +49,12 @@ struct RootNavigation: View {
                             CardEditor(cardId: cardId, client: $appState.client)
                             
                         case .conversation(let conversationId):
-                            ConversationScreen(conversationId: conversationId)
+                            // HACK
+                            if userId == UserIdKey.defaultValue {
+                                EmptyView()
+                            } else {
+                                ConversationScreen(conversationId: conversationId)
+                            }
                         case .attachment(let conversationId, let attachmentId):
                             AttachmentScreen(conversationId: conversationId, attachmentId: attachmentId)
                             

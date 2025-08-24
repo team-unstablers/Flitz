@@ -14,7 +14,6 @@ protocol WaveCommunicatorDelegate: AnyObject {
 }
 
 
-@MainActor
 class WaveCommunicator: NSObject {
     static var serviceEnabled: Bool {
         get {
@@ -88,7 +87,9 @@ class WaveCommunicator: NSObject {
         
         self.isActive = true
         
-        delegate?.communicator(self, didStart: session.session_id)
+        await MainActor.run {
+            delegate?.communicator(self, didStart: session.session_id)
+        }
     }
     
     func stop() async throws {
@@ -104,13 +105,15 @@ class WaveCommunicator: NSObject {
         self.isActive = false
         self.identity = nil
         
-        delegate?.communicator(self, didStop: identity)
+        await MainActor.run {
+            delegate?.communicator(self, didStop: identity)
+        }
     }
     
     
 }
 
-extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
+extension WaveCommunicator: WaveDiscovererDelegate {
     func discoverer(_ discoverer: WaveDiscoverer, didDiscover sessionId: String, from location: CLLocation?, peripheral uuid: UUID) {
         guard let identity = self.identity else {
             logger.warning("WaveCommunicator: No active session to report discovery")
@@ -138,7 +141,7 @@ extension WaveCommunicator: @preconcurrency WaveDiscovererDelegate {
     }
 }
 
-extension WaveCommunicator: @preconcurrency WaveBroadcasterDelegate {
+extension WaveCommunicator: WaveBroadcasterDelegate {
     func broadcasterDidRestoreState(_ broadcaster: WaveBroadcaster) {
         Task {
             try? await self.recoverState()

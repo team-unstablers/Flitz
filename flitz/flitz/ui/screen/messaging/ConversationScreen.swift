@@ -204,10 +204,8 @@ class ConversationViewModel: ObservableObject {
         guard let apiClient = apiClient else { return }
         
         do {
-            // TODO: 단일 conversation을 가져오는 API 엔드포인트가 필요함
-            // 현재는 전체 리스트를 가져와서 필터링하는 비효율적인 방식
-            let conversations = try await apiClient.conversations()
-            self.conversation = conversations.results.first { $0.id == conversationId }
+            let conversation = try await apiClient.conversation(id: conversationId)
+            self.conversation = conversation
             
             self.opponentId = self.conversation?.participants.first(where: { $0.user.id != currentUserId })?.user.id
             self.readState = [:]
@@ -382,6 +380,9 @@ struct ConversationScreen: View {
     @EnvironmentObject
     var appState: RootAppState
     
+    @Environment(\.userId)
+    var userId
+    
     @Environment(\.scenePhase)
     var scenePhase
     
@@ -529,7 +530,7 @@ struct ConversationScreen: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 if let conversation = viewModel.conversation,
-                   let opponent = conversation.participants.first(where: { $0.user.id != appState.profile?.id }) {
+                   let opponent = conversation.participants.first(where: { $0.user.id != userId }) {
                     HStack {
                         ProfileImage(
                             url: opponent.user.profile_image_url,
@@ -548,7 +549,7 @@ struct ConversationScreen: View {
             }
         }
         .onAppear {
-            viewModel.configure(with: appState.client, currentUserId: appState.profile?.id ?? "self")
+            viewModel.configure(with: appState.client, currentUserId: userId)
         }
         .onDisappear {
             viewModel.disconnectWebSocket()
