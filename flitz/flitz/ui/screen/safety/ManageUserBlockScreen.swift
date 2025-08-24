@@ -77,6 +77,20 @@ struct ManageUserBlockScreen: View {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
+                if viewModel.blocks.isEmpty {
+                    VStack(spacing: 8) {
+                        Text("차단된 사용자가 없어요")
+                            .font(.heading2)
+                            .bold()
+                            .foregroundStyle(Color.Grayscale.gray8)
+                        
+                        Text("차단된 사용자와는 카드 교환 및 대화가 불가능해요.")
+                            .multilineTextAlignment(.center)
+                            .font(.main)
+                            .foregroundStyle(Color.Grayscale.gray7)
+                    }
+                }
+                
                 FZInfiniteScrollView(
                     data: viewModel.blocks,
                     hasMoreData: $viewModel.hasMoreData,

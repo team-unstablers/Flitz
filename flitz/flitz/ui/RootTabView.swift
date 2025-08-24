@@ -44,7 +44,7 @@ struct RootTabView: View {
                     Text("메시지")
                 }
                 .badge(conversationUnreadCount > 0 ? (conversationUnreadCount > 99 ? "99+" : "\(conversationUnreadCount)") : nil)
-            Text("아직 구현되지 않았습니다")
+            StoreRootScreen()
                 .tag(RootTab.store)
                 .tabItem {
                     Image(systemName: "house")

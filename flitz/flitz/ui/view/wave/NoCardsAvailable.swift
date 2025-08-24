@@ -14,20 +14,20 @@ enum NoCardsAvailableReason {
     var title: String {
         switch self {
         case .noCardsExchanged:
-            return NSLocalizedString("오늘은 교환된 카드가 없습니다", comment: "NoCardsAvailableReason::title")
+            return NSLocalizedString("아직 교환된 카드가 없어요", comment: "NoCardsAvailableReason::title")
         
         case .insufficientPermission:
-            return NSLocalizedString("추가 권한이 필요합니다", comment: "NoCardsAvailableReason::title")
+            return NSLocalizedString("추가 권한이 필요해요", comment: "NoCardsAvailableReason::title")
         }
     }
     
     var description: String {
         switch self {
         case .noCardsExchanged:
-            return NSLocalizedString("내일은 멋진 카드를 받을 수 있을지도 몰라요.\nFlitz 앱이 열심히 찾아줄 거에요!", comment: "NoCardsAvailableReason::description")
+            return NSLocalizedString("다른 Flitz 사용자와 마주치게 되면 카드가 교환될 거예요!", comment: "NoCardsAvailableReason::description")
             
         case .insufficientPermission:
-            return NSLocalizedString("Flitz 앱이 다른 사람과 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요.", comment: "NoCardsAvailableReason::description")
+            return NSLocalizedString("Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요.", comment: "NoCardsAvailableReason::description")
         }
     }
     
@@ -64,7 +64,9 @@ struct NoCardsAvailable: View {
                     
                     if reason.shouldShowSettingsButton {
                         FZButton {
-                            
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
                         } label: {
                             Text("앱 설정 열기")
                         }

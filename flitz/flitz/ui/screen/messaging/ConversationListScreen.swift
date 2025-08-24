@@ -11,6 +11,7 @@ import SwiftUI
 @MainActor
 class ConversationListViewModel: ObservableObject {
     @Published var conversations: [DirectMessageConversation] = []
+    @Published var initialBusy = true
     @Published var isLoading = false
     @Published var hasMoreData = true
     @Published var showDeleteAlert = false
@@ -28,6 +29,9 @@ class ConversationListViewModel: ObservableObject {
     
     func loadConversations() async {
         guard let apiClient = apiClient, !isLoading else { return }
+        defer {
+            initialBusy = false
+        }
         
         isLoading = true
         do {
@@ -83,32 +87,46 @@ struct ConversationListScreen: View {
     var body: some View {
         NavigationView {
             ZStack {
-                if viewModel.isLoading && viewModel.conversations.isEmpty {
+                if viewModel.initialBusy || (viewModel.isLoading && viewModel.conversations.isEmpty) {
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
-                    FZInfiniteScrollView(
-                        data: viewModel.conversations,
-                        hasMoreData: $viewModel.hasMoreData,
-                        loadingView: {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                            .padding()
-                        },
-                        onLoadMore: {
-                            await viewModel.loadMore()
+                    if viewModel.conversations.isEmpty {
+                        VStack(spacing: 8) {
+                            Text("아직 대화 내역이 없어요")
+                                .font(.heading2)
+                                .bold()
+                                .foregroundStyle(Color.Grayscale.gray8)
+                            
+                            Text("서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요.")
+                                .multilineTextAlignment(.center)
+                                .font(.main)
+                                .foregroundStyle(Color.Grayscale.gray7)
                         }
-                    ) { conversation in
-                        ConversationListItem(conversation: conversation)
-                            .onTapGesture {
-                                appState.navState.append(.conversation(conversationId: conversation.id))
+                    } else {
+                        FZInfiniteScrollView(
+                            data: viewModel.conversations,
+                            hasMoreData: $viewModel.hasMoreData,
+                            loadingView: {
+                                HStack {
+                                    Spacer()
+                                    ProgressView()
+                                    Spacer()
+                                }
+                                .padding()
+                            },
+                            onLoadMore: {
+                                await viewModel.loadMore()
                             }
-                    }
-                    .refreshable {
-                        await viewModel.loadConversations()
+                        ) { conversation in
+                            ConversationListItem(conversation: conversation)
+                                .onTapGesture {
+                                    appState.navState.append(.conversation(conversationId: conversation.id))
+                                }
+                        }
+                        .refreshable {
+                            await viewModel.loadConversations()
+                        }
                     }
                 }
             }
