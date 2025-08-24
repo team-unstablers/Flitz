@@ -95,7 +95,7 @@ class RootAppState: ObservableObject {
     }
     
     func logout() {
-        FZAPIContext.reset()
+        FZAPIContext.delete()
         
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key.description)
