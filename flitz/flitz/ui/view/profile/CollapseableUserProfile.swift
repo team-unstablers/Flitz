@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CollapseableUserProfile: View {
+    let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+    
     let profile: FZUser
     
     var dismiss: (() -> Void)? = nil
@@ -43,6 +45,9 @@ struct CollapseableUserProfile: View {
         .gesture(
             DragGesture()
                 .onChanged { value in
+                    feedbackGenerator.prepare()
+                    feedbackGenerator.impactOccurred()
+                    
                     if isProfileCollapsed {
                         if (value.translation.height < 0) {
                             let translationHeight: CGFloat = abs(value.translation.height)

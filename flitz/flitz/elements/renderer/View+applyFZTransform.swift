@@ -51,6 +51,8 @@ enum FZTransformEvent {
 }
 
 struct FZTransformModifier: ViewModifier {
+    let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+    
     @ObservedObject
     var transform: Flitz.Transform
     
@@ -160,6 +162,9 @@ struct FZTransformModifier: ViewModifier {
                     $0
                         .gesture(FZDragGestureRecognizer { state, result in
                             let (point, rect) = result
+                            
+                            feedbackGenerator.prepare()
+                            feedbackGenerator.impactOccurred()
                             
                             if state == .changed {
                                 isDragging = true
