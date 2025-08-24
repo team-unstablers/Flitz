@@ -10,6 +10,14 @@ import Foundation
 import Alamofire
 
 class FZAPIClient {
+    static var userAgent: String {
+        let appVersion = Flitz.version
+        let buildNumber = Flitz.build
+        let codename = Flitz.codename
+        
+        return "Flitz/\(appVersion) (\(codename); build \(buildNumber))"
+    }
+    
     let session: Session = {
         let configuration = URLSessionConfiguration.default
         configuration.httpMaximumConnectionsPerHost = 10
@@ -18,6 +26,19 @@ class FZAPIClient {
         configuration.httpShouldSetCookies = false
         configuration.waitsForConnectivity = true
         configuration.multipathServiceType = .handover
+        
+        // User-Agent 설정
+           
+        if var existingHeaders = configuration.httpAdditionalHeaders {
+            if let existingUserAgent = existingHeaders["User-Agent"] as? String {
+                existingHeaders["User-Agent"] = "\(existingUserAgent) \(FZAPIClient.userAgent)"
+            } else {
+                existingHeaders["User-Agent"] = FZAPIClient.userAgent
+            }
+            configuration.httpAdditionalHeaders = existingHeaders
+        } else {
+            configuration.httpAdditionalHeaders = ["User-Agent": FZAPIClient.userAgent]
+        }
         
         return Session(configuration: configuration)
     }()
