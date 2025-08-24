@@ -18,6 +18,12 @@ struct RootTabView: View {
     @EnvironmentObject
     var appState: RootAppState
     
+    @State
+    var conversationUnreadCount: Int = 0
+    
+    @State
+    var _updateUnreadCountTask: Task<Void, Never>? = nil
+    
     init() {
         UITabBar.appearance().isTranslucent = true
         UITabBar.appearance().backgroundColor = .white
@@ -37,6 +43,7 @@ struct RootTabView: View {
                     Image(systemName: "message")
                     Text("메시지")
                 }
+                .badge(conversationUnreadCount > 0 ? (conversationUnreadCount > 99 ? "99+" : "\(conversationUnreadCount)") : nil)
             Text("아직 구현되지 않았습니다")
                 .tag(RootTab.store)
                 .tabItem {
@@ -49,6 +56,38 @@ struct RootTabView: View {
                     Image(systemName: "person")
                     Text("프로필")
                 }
+        }
+        .onAppear {
+            updateConversationUnreadCount()
+        }
+        .onReceive(appState.conversationUpdated) { _ in
+            updateConversationUnreadCount()
+        }
+    }
+    
+    func updateConversationUnreadCount() {
+        guard appState.navState.isEmpty else {
+            return
+        }
+
+        _updateUnreadCountTask?.cancel()
+        _updateUnreadCountTask = Task {
+            await updateConversationUnreadCountInternal()
+            _updateUnreadCountTask = nil
+        }
+    }
+    
+    @MainActor
+    func updateConversationUnreadCountInternal() async {
+        try? await Task.sleep(for: .milliseconds(300)) // ㅋ_ㅋ
+        
+        do {
+            async let response = appState.client.conversationsTotalUnreadCount()
+            let count = try await response.total_unread_count
+            
+            self.conversationUnreadCount = count
+        } catch {
+            print("Failed to fetch unread count: \(error)")
         }
     }
 }

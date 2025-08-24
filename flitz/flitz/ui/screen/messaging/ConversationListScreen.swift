@@ -128,6 +128,11 @@ struct ConversationListScreen: View {
             viewModel.configure(with: appState.client)
         }
         .onReceive(appState.conversationUpdated) {
+            // 대화 목록 갱신은 네비게이션 스택이 비어 있을 때만 수행
+            guard appState.navState.isEmpty else {
+                return
+            }
+            
             Task {
                 // FIXME
                 await viewModel.loadConversations()

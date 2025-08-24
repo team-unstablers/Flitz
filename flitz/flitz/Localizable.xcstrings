@@ -25,6 +25,9 @@
     "%lld" : {
 
     },
+    "99+" : {
+
+    },
     "300m" : {
 
     },
@@ -41,8 +44,15 @@
         }
       }
     },
-    "Flitz version %@\nCopyright © 2025 team unstablers Inc.\nAll rights reserved." : {
-
+    "Flitz version %@ \"%@\"\nCopyright © 2025 team unstablers Inc.\nAll rights reserved." : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Flitz version %1$@ \"%2$@\"\nCopyright © 2025 team unstablers Inc.\nAll rights reserved."
+          }
+        }
+      }
     },
     "Flitz 앱이 다른 사람과 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요." : {
       "comment" : "NoCardsAvailableReason::description"

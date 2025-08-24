@@ -107,7 +107,7 @@ struct MyPageScreen: View {
                             openURL(URL(string: "http://docs.flitz.cards/help/prelude/")!)
                         }
                         FZPageSectionActionItem("베타 테스트에 대한 피드백 보내기") {
-                            
+                            openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLScDLdnQWOqNZKFSH7YmU5YMAhXD_vkYdfxR_rMUZkt78a_hPw/viewform?usp=dialog")!)
                         }
                         FZPageSectionActionItem("개인정보 보호정책") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/privacy-policy.html")!)
@@ -117,6 +117,9 @@ struct MyPageScreen: View {
                         }
                         FZPageSectionActionItem("서비스 약관") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/tos.html")!)
+                        }
+                        FZPageSectionActionItem("오픈 소스 라이선스") {
+                            openURL(URL(string: "https://docs.flitz.cards/legal/oss.html")!)
                         }
                     }
                     .padding(.horizontal, 16)
@@ -163,7 +166,7 @@ struct MyPageScreen: View {
                         .padding(.horizontal, 16)
                     
                     VStack(alignment: .center) {
-                        Text("Flitz version \(Flitz.version)\nCopyright © 2025 team unstablers Inc.\nAll rights reserved.")
+                        Text("Flitz version \(Flitz.version) \"\(Flitz.codename)\"\nCopyright © 2025 team unstablers Inc.\nAll rights reserved.")
                             .foregroundStyle(Color.Grayscale.gray6)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
