@@ -66,6 +66,10 @@ class SignUpViewModel: ObservableObject {
             
             var newContext = context
             newContext.token = token.token
+            newContext.refreshToken = token.refresh_token
+            
+            // FIXME: assert 쓰지 마세요!!
+            assert(newContext.valid())
             
             newContext.save()
 

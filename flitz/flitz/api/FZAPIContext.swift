@@ -7,45 +7,110 @@
 
 import Foundation
 
-struct FZAPIContext: Codable {
+struct FZSecAPIContext: Codable {
+    static let logger = createFZOSLogger("FZSecAPIContext")
+    
+    private static let KEYCHAIN_SERVICE = "pl.unstabler.flitz.api.seccontext"
+    private static let KEYCHAIN_ACCOUNT_DEFAULT = "flitzuser"
+    
     enum CodingKeys: String, CodingKey {
 #if DEBUG
         case host
 #endif
         case token
+        case refreshToken
     }
     
-    static func load() -> FZAPIContext {
-        let decoder = JSONDecoder()
-        guard let data = UserDefaults.standard.data(forKey: "FZAPIContext") else {
-            return FZAPIContext()
+#if DEBUG
+    var host: FZAPIServerHost = .default
+#else
+    let host: FZAPIServerHost = .default
+#endif
+    
+    var token: String?
+    var refreshToken: String?
+    
+    private var payload: [String: Any]?
+    
+    var id: String? {
+        guard let payload = payload else {
+            return nil
         }
         
+        return payload["sub"] as? String
+    }
+    
+    var expired: Bool {
+        guard let payload = payload,
+              let exp = payload["exp"] as? TimeInterval
+        else {
+            return true
+        }
+        
+        let expirationDate = Date(timeIntervalSince1970: exp)
+        return expirationDate <= Date()
+    }
+    
+    static func load() -> FZSecAPIContext {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KEYCHAIN_SERVICE,
+            kSecAttrAccount as String: KEYCHAIN_ACCOUNT_DEFAULT,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        
+        var item: CFTypeRef?
+        
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        if status == errSecItemNotFound {
+            return FZSecAPIContext()
+        }
+        
+        guard status == errSecSuccess else {
+            logger.error("failed to load FZSecAPIContext from Keychain: \(status)")
+            return FZSecAPIContext()
+        }
+       
+        guard let data = item as? Data else {
+            logger.error("failed to load FZSecAPIContext from Keychain: status == errSecSuccess but no data")
+            
+            delete()
+            return FZSecAPIContext()
+        }
+        
+        let decoder = JSONDecoder()
         do {
-            var context = try decoder.decode(FZAPIContext.self, from: data)
+            var context = try decoder.decode(FZSecAPIContext.self, from: data)
+            
             guard context.valid() else {
-                return FZAPIContext()
+                delete()
+                return FZSecAPIContext()
             }
             
             return context
         } catch {
-            return FZAPIContext()
+            logger.error("failed to decode FZSecAPIContext from Keychain data: \(error.localizedDescription)")
+            
+            delete()
+            return FZSecAPIContext()
         }
     }
     
-    static func reset() {
-        UserDefaults.standard.removeObject(forKey: "FZAPIContext")
+    static func delete() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KEYCHAIN_SERVICE,
+            kSecAttrAccount as String: KEYCHAIN_ACCOUNT_DEFAULT
+        ]
+        
+        SecItemDelete(query as CFDictionary)
     }
-    
-    var host: FZAPIServerHost = .default
-    var token: String?
-    
-    var id: String?
+
     
     init() {
-        
     }
-    
+        
     mutating func valid() -> Bool {
         // TODO: decode JWT
         guard let token = token else {
@@ -68,13 +133,6 @@ struct FZAPIContext: Codable {
                 return false
             }
             
-            /*
-            // Check for expiration
-            if let exp = dict["exp"] as? TimeInterval {
-                let expirationDate = Date(timeIntervalSince1970: exp)
-                return expirationDate > Date()
-            }
-             */
             
             guard let id = dict["sub"] as? String,
                   let flitzOptions = dict["x-flitz-options"] as? String,
@@ -83,11 +141,11 @@ struct FZAPIContext: Codable {
                 return false
             }
             
-            self.id = id
-            
+            self.payload = dict
+
             return true
         } catch {
-            print(error)
+            Self.logger.error("failed to decode JWT payload: \(error.localizedDescription)")
             return false
         }
     }
@@ -95,10 +153,24 @@ struct FZAPIContext: Codable {
     func save() {
         let encoder = JSONEncoder()
         let data = try! encoder.encode(self)
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: Self.KEYCHAIN_SERVICE,
+            kSecAttrAccount as String: Self.KEYCHAIN_ACCOUNT_DEFAULT,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
+            kSecValueData as String: data
+        ]
         
-        UserDefaults.standard.set(data, forKey: "FZAPIContext")
+        SecItemDelete(query as CFDictionary) // upsert
+        
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            Self.logger.error("failed to save FZSecAPIContext to Keychain: \(status)")
+            return
+        }
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -106,6 +178,7 @@ struct FZAPIContext: Codable {
         host = try container.decode(FZAPIServerHost.self, forKey: .host)
 #endif
         token = try container.decodeIfPresent(String.self, forKey: .token)
+        refreshToken = try container.decodeIfPresent(String.self, forKey: .refreshToken)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -117,6 +190,12 @@ struct FZAPIContext: Codable {
         if let token {
             try container.encode(token, forKey: .token)
         }
+        
+        if let refreshToken {
+            try container.encode(refreshToken, forKey: .refreshToken)
+        }
     }
-    
 }
+
+// for compatibility
+typealias FZAPIContext = FZSecAPIContext

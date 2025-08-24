@@ -44,9 +44,11 @@ class FZAPIClient {
     }()
     
     var context: FZAPIContext
+    let interceptor = FZTokenRefreshInterceptor()
     
     init(context: FZAPIContext) {
         self.context = context
+        self.interceptor.client = self
     }
     
     func request<Parameters: Encodable & Sendable, Response>(
@@ -64,7 +66,8 @@ class FZAPIClient {
                                        method: method,
                                        parameters: parameters,
                                        encoder: method == .get ? URLEncodedFormParameterEncoder.default : JSONParameterEncoder.default,
-                                       headers: headers)
+                                       headers: headers,
+                                       interceptor: (requiresAuth) ? interceptor : nil)
             .validate()
         
         

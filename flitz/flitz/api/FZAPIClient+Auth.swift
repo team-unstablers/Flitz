@@ -24,4 +24,14 @@ extension FZAPIClient {
         return response
     }
     
+    func refreshToken(_ args: RefreshTokenArgs) async throws -> FZUserToken {
+        let response = try await self.request(to: .refreshToken,
+                                              expects: FZUserToken.self,
+                                              method: .post,
+                                              parameters: args,
+                                              requiresAuth: false)
+        
+        return response
+    }
+    
 }
