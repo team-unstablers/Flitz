@@ -141,7 +141,11 @@ struct SignInScreen: View {
                 let token = try await client.authorize(with: credentials)
                 var newContext = context
                 newContext.token = token.token
+                newContext.refreshToken = token.refresh_token
                 
+                // FIXME: assert() 쓰지 마세요!!!
+                assert(newContext.valid())
+
                 DispatchQueue.main.async {
                     self.authHandler(newContext)
                 }
