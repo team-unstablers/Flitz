@@ -18,7 +18,6 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>PretendardVariable.ttf</string>
-		<string>NotoSansKR.ttf</string>
 	</array>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>NSBluetoothPeripheralUsageDescription</string>
