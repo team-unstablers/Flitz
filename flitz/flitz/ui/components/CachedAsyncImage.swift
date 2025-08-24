@@ -66,6 +66,11 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
                 placeholder()
             }
         }
+        .onChange(of: url) { _, _ in
+            Task {
+                await loadImage()
+            }
+        }
     }
     
     @MainActor
