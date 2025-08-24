@@ -43,7 +43,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         }
         if type == "match" {
             appState.conversationUpdated.send()
-            return .none
+            return .all
         }
         
         // These options are the options that will be used when displaying a notification with the app in the foreground
