@@ -69,7 +69,7 @@ class FZAPIClient {
                 DispatchQueue.main.async {
                     if UIApplication.shared.applicationState == .active {
                         self.killSwitch = true
-                        RootAppState.shared.assertionFailureReason = .mitmDetected
+                        RootAppState.shared.assertionFailureReason = .sslFailure
                     }
                 }
                 
