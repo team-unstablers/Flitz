@@ -17,3 +17,8 @@ struct UserRegistrationArgs: Codable {
     var bio: String
     var hashtags: [String]
 }
+
+struct RefreshTokenArgs: Codable {
+    var refresh_token: String
+}
+

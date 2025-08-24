@@ -17,6 +17,7 @@ struct FZCredentials: Codable {
 
 struct FZUserToken: Codable {
     var token: String
+    var refresh_token: String
 }
 
 struct FZUserFuzzyDistance: RawRepresentable, Codable, Equatable {
