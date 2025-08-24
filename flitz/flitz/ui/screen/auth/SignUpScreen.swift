@@ -60,7 +60,7 @@ class SignUpViewModel: ObservableObject {
             
             let credentials = FZCredentials(username: self.username,
                                             password: self.password,
-                                            device_info: "FlitzCardEditorTest.app",
+                                            device_info: FZAPIClient.userAgent,
                                             apns_token: AppDelegate.apnsToken)
             let token = try await apiClient.authorize(with: credentials)
             
