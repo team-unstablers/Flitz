@@ -145,13 +145,6 @@ struct WaveCardPreview: View {
                                 }
                         )
                         .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
-                        .onTapGesture {
-                            guard distribution.reveal_phase == .revealed else {
-                                return
-                            }
-                            
-                            appState.currentModal = .userProfile(userId: distribution.card.user!.id)
-                        }
                         .onAppear {
                             Self._printChanges()
                         }
