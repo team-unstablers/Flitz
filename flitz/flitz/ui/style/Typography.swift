@@ -25,13 +25,13 @@ extension CGFloat {
 
 /// 행간은 폰트 크기 x 1.5(반올림 짝수)을 규칙으로 계산됩니다.
 extension UIFont {
-    static let fzMain = UIFont(name: "Noto Sans KR", size: .fzFontSizeMain)!
+    static let fzMain = UIFont(name: "Pretendard Variable", size: .fzFontSizeMain)!
     
-    static let fzSmall = UIFont(name: "Noto Sans KR", size: .fzFontSizeSmall)!
+    static let fzSmall = UIFont(name: "Pretendard Variable", size: .fzFontSizeSmall)!
     
-    static let fzHeading1 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading1)!
-    static let fzHeading2 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading2)!
-    static let fzHeading3 = UIFont(name: "Noto Sans KR", size: .fzFontSizeHeading3)!
+    static let fzHeading1 = UIFont(name: "Pretendard Variable", size: .fzFontSizeHeading1)!
+    static let fzHeading2 = UIFont(name: "Pretendard Variable", size: .fzFontSizeHeading2)!
+    static let fzHeading3 = UIFont(name: "Pretendard Variable", size: .fzFontSizeHeading3)!
     
     // https://stackoverflow.com/questions/34499735/how-to-apply-bold-and-italics-to-an-nsmutableattributedstring-range
     func withTraits(_ traits: UIFontDescriptor.SymbolicTraits) -> UIFont {
@@ -111,13 +111,13 @@ extension UIFont {
 }
 
 extension Font {
-    static let fzMain: Font = .custom("Noto Sans KR", size: .fzFontSizeMain)
+    static let fzMain: Font = .custom("Pretendard Variable", size: .fzFontSizeMain)
     
-    static let fzSmall: Font = .custom("Noto Sans KR", size: .fzFontSizeSmall)
+    static let fzSmall: Font = .custom("Pretendard Variable", size: .fzFontSizeSmall)
     
-    static let fzHeading1: Font = .custom("Noto Sans KR", size: .fzFontSizeHeading1)
-    static let fzHeading2: Font = .custom("Noto Sans KR", size: .fzFontSizeHeading2)
-    static let fzHeading3: Font = .custom("Noto Sans KR", size: .fzFontSizeHeading3)
+    static let fzHeading1: Font = .custom("Pretendard Variable", size: .fzFontSizeHeading1)
+    static let fzHeading2: Font = .custom("Pretendard Variable", size: .fzFontSizeHeading2)
+    static let fzHeading3: Font = .custom("Pretendard Variable", size: .fzFontSizeHeading3)
 
 }
 

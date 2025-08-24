@@ -17,6 +17,7 @@
 	<string>NSLocalNetworkUsageDescription</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>PretendardVariable.ttf</string>
 		<string>NotoSansKR.ttf</string>
 	</array>
 	<key>NSBluetoothPeripheralUsageDescription</key>
@@ -38,36 +39,91 @@
 		<string>location</string>
 		<string>bluetooth-central</string>
 	</array>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSPinnedDomains</key>
-        <dict>
-            <key>flitz.cards</key>
-            <dict>
-                <key>NSIncludesSubdomains</key><true />
-                <key>NSPinnedCAIdentities</key>
-                <array>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>IGnQeIPjbxiR+JteR7AkUXl7pV+19BT4x3o15saZBNE=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>2H5YaruoMrYEZTnmyb78OeVVGuS4BU71YnzrjfH33IY=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>vh78KSg1Ry4NaqGDV10w/cTb9VH3BQUZoCWNa93W/EY=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>vh78KSg1Ry4NaqGDV10w/cTb9VH3BQUZoCWNa93W/EY=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>daBIAnKdRIX3bqM85I6We7wBUh0DPycNFBMvYkXGX2Q=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>daBIAnKdRIX3bqM85I6We7wBUh0DPycNFBMvYkXGX2Q=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>O5TQDB/wa4SkRjBrQL2Aq9CG317H9MDDgpTVcrpJDa4=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>O5TQDB/wa4SkRjBrQL2Aq9CG317H9MDDgpTVcrpJDa4=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>8yZxLgpR8EbO8ANRrWKAzIzz9XdlSUgtYPkXKYUlGSY=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>yDu9og255NN5GEf+Bwa9rTrqFQ0EydZ0r1FCh9TdAW4=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>YPtHaftLw6/0vnc2BnNKGF54xiCA28WFcccjkA4ypCM=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>hZe1OerqJ1Pnq6F4N0gVjjpHqm037Ndf4aLLVpZZdAE=</string></dict>
-                    <dict><key>SPKI-SHA256-BASE64</key><string>/RoweMyX8j8/fAaaeAIwzhWXigZDrh/J2BBJaHrjX90=</string></dict>
-                </array>
-            </dict>
-        </dict>
-    </dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSPinnedDomains</key>
+		<dict>
+			<key>flitz.cards</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSPinnedCAIdentities</key>
+				<array>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>IGnQeIPjbxiR+JteR7AkUXl7pV+19BT4x3o15saZBNE=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>2H5YaruoMrYEZTnmyb78OeVVGuS4BU71YnzrjfH33IY=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>vh78KSg1Ry4NaqGDV10w/cTb9VH3BQUZoCWNa93W/EY=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>vh78KSg1Ry4NaqGDV10w/cTb9VH3BQUZoCWNa93W/EY=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>daBIAnKdRIX3bqM85I6We7wBUh0DPycNFBMvYkXGX2Q=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>daBIAnKdRIX3bqM85I6We7wBUh0DPycNFBMvYkXGX2Q=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>O5TQDB/wa4SkRjBrQL2Aq9CG317H9MDDgpTVcrpJDa4=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>O5TQDB/wa4SkRjBrQL2Aq9CG317H9MDDgpTVcrpJDa4=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>8yZxLgpR8EbO8ANRrWKAzIzz9XdlSUgtYPkXKYUlGSY=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>yDu9og255NN5GEf+Bwa9rTrqFQ0EydZ0r1FCh9TdAW4=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>YPtHaftLw6/0vnc2BnNKGF54xiCA28WFcccjkA4ypCM=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>hZe1OerqJ1Pnq6F4N0gVjjpHqm037Ndf4aLLVpZZdAE=</string>
+					</dict>
+					<dict>
+						<key>SPKI-SHA256-BASE64</key>
+						<string>/RoweMyX8j8/fAaaeAIwzhWXigZDrh/J2BBJaHrjX90=</string>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
