@@ -13,13 +13,15 @@ import SafariServices
 struct CFTurnstileWebView: UIViewRepresentable {
     @Binding
     var html: String
-    
-    var publisher = PassthroughSubject<[String: Any], Never>()
+    var handler: ([String: Any]) -> Void
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
+        
+        /*
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
+         */
         return webView
     }
     
@@ -37,16 +39,16 @@ struct CFTurnstileWebView: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        return Coordinator(publisher: self.publisher)
+        return Coordinator(handler: self.handler)
     }
     
     class Coordinator: NSObject, WKScriptMessageHandler, WKNavigationDelegate, WKUIDelegate {
         var htmlContent: String = ""
         
-        var publisher: PassthroughSubject<[String: Any], Never>
+        var handler: ([String: Any]) -> Void
         
-        init(publisher: PassthroughSubject<[String: Any], Never>) {
-            self.publisher = publisher
+        init(handler: @escaping ([String: Any]) -> Void) {
+            self.handler = handler
         }
         
         func userContentController(_ userContentController: WKUserContentController,
@@ -64,8 +66,7 @@ struct CFTurnstileWebView: UIViewRepresentable {
                     return
                 }
                 
-                publisher.send(body)
-                
+                handler(body)
             }
         }
         
@@ -152,7 +153,7 @@ function _turnstileCb() {
             // sendEvent('error');
         },
         'expired-callback': function() {
-            // sendEvent('expired');
+            sendEvent(JSON.stringify({ type: 'expired' }));
         }
     });
 
@@ -171,14 +172,12 @@ function _turnstileCb() {
     }
     
     var body: some View {
-        let webView = CFTurnstileWebView(html: $html)
         
-        webView
+        CFTurnstileWebView(html: $html) { event in
+            handleEvent(event)
+        }
             .frame(width: widgetSize.width, height: widgetSize.height)
             .background(.red)
-            .onReceive(webView.publisher) { event in
-                handleEvent(event)
-            }
             .onAppear {
                 self.html = generateHTML()
             }
@@ -205,6 +204,8 @@ function _turnstileCb() {
             if let token = event["token"] as? String {
                 tokenHandler(token)
             }
+        case "expired":
+            tokenHandler("")
         default:
             break
         }
