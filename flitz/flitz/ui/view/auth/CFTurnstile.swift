@@ -28,6 +28,7 @@ struct CFTurnstileWebView: UIViewRepresentable {
         if context.coordinator.htmlContent != html {
             webView.stopLoading()
             
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: "eventHandler")
             webView.configuration.userContentController.add(context.coordinator, name: "eventHandler")
 
             webView.loadHTMLString(html, baseURL: URL(string: "https://challenges.app.flitz.cards")!)
