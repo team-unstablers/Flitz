@@ -8,6 +8,7 @@
 import SwiftUI
 import WebKit
 import Combine
+import SafariServices
 
 struct CFTurnstileWebView: UIViewRepresentable {
     @Binding
@@ -17,6 +18,8 @@ struct CFTurnstileWebView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> WKWebView {
         let webView = WKWebView()
+        webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         return webView
     }
     
@@ -36,7 +39,7 @@ struct CFTurnstileWebView: UIViewRepresentable {
         return Coordinator(publisher: self.publisher)
     }
     
-    class Coordinator: NSObject, WKScriptMessageHandler {
+    class Coordinator: NSObject, WKScriptMessageHandler, WKNavigationDelegate, WKUIDelegate {
         var htmlContent: String = ""
         
         var publisher: PassthroughSubject<[String: Any], Never>
@@ -63,6 +66,28 @@ struct CFTurnstileWebView: UIViewRepresentable {
                 publisher.send(body)
                 
             }
+        }
+        
+        // WKNavigationDelegate - 외부 링크 처리
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            if let url = navigationAction.request.url {
+                // Cloudflare 도메인이 아닌 외부 링크는 Safari로 열기
+                if navigationAction.targetFrame == nil || 
+                   (url.scheme == "https" && !url.host!.contains("cloudflare.com") && !url.host!.contains("challenges.app.flitz.cards")) {
+                    UIApplication.shared.open(url)
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
+            decisionHandler(.allow)
+        }
+        
+        // WKUIDelegate - 새 창 처리
+        func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+            if let url = navigationAction.request.url {
+                UIApplication.shared.open(url)
+            }
+            return nil
         }
     }
 }
