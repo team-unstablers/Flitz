@@ -41,6 +41,12 @@ struct SignInScreen: View {
     @State
     private var password = ""
     
+    @State
+    private var turnstileToken = ""
+    
+    @State
+    private var turnstileNonce = UUID()
+    
     var authHandler: AuthHandler
     
     var body: some View {
@@ -63,6 +69,12 @@ struct SignInScreen: View {
                     SecureField("비밀번호를 입력해주세요", text: $password)
                         .autocorrectionDisabled(true)
                         .background(.clear)
+                }
+                .padding(.bottom, 24)
+
+                CFTurnstile(action: "request_token", nonce: turnstileNonce) { token in
+                    print(token)
+                    self.turnstileToken = token
                 }
                 
                 
@@ -134,7 +146,8 @@ struct SignInScreen: View {
         let credentials = FZCredentials(username: self.username,
                                         password: self.password,
                                         device_info: FZAPIClient.userAgent,
-                                        apns_token: AppDelegate.apnsToken)
+                                        apns_token: AppDelegate.apnsToken,
+                                        turnstile_token: self.turnstileToken)
         
         Task {
             do {
@@ -151,6 +164,10 @@ struct SignInScreen: View {
                 }
             } catch {
                 print(error)
+                
+                // reset turnstile
+                self.turnstileToken = ""
+                self.turnstileNonce = UUID()
             }
         }
     }

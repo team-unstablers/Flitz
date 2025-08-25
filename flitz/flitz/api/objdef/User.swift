@@ -13,6 +13,8 @@ struct FZCredentials: Codable {
     
     var device_info: String
     var apns_token: String?
+    
+    var turnstile_token: String
 }
 
 struct FZUserToken: Codable {

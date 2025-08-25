@@ -10,24 +10,26 @@ import WebKit
 import Combine
 
 struct CFTurnstileWebView: UIViewRepresentable {
+    @Binding
     var html: String
-    var webView: WKWebView
     
     var publisher = PassthroughSubject<[String: Any], Never>()
 
-    init(html: String) {
-        self.html = html
-        self.webView = WKWebView()
-    }
-    
     func makeUIView(context: Context) -> WKWebView {
-        webView.loadHTMLString(html, baseURL: URL(string: "https://challenges.app.flitz.cards")!)
-        webView.configuration.userContentController.add(context.coordinator, name: "eventHandler")
+        let webView = WKWebView()
         return webView
     }
     
     
-    func updateUIView(_ uiView: WKWebView, context: Context) {
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        if context.coordinator.htmlContent != html {
+            webView.stopLoading()
+            
+            webView.configuration.userContentController.add(context.coordinator, name: "eventHandler")
+
+            webView.loadHTMLString(html, baseURL: URL(string: "https://challenges.app.flitz.cards")!)
+            context.coordinator.htmlContent = html
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -35,6 +37,8 @@ struct CFTurnstileWebView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, WKScriptMessageHandler {
+        var htmlContent: String = ""
+        
         var publisher: PassthroughSubject<[String: Any], Never>
         
         init(publisher: PassthroughSubject<[String: Any], Never>) {
@@ -67,13 +71,21 @@ struct CFTurnstileWebView: UIViewRepresentable {
 struct CFTurnstile: View {
     static let siteKey = "0x4AAAAAABunYPdYJnFzwHAZ"
     
+    var action: String
+    var nonce: UUID
+    
     var tokenHandler: (String) -> Void
     
     @State
     var widgetSize: CGSize = CGSize(width: 300, height: 70)
     
-    var html: String {
+    
+    @State
+    var html: String = ""
+    
+    func generateHTML() -> String {
 """
+<!-- \(nonce.uuidString) -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -106,6 +118,7 @@ function _turnstileCb() {
         sitekey: '\(Self.siteKey)',
         size: 'normal',
         theme: 'light',
+        action: '\(action)',
         callback: function(token) {
             sendEvent(JSON.stringify({ type: 'success', token }));
         },
@@ -132,13 +145,19 @@ function _turnstileCb() {
     }
     
     var body: some View {
-        let webView = CFTurnstileWebView(html: self.html)
+        let webView = CFTurnstileWebView(html: $html)
         
         webView
             .frame(width: widgetSize.width, height: widgetSize.height)
             .background(.red)
             .onReceive(webView.publisher) { event in
                 handleEvent(event)
+            }
+            .onAppear {
+                self.html = generateHTML()
+            }
+            .onChange(of: nonce) { _, newValue in
+                self.html = generateHTML()
             }
     }
     
@@ -158,7 +177,7 @@ function _turnstileCb() {
             }
         case "success":
             if let token = event["token"] as? String {
-                print("Turnstile success, token: \(token)")
+                tokenHandler(token)
             }
         default:
             break
@@ -169,8 +188,12 @@ function _turnstileCb() {
 
 
 #Preview {
+    @Previewable
+    @State
+    var nonce = UUID()
+    
     VStack {
-        CFTurnstile { token in
+        CFTurnstile(action: "login", nonce: nonce) { token in
             print("token: \(token)")
         }
     }
