@@ -57,7 +57,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         switch type {
         case "wake_up":
             recoverWaveCommunicatorState()
-            WaveLocationReporter.shared.requestLocation()
+            // WaveLocationReporter.shared.requestLocation()
             break
         default:
             break
