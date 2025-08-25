@@ -42,7 +42,9 @@ struct FZButton<Content: View>: View {
             }
             .font(.main)
             .if(size == .large) {
-                $0.frame(maxWidth: .infinity, maxHeight: 60)
+                $0
+                    .frame(minHeight: 60)
+                    .frame(maxWidth: .infinity)
             }
             .if(size == .normal) {
                 $0.padding(.vertical, 8)
