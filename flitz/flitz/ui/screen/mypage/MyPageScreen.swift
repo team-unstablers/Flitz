@@ -173,7 +173,7 @@ struct MyPageScreen: View {
                             .lineSpacing(4)
                             .padding(.bottom, 16)
                         
-                        Text("상호명 **주식회사 팀언스테이블러즈**\n대표 **박규환** ｜ 사업자등록번호 **473-81-02068**\n통신판매업 신고번호 **취득 진행 중**\n주소 **(15495) 경기도 안산시 광덕1로 362 5층 518호**")
+                        Text("상호명 **주식회사 팀언스테이블러즈**\n대표 **박규환** ｜ 사업자등록번호 **473-81-02068**\n통신판매업 신고번호 **2025-경기안산-2861**\n주소 **(15495) 경기도 안산시 광덕1로 362 5층 518호**")
                             .foregroundStyle(Color.Grayscale.gray6)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
