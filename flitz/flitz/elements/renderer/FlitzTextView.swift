@@ -58,7 +58,7 @@ extension Flitz.Renderer {
                                 .background {
                                     GeometryReader { geom in
                                         RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.height4)
+                                            .fill(Color.height2)
                                             .frame(width: geom.size.width + 15.9, height: geom.size.height + 15.9)
                                             .position(x: geom.size.width / 2, y: geom.size.height / 2)
                                     }
@@ -71,7 +71,7 @@ extension Flitz.Renderer {
                             SwiftUI.Text(line == "" ? "  " : line)
                                 .multilineTextAlignment(.center)
                                 .bold()
-                                .foregroundStyle(Color.height8)
+                                .foregroundStyle(Color.height0)
                         }
                     }
                 }

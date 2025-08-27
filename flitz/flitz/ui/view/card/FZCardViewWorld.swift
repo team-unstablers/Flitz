@@ -233,7 +233,7 @@ class FZCardViewWorld {
 
 
 class FZCardViewCardInstance: Identifiable, Hashable {
-    private static let MODEL_USDZ_NAME = "fzcard"
+    private static let MODEL_USDZ_NAME = "fzcard2"
     
     private static var baseModel: SCNReferenceNode? = loadBaseModel()
     
@@ -264,8 +264,8 @@ class FZCardViewCardInstance: Identifiable, Hashable {
     let rootNode = SCNNode()
     var modelNode: SCNReferenceNode!
     
-    private var mainTexture: UIImage? = nil
-    private var normalMap: UIImage? = nil
+    private var mainTexture: CGImage? = nil
+    private var normalMap: CGImage? = nil
     
     var showNormalMap: Bool = false {
         didSet {
@@ -319,14 +319,22 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         }
         
         guard let mainTexture = try? renderer.render(card: card, options: options),
-              let normalMap = try? renderer.render(card: card, options: options.union(.renderNormalMap))
+              let normalMap = try? renderer.render(card: card, options: options.union(.renderNormalMap)),
+              let cgMainTexture = mainTexture.cgImage,
+              let cgNormalMap = normalMap.cgImage
         else {
             print("Failed to render content")
             return
         }
         
-        self.mainTexture = mainTexture
-        self.normalMap = normalMap
+        self.mainTexture = cgMainTexture.convertColorSpace(to: CGColorSpace.sRGB)
+        self.normalMap = cgNormalMap.convertColorSpace(to: CGColorSpace.linearSRGB)
+        
+        // HACK: dump main texture and normal map to files for debugging
+        let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        
+        FileManager.default.createFile(atPath: cacheDirectory.path() + "/mainTexture_\(id).png", contents: UIImage(cgImage: self.mainTexture!).pngData(), attributes: nil)
+        FileManager.default.createFile(atPath: cacheDirectory.path() + "/normalMap_\(id).png", contents: UIImage(cgImage: self.normalMap!).pngData(), attributes: nil)
         
         self.updateMaterial()
    }
@@ -353,14 +361,29 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         let scaleX = Float(mainTexture.size.height) / Float(mainTexture.size.width)
         
+        material.lightingModel = .physicallyBased
+
         material.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material.diffuse.contents = showNormalMap ? normalMap : mainTexture
         material.diffuse.intensity = 1.0
+        material.diffuse.minificationFilter = .linear
+        material.diffuse.magnificationFilter = .linear
+        material.diffuse.mipFilter = .linear
+        material.diffuse.wrapS = .clamp
+        material.diffuse.wrapT = .clamp
+        
+        print(material.diffuse)
         
         material.normal.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
         material.normal.contents = normalMap
+        print(material.normal.intensity)
         
-        material.lightingModel = .physicallyBased
+        material.normal.minificationFilter = .linear
+        material.normal.magnificationFilter = .linear
+        material.normal.mipFilter = .linear
+        material.normal.wrapS = .clamp
+        material.normal.wrapT = .clamp
+
         
         // 반사율 및 금속성 조정
         material.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
@@ -370,8 +393,6 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         material.specular.contents = UIColor.white
         material.specular.intensity = 0.8
         
-        material.diffuse.magnificationFilter = .linear
-        material.normal.magnificationFilter = .linear
         
         //
         material2.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)

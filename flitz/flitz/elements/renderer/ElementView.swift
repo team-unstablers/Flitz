@@ -81,9 +81,14 @@ extension View {
     func applyNormalMapShader() -> some View {
         self.visualEffect { content, proxy in
             content
+                .layerEffect(ShaderLibrary.grayscaleNormalize(.float2(proxy.size), .float(0.0), .float(0.0), .float(1.0)), maxSampleOffset: CGSize(width: 4, height: 4))
                 // .layerEffect(ShaderLibrary.customAA(.float2(proxy.size)), maxSampleOffset: .zero)
-                .layerEffect(ShaderLibrary.genNormalMapEx(.float2(proxy.size), .float(1.0)),
+                .layerEffect(ShaderLibrary.genNormalMapEx(.float2(proxy.size), .float(1.0),),
                              maxSampleOffset: CGSize(width: 4, height: 4))
+                /*
+                .layerEffect(ShaderLibrary.genNormalMapEx2(.float2(proxy.size), .float(1.0),),
+                             maxSampleOffset: CGSize(width: 4, height: 4))
+                 */
         }
     }
 }
