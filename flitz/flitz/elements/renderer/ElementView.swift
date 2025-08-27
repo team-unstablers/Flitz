@@ -57,8 +57,30 @@ extension Flitz.Renderer {
                         }
                         .applyFZTransform(element.transform, delta: delta, editable: true, eventHandler: eventHandler)
                 case .normalMap:
-                    NormalMapRenderer(element: element)
-                        .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
+                    if element.type == .image, let imageElement = element as? Flitz.Image {
+                        // HACK: Temporary fix for normal map shader issue on image elements
+                        ZStack {
+                            Rectangle()
+                                .fill(Color(r8: 192, g8: 192, b8: 255, a: 1.0))
+                                .frame(width: imageElement.size.width, height: imageElement.size.height)
+                                .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
+                                .compositingGroup()
+                                .shadow(color: Color(r8: 0, g8: 192, b8: 255, a: 1.0), radius: 1.0, x: -0.5, y: -0.5)
+                                .shadow(color: Color(r8: 192, g8: 0, b8: 255, a: 1.0), radius: 1.0, x:  0.5, y:  0.5)
+                                .compositingGroup()
+                                .blur(radius: 1.0)
+
+                            NormalMapRenderer(element: element)
+                                .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
+                                .applyNormalMapShader()
+                                .compositingGroup()
+                                .opacity(0.5)
+                                .blur(radius: 0.65)
+                        }
+                    } else {
+                        NormalMapRenderer(element: element)
+                            .applyFZTransform(element.transform, delta: delta, eventHandler: eventHandler)
+                    }
                 }
             }
             .zIndex(Double(element.zIndex))
@@ -81,7 +103,7 @@ extension View {
     func applyNormalMapShader() -> some View {
         self.visualEffect { content, proxy in
             content
-                .layerEffect(ShaderLibrary.grayscaleNormalize(.float2(proxy.size), .float(0.0), .float(0.0), .float(1.0)), maxSampleOffset: CGSize(width: 4, height: 4))
+                // .layerEffect(ShaderLibrary.grayscaleNormalize(.float2(proxy.size), .float(0.0), .float(0.0), .float(1.0)), maxSampleOffset: CGSize(width: 4, height: 4))
                 // .layerEffect(ShaderLibrary.customAA(.float2(proxy.size)), maxSampleOffset: .zero)
                 .layerEffect(ShaderLibrary.genNormalMapEx(.float2(proxy.size), .float(1.0),),
                              maxSampleOffset: CGSize(width: 4, height: 4))

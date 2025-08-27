@@ -59,7 +59,9 @@ struct CardCanvas: View {
                         .resizable()
                         .scaledToFill()
                         .if(asNormalMap) {
-                            $0.opacity(0.45)
+                            $0
+                                .applyNormalMapShader()
+                                .blur(radius: 1)
                         }
                 case .origin(let id, _):
                     if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
@@ -67,7 +69,9 @@ struct CardCanvas: View {
                             .resizable()
                             .scaledToFill()
                             .if(asNormalMap) {
-                                $0.opacity(0.45)
+                                $0
+                                    .applyNormalMapShader()
+                                    .blur(radius: 1)
                             }
                     } else {
                         Rectangle().fill(.white)
@@ -77,6 +81,7 @@ struct CardCanvas: View {
                 Rectangle().fill([.gray, .blue, .red, .yellow, .green, .purple, .pink, .orange, .indigo, .mint].randomElement()!)
             }
         }
+        /*
         .if(asNormalMap) { view in
             view
                 .background(.height6)
@@ -84,6 +89,7 @@ struct CardCanvas: View {
                 .applyNormalMapShader()
                 .blur(radius: 1)
         }
+         */
         .fixedSize()
         .clipped()
     }

@@ -60,12 +60,10 @@ struct VertexOut {
     // alpha
     half alphaCenter = layer.sample(position).a;
     
-    /*
     if (alphaCenter < 0.05) {
         // alpha가 낮으면 노멀 맵을 투명하게 설정
         return half4(0.0, 0.0, 0.0, 0.0);
     }
-     */
     
     // half alpha = layer.sample(position).a;
 
