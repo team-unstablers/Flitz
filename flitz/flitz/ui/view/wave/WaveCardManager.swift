@@ -133,6 +133,10 @@ struct WaveCardPreview: View {
             ZStack(alignment: .bottom) {
                 ZStack(alignment: .bottom) {
                     FZCardView(world: viewModel.world, enableGesture: true)
+                        .onTapGesture(count: 2) {
+                            viewModel.cardInstances.first?.showNormalMap.toggle()
+                            viewModel.cardInstances.first?.updateContent()
+                        }
                         .simultaneousGesture(
                             DragGesture()
                                 .onChanged { _ in
