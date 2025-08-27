@@ -387,7 +387,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         // 반사율 및 금속성 조정
         material.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
-        material.roughness.contents = 0.3  // 약간 매끄러운 표면 (0.0-1.0)
+        material.roughness.contents = 0.2  // 약간 매끄러운 표면 (0.0-1.0)
         
         // 광택 효과 강화
         material.specular.contents = UIColor.white
