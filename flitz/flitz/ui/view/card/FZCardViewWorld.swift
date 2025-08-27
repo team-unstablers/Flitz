@@ -330,11 +330,13 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         self.mainTexture = cgMainTexture.convertColorSpace(to: CGColorSpace.sRGB)
         self.normalMap = cgNormalMap.convertColorSpace(to: CGColorSpace.linearSRGB)
         
+        /*
         // HACK: dump main texture and normal map to files for debugging
         let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
         
         FileManager.default.createFile(atPath: cacheDirectory.path() + "/mainTexture_\(id).png", contents: UIImage(cgImage: self.mainTexture!).pngData(), attributes: nil)
         FileManager.default.createFile(atPath: cacheDirectory.path() + "/normalMap_\(id).png", contents: UIImage(cgImage: self.normalMap!).pngData(), attributes: nil)
+         */
         
         self.updateMaterial()
    }
