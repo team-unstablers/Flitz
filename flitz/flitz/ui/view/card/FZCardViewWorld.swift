@@ -51,7 +51,7 @@ class FZCardViewWorld {
         // 1. 주 광원 (Directional Light) - SceneKit 기본 라이팅의 핵심
         let mainLight = SCNLight()
         mainLight.type = .directional
-        mainLight.intensity = supportsXDR ? 1000 : 800
+        mainLight.intensity = 800 // supportsXDR ? 1000 : 800
         mainLight.temperature = 6500 // 주광색
         mainLight.castsShadow = true
         mainLight.shadowMode = .deferred
@@ -67,7 +67,7 @@ class FZCardViewWorld {
         // 2. 환경광 (Ambient Light) - 전체적인 기본 밝기
         let ambientLight = SCNLight()
         ambientLight.type = .ambient
-        ambientLight.intensity = supportsXDR ? 300 : 200
+        ambientLight.intensity = 200 // supportsXDR ? 300 : 200
         ambientLight.temperature = 6500
         
         ambientLightNode.light = ambientLight
@@ -75,7 +75,7 @@ class FZCardViewWorld {
         // 3. 보조 광원 (Fill Light) - 그림자를 부드럽게
         let fillLight = SCNLight()
         fillLight.type = .omni
-        fillLight.intensity = supportsXDR ? 150 : 100
+        fillLight.intensity = 100 // supportsXDR ? 150 : 100
         fillLight.temperature = 5500 // 약간 따뜻한 색
         
         fillLightNode.light = fillLight
@@ -94,7 +94,7 @@ class FZCardViewWorld {
         mainCamera.position = SCNVector3(x: 0, y: 0, z: 15)
         mainCamera.camera?.focalLength = 35
         //mainCamera.camera?
-        mainCamera.camera?.wantsHDR = supportsXDR
+        mainCamera.camera?.wantsHDR = false // supportsXDR
         // mainCamera.camera?.wantsExposureAdaptation = supportsXDR
         
         scene.rootNode.addChildNode(mainCamera)
