@@ -106,7 +106,7 @@ struct MyPageScreen: View {
                         FZPageSectionActionItem("Prelude 버전에 대해 알아보기") {
                             openURL(URL(string: "http://docs.flitz.cards/help/prelude/")!)
                         }
-                        FZPageSectionActionItem("Prelude 버전에 대한 피드백 보내기") {
+                        FZPageSectionActionItem("피드백 보내기") {
                             openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLScDLdnQWOqNZKFSH7YmU5YMAhXD_vkYdfxR_rMUZkt78a_hPw/viewform?usp=dialog")!)
                         }
                         FZPageSectionActionItem("개인정보 보호정책") {

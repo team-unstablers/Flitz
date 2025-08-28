@@ -46,7 +46,7 @@ class FZAPIClient {
     }()
     
     var context: FZAPIContext
-    let interceptor = FZTokenRefreshInterceptor()
+    var interceptor: FZTokenRefreshInterceptor!
     
     /// KILL SWITCH - true로 설정되면 모든 네트워크 요청을 차단합니다.
     /// MITM 공격이 감지되었을 때 활성화 하십시오.
@@ -54,7 +54,7 @@ class FZAPIClient {
 
     init(context: FZAPIContext) {
         self.context = context
-        self.interceptor.client = self
+        self.interceptor = FZTokenRefreshInterceptor(self)
     }
     
     private func handleRequestError(_ error: AFError?) throws {
@@ -87,10 +87,6 @@ class FZAPIClient {
         parameters: Parameters = Dictionary<String, String>(),
         requiresAuth: Bool = true
     ) async throws -> Response where Response: Decodable & Sendable {
-        let headers: HTTPHeaders? = (requiresAuth) ? [
-            "Authorization": "Bearer \(context.token ?? "")"
-        ] : nil
-        
         if killSwitch {
             logger.fatal("KILL SWITCH ACTIVATED - Blocking all network requests")
             throw FZAPIError.killSwitchActivated
@@ -100,7 +96,7 @@ class FZAPIClient {
                                        method: method,
                                        parameters: parameters,
                                        encoder: method == .get ? URLEncodedFormParameterEncoder.default : JSONParameterEncoder.default,
-                                       headers: headers,
+                                       headers: nil,
                                        interceptor: (requiresAuth) ? interceptor : nil)
             .validate()
         
