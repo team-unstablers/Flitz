@@ -51,7 +51,7 @@ class FZCardViewWorld {
         // 1. 주 광원 (Directional Light) - SceneKit 기본 라이팅의 핵심
         let mainLight = SCNLight()
         mainLight.type = .directional
-        mainLight.intensity = supportsXDR ? 1000 : 800
+        mainLight.intensity = 800 // supportsXDR ? 1000 : 800
         mainLight.temperature = 6500 // 주광색
         mainLight.castsShadow = true
         mainLight.shadowMode = .deferred
@@ -67,7 +67,7 @@ class FZCardViewWorld {
         // 2. 환경광 (Ambient Light) - 전체적인 기본 밝기
         let ambientLight = SCNLight()
         ambientLight.type = .ambient
-        ambientLight.intensity = supportsXDR ? 300 : 200
+        ambientLight.intensity = 200 // supportsXDR ? 300 : 200
         ambientLight.temperature = 6500
         
         ambientLightNode.light = ambientLight
@@ -75,7 +75,7 @@ class FZCardViewWorld {
         // 3. 보조 광원 (Fill Light) - 그림자를 부드럽게
         let fillLight = SCNLight()
         fillLight.type = .omni
-        fillLight.intensity = supportsXDR ? 150 : 100
+        fillLight.intensity = 100 // supportsXDR ? 150 : 100
         fillLight.temperature = 5500 // 약간 따뜻한 색
         
         fillLightNode.light = fillLight
@@ -94,8 +94,8 @@ class FZCardViewWorld {
         mainCamera.position = SCNVector3(x: 0, y: 0, z: 15)
         mainCamera.camera?.focalLength = 35
         //mainCamera.camera?
-        mainCamera.camera?.wantsHDR = supportsXDR
-        mainCamera.camera?.wantsExposureAdaptation = supportsXDR
+        mainCamera.camera?.wantsHDR = false // supportsXDR
+        // mainCamera.camera?.wantsExposureAdaptation = supportsXDR
         
         scene.rootNode.addChildNode(mainCamera)
     }
@@ -233,7 +233,7 @@ class FZCardViewWorld {
 
 
 class FZCardViewCardInstance: Identifiable, Hashable {
-    private static let MODEL_USDZ_NAME = "fzcard"
+    private static let MODEL_USDZ_NAME = "fzcard3"
     
     private static var baseModel: SCNReferenceNode? = loadBaseModel()
     
@@ -264,8 +264,8 @@ class FZCardViewCardInstance: Identifiable, Hashable {
     let rootNode = SCNNode()
     var modelNode: SCNReferenceNode!
     
-    private var mainTexture: UIImage? = nil
-    private var normalMap: UIImage? = nil
+    private var mainTexture: CGImage? = nil
+    private var normalMap: CGImage? = nil
     
     var showNormalMap: Bool = false {
         didSet {
@@ -319,14 +319,24 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         }
         
         guard let mainTexture = try? renderer.render(card: card, options: options),
-              let normalMap = try? renderer.render(card: card, options: options.union(.renderNormalMap))
+              let normalMap = try? renderer.render(card: card, options: options.union(.renderNormalMap)),
+              let cgMainTexture = mainTexture.cgImage,
+              let cgNormalMap = normalMap.cgImage
         else {
             print("Failed to render content")
             return
         }
         
-        self.mainTexture = mainTexture
-        self.normalMap = normalMap
+        self.mainTexture = cgMainTexture.convertColorSpace(to: CGColorSpace.sRGB)
+        self.normalMap = cgNormalMap.convertColorSpace(to: CGColorSpace.linearSRGB)
+        
+        /*
+        // HACK: dump main texture and normal map to files for debugging
+        let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        
+        FileManager.default.createFile(atPath: cacheDirectory.path() + "/mainTexture_\(id).png", contents: UIImage(cgImage: self.mainTexture!).pngData(), attributes: nil)
+        FileManager.default.createFile(atPath: cacheDirectory.path() + "/normalMap_\(id).png", contents: UIImage(cgImage: self.normalMap!).pngData(), attributes: nil)
+         */
         
         self.updateMaterial()
    }
@@ -353,44 +363,71 @@ class FZCardViewCardInstance: Identifiable, Hashable {
         
         let scaleX = Float(mainTexture.size.height) / Float(mainTexture.size.width)
         
-        material.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
+        material.lightingModel = .physicallyBased
+
+        material.diffuse.contentsTransform = SCNMatrix4MakeScale(1, 1, 1)
         material.diffuse.contents = showNormalMap ? normalMap : mainTexture
         material.diffuse.intensity = 1.0
+        material.diffuse.minificationFilter = .linear
+        material.diffuse.magnificationFilter = .linear
+        material.diffuse.mipFilter = .linear
+        material.diffuse.wrapS = .clamp
+        material.diffuse.wrapT = .clamp
         
-        material.normal.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
+        print(material.diffuse)
+        
+        material.normal.contentsTransform = SCNMatrix4MakeScale(1, 1, 1)
         material.normal.contents = normalMap
+        print(material.normal.intensity)
         
-        material.lightingModel = .physicallyBased
+        material.normal.minificationFilter = .linear
+        material.normal.magnificationFilter = .linear
+        material.normal.mipFilter = .linear
+        material.normal.wrapS = .clamp
+        material.normal.wrapT = .clamp
         
         // 반사율 및 금속성 조정
         material.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
-        material.roughness.contents = 0.3  // 약간 매끄러운 표면 (0.0-1.0)
+        material.roughness.contents = 0.2  // 약간 매끄러운 표면 (0.0-1.0)
         
         // 광택 효과 강화
         material.specular.contents = UIColor.white
         material.specular.intensity = 0.8
         
-        material.diffuse.magnificationFilter = .linear
-        material.normal.magnificationFilter = .linear
-        
-        //
-        material2.diffuse.contentsTransform = SCNMatrix4MakeScale(scaleX, 1, 1)
-        material2.diffuse.contents = UIColor.white
-        material2.diffuse.intensity = 1.0
-        
+        if let backTexture = UIImage(named: "fzcard-default-back"),
+           let backNormal = UIImage(named: "fzcard-default-back-normal") {
+            material2.diffuse.contents = backTexture
+            material2.normal.contents = backNormal
+        }
+
         material2.lightingModel = .physicallyBased
+
+        material2.diffuse.contentsTransform = SCNMatrix4MakeScale(1, 1, 1)
+        // material2.diffuse.contents = showNormalMap ? normalMap : mainTexture
+        material2.diffuse.intensity = 1.0
+        material2.diffuse.minificationFilter = .linear
+        material2.diffuse.magnificationFilter = .linear
+        material2.diffuse.mipFilter = .linear
+        material2.diffuse.wrapS = .clamp
+        material2.diffuse.wrapT = .clamp
+        
+        
+        material2.normal.contentsTransform = SCNMatrix4MakeScale(1, 1, 1)
+        // material2.normal.contents = normalMap
+        
+        material2.normal.minificationFilter = .linear
+        material2.normal.magnificationFilter = .linear
+        material2.normal.mipFilter = .linear
+        material2.normal.wrapS = .clamp
+        material2.normal.wrapT = .clamp
         
         // 반사율 및 금속성 조정
         material2.metalness.contents = 0.2  // 약간의 금속성 (0.0-1.0)
-        material2.roughness.contents = 0.3  // 약간 매끄러운 표면 (0.0-1.0)
+        material2.roughness.contents = 0.2  // 약간 매끄러운 표면 (0.0-1.0)
         
         // 광택 효과 강화
         material2.specular.contents = UIColor.white
         material2.specular.intensity = 0.8
-        
-        material2.diffuse.magnificationFilter = .linear
-        material2.normal.magnificationFilter = .linear
-        
         
         SCNTransaction.commit()
     }

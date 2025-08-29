@@ -103,10 +103,10 @@ struct MyPageScreen: View {
                     
                     VStack(spacing: 0) {
                         FZPageSectionTitle(title: "고객 지원 및 도움말")
-                        FZPageSectionActionItem("베타 테스트(Prelude 버전)에 대해 알아보기") {
+                        FZPageSectionActionItem("Prelude 버전에 대해 알아보기") {
                             openURL(URL(string: "http://docs.flitz.cards/help/prelude/")!)
                         }
-                        FZPageSectionActionItem("베타 테스트에 대한 피드백 보내기") {
+                        FZPageSectionActionItem("피드백 보내기") {
                             openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLScDLdnQWOqNZKFSH7YmU5YMAhXD_vkYdfxR_rMUZkt78a_hPw/viewform?usp=dialog")!)
                         }
                         FZPageSectionActionItem("개인정보 보호정책") {
@@ -173,11 +173,13 @@ struct MyPageScreen: View {
                             .lineSpacing(4)
                             .padding(.bottom, 16)
                         
-                        Text("상호명 **주식회사 팀언스테이블러즈**\n대표 **박규환** ｜ 사업자등록번호 **473-81-02068**\n통신판매업 신고번호 **취득 진행 중**\n주소 **(15495) 경기도 안산시 광덕1로 362 5층 518호**")
+                        /*
+                        Text("상호명 **주식회사 팀언스테이블러즈**  사업자등록번호 **473-81-02068**\n통신판매업 신고번호 **2025-경기안산-2861**\n주소 **(15495) 경기도 안산시 광덕1로 362 5층 518호**")
                             .foregroundStyle(Color.Grayscale.gray6)
                             .font(.caption2)
                             .multilineTextAlignment(.center)
                             .lineSpacing(4)
+                         */
                     }
                     .padding(.vertical, 40)
                     

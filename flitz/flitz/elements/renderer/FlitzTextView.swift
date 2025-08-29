@@ -58,8 +58,12 @@ extension Flitz.Renderer {
                                 .background {
                                     GeometryReader { geom in
                                         RoundedRectangle(cornerRadius: 8)
-                                            .fill(Color.height4)
-                                            .frame(width: geom.size.width + 15.9, height: geom.size.height + 15.9)
+                                            .fill(Color.init(r8: 192, g8: 192, b8: 255, a: 1.0))
+                                            .frame(width: geom.size.width + 15.5, height: geom.size.height + 15.5)
+                                            .shadow(color: Color(r8: 0, g8: 192, b8: 255, a: 1.0), radius: 0.75, x: -0.5, y: -0.5)
+                                            .shadow(color: Color(r8: 192, g8: 0, b8: 255, a: 1.0), radius: 0.75, x:  0.5, y:  0.5)
+                                            .compositingGroup()
+                                            .blur(radius: 1.0)
                                             .position(x: geom.size.width / 2, y: geom.size.height / 2)
                                     }
                                 }
@@ -71,7 +75,11 @@ extension Flitz.Renderer {
                             SwiftUI.Text(line == "" ? "  " : line)
                                 .multilineTextAlignment(.center)
                                 .bold()
-                                .foregroundStyle(Color.height8)
+                                .foregroundStyle(Color(r8: 224, g8: 224, b8: 255, a: 1.0))
+                                .shadow(color: Color(r8: 0, g8: 224, b8: 255, a: 1.0), radius: 0.75, x: -0.25, y: -0.25)
+                                .shadow(color: Color(r8: 224, g8: 0, b8: 255, a: 1.0), radius: 0.75, x:  0.25, y:  0.25)
+                                .compositingGroup()
+                                .blur(radius: 0.5)
                         }
                     }
                 }

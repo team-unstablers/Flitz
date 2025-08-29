@@ -11,8 +11,8 @@ NSLocalNetworkUsageDescription = "Flitz 앱 개발을 위하여 로컬 네트워
 NSBluetoothPeripheralUsageDescription = "다른 사용자들과 포토 카드를 교환하기 위해서는 Bluetooth 권한이 필요합니다.";
 NSBluetoothAlwaysUsageDescription = "다른 사용자들과 포토 카드를 교환하기 위해서는 Bluetooth 권한이 필요합니다.";
 
-NSLocationAlwaysUsageDescription = "다른 사용자들과 포토 카드를 교환하기 위해서는 위치 정보 권한이 필요합니다.\n'항상 허용'을 선택해 주세요.";
+NSLocationAlwaysUsageDescription = "다른 사용자들과 안전하게 포토 카드를 교환할 수 있도록 위치 정보 권한이 필요합니다.\n'항상 허용'을 선택해 주세요.";
 NSLocationWhenInUseUsageDescription = "다른 사용자들과 포토 카드를 교환하기 위해서는 위치 정보 권한이 필요합니다.";
-NSLocationAlwaysAndWhenInUseUsageDescription = "다른 사용자들과 포토 카드를 교환하기 위해서는 위치 정보 권한이 필요합니다.\n'항상 허용'을 선택해 주세요.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "다른 사용자들과 안전하게 포토 카드를 교환할 수 있도록 위치 정보 권한이 필요합니다.\n'항상 허용'을 선택해 주세요.";
 
 NSContactsUsageDescription = "Flitz에서 연락처 미리 차단 기능을 사용하기 위해 휴대폰 연락처에 액세스하려 합니다.";

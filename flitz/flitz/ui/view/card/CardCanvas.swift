@@ -39,7 +39,6 @@ struct CardCanvas: View {
                         }
                     }
                 }
-                .applyNormalMapShader()
             } else {
                 GeometryReader { innerGeom in
                     ForEach(0..<elements.count, id: \.self) { index in
@@ -59,18 +58,20 @@ struct CardCanvas: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .if(asNormalMap) { view in
-                            view.applyNormalMapShader()
-                                .blur(radius: 1.0)
+                        .if(asNormalMap) {
+                            $0
+                                .applyNormalMapShader()
+                                .blur(radius: 1)
                         }
                 case .origin(let id, _):
                     if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
-                            .if(asNormalMap) { view in
-                                view.applyNormalMapShader()
-                                    .blur(radius: 1.0)
+                            .if(asNormalMap) {
+                                $0
+                                    .applyNormalMapShader()
+                                    .blur(radius: 1)
                             }
                     } else {
                         Rectangle().fill(.white)
@@ -80,6 +81,15 @@ struct CardCanvas: View {
                 Rectangle().fill([.gray, .blue, .red, .yellow, .green, .purple, .pink, .orange, .indigo, .mint].randomElement()!)
             }
         }
+        /*
+        .if(asNormalMap) { view in
+            view
+                .background(.height6)
+                .compositingGroup()
+                .applyNormalMapShader()
+                .blur(radius: 1)
+        }
+         */
         .fixedSize()
         .clipped()
     }

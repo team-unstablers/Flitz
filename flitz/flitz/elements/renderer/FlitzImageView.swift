@@ -55,8 +55,8 @@ extension Flitz.Renderer {
                     SwiftUI.Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .compositingGroup()
                         .frame(width: element.size.width, height: element.size.height)
-                        .blur(radius: 1.5)
                 case .origin(let id, _):
                     if let image = assetsLoader.image(for: "fzcard:image:\(id)") {
                         SwiftUI.Image(uiImage: image)
