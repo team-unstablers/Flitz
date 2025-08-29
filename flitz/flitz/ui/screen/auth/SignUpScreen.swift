@@ -20,7 +20,18 @@ enum SignUpPhase {
 
 @MainActor
 class SignUpViewModel: ObservableObject {
+    let client = FZAPIClient(context: .load())
+    
     var authPhaseState: AuthPhaseState? = nil
+    
+    @Published
+    var busy: Bool = false
+    
+    @Published
+    var shouldPresentError: Bool = false
+    
+    @Published
+    var errorMessage: String = ""
     
     @Published
     var phase: [SignUpPhase] = []
@@ -62,6 +73,41 @@ class SignUpViewModel: ObservableObject {
         self.authPhaseState = authPhaseState
     }
     
+    func startSession() async {
+        if busy {
+            return
+        }
+        
+        busy = true
+        defer { busy = false }
+        
+        let args = StartRegistrationSessionArgs(
+            country_code: countryCode.rawValue,
+            agree_marketing_notifications: agreeToMarketingNotifications,
+            device_info: FZAPIClient.userAgent,
+            apns_token: AppDelegate.apnsToken,
+            turnstile_token: turnstileToken
+        )
+        
+        do {
+            let session = try await client.startRegistration(args)
+            client.context.token = session.token
+            client.context.valid()
+            
+            if countryCode == .KR {
+                phase.append(.krPhoneNumberVerification)
+            } else {
+                phase.append(.phoneNumberVerification)
+            }
+        } catch {
+            // sentry
+            
+            self.errorMessage = error.localizedDescription
+            self.shouldPresentError = true
+        }
+        
+    }
+    
     func performSignUp() async {
         let registrationArgs = UserRegistrationArgs(
             username: username,
@@ -77,7 +123,7 @@ class SignUpViewModel: ObservableObject {
         
         do {
             let apiClient = FZAPIClient(context: context)
-            try await apiClient.signup(with: registrationArgs)
+            try await apiClient.completeRegistration(with: registrationArgs)
             
             print("Sign up successful!")
             
@@ -214,16 +260,19 @@ struct SignUpPhases {
                 Spacer()
                 
                 FZButton(size: .large) {
-                    if viewModel.countryCode == .KR {
-                        viewModel.phase.append(.krPhoneNumberVerification)
-                    } else {
-                        viewModel.phase.append(.phoneNumberVerification)
+                    Task {
+                        await viewModel.startSession()
                     }
                 } label: {
-                    Text("다음")
-                        .font(.fzMain)
-                        .semibold()
+                    if viewModel.busy {
+                        ProgressView()
+                    } else {
+                        Text("다음")
+                            .font(.fzMain)
+                            .semibold()
+                    }
                 }
+                .disabled(viewModel.busy)
             }
             .safeAreaPadding(.horizontal)
             .navigationTitle("약관 동의")
@@ -529,6 +578,7 @@ struct SignUpScreen: View {
                         EmptyView()
                     case .krPhoneNumberVerification:
                         SignUpPhases.KRPhoneNumberVerificationScreen()
+                            .navigationBarBackButtonHidden()
                     case .identity:
                         SignUpPhases.UserIdentityScreen()
                             .navigationBarBackButtonHidden()
@@ -546,6 +596,11 @@ struct SignUpScreen: View {
         }
         .environmentObject(viewModel)
         .toolbarVisibility(.hidden, for: .navigationBar)
+        .alert(isPresented: $viewModel.shouldPresentError) {
+            Alert(title: Text("오류"),
+                  message: Text(viewModel.errorMessage),
+                  dismissButton: .default(Text("확인")))
+        }
     }
 }
 

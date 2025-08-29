@@ -7,17 +7,6 @@
 
 import Foundation
 
-struct UserRegistrationArgs: Codable {
-    var username: String
-    var password: String
-    
-    var display_name: String
-    
-    var title: String
-    var bio: String
-    var hashtags: [String]
-}
-
 struct RefreshTokenArgs: Codable {
     var refresh_token: String
 }

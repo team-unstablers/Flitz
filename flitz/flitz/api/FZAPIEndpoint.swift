@@ -16,9 +16,15 @@ struct FZAPIEndpoint: RawRepresentable {
     
     static let token = FZAPIEndpoint(rawValue: "/auth/token")
     static let refreshToken = FZAPIEndpoint(rawValue: "/auth/token/refresh")
+    
+    // MARK: registration
+    static let startRegistration = FZAPIEndpoint(rawValue: "/users/register/start/")
+    static let completeRegistration = FZAPIEndpoint(rawValue: "/users/register/complete/")
+    
+    static let registrationStartPhoneVerification = FZAPIEndpoint(rawValue: "/users/register/phone-verification/start/")
+    static let registrationCompletePhoneVerification = FZAPIEndpoint(rawValue: "/users/register/phone-verification/complete/")
 
-    // user start
-    static let register = FZAPIEndpoint(rawValue: "/users/register/")
+    // MARK: user
     static let apnsToken = FZAPIEndpoint(rawValue: "/users/self/apns-token/")
     
     static func user(id: String) -> FZAPIEndpoint {
@@ -40,9 +46,8 @@ struct FZAPIEndpoint: RawRepresentable {
     static let selfIdentity = FZAPIEndpoint(rawValue: "/users/self/identity/")
     static let selfWaveSafetyZone = FZAPIEndpoint(rawValue: "/users/self/wave-safety-zone/")
     static let selfDeactivate = FZAPIEndpoint(rawValue: "/users/self/deactivate/")
-    // user end
     
-    // card start
+    // MARK: card
     static let cards = FZAPIEndpoint(rawValue: "/cards/")
     static let cardsDistribution = FZAPIEndpoint(rawValue: "/cards/distribution/")
     static let cardFavorites = FZAPIEndpoint(rawValue: "/cards/favorites/")
@@ -74,17 +79,15 @@ struct FZAPIEndpoint: RawRepresentable {
     static func cardFavorite(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/cards/favorites/\(id)/")
     }
-    // card end
     
-    
-    // wave start
+    // MARK: wave
     static let waveDiscoveryStart = FZAPIEndpoint(rawValue: "/wave/discovery/start/")
     static let waveDiscoveryEnd = FZAPIEndpoint(rawValue: "/wave/discovery/stop/")
     static let waveReportDiscovery = FZAPIEndpoint(rawValue: "/wave/discovery/report/")
     static let waveUpdateLocation = FZAPIEndpoint(rawValue: "/wave/discovery/update/")
-    // wave end
     
-    // messaging start
+    
+    // MARK: messaging
     static let conversations = FZAPIEndpoint(rawValue: "/conversations/")
     static let conversationsTotalUnreadCount = FZAPIEndpoint(rawValue: "/conversations/total_unread_count/")
 
@@ -116,9 +119,8 @@ struct FZAPIEndpoint: RawRepresentable {
         return FZAPIEndpoint(rawValue: "/conversations/\(conversationId)/attachments/\(attachmentId)/")
     }
     
-    // messaging end
     
-    // safety start
+    // MARK: safety
     static let blocks = FZAPIEndpoint(rawValue: "/blocks/")
     
     static let contactTriggers = FZAPIEndpoint(rawValue: "/contact-triggers/")
@@ -130,15 +132,14 @@ struct FZAPIEndpoint: RawRepresentable {
     static let contactTriggersEnabled = FZAPIEndpoint(rawValue: "/contact-triggers/enabled/")
     static let contactTriggersBulkCreate = FZAPIEndpoint(rawValue: "/contact-triggers/bulk-create/")
     static let contactTriggersAll = FZAPIEndpoint(rawValue: "/contact-triggers/all/")
-    // safety end
     
-    // notice start
+    // MARK: notice
     static let notices = FZAPIEndpoint(rawValue: "/notices/")
     static func notice(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/notices/\(id)/")
     }
-    // notice end
 
+    // MARK: utility functions
     func urlString(for server: String) -> String {
         return "\(server)\(self.rawValue)"
     }

@@ -136,7 +136,7 @@ struct FZSecAPIContext: Codable {
             
             guard let id = dict["sub"] as? String,
                   let flitzOptions = dict["x-flitz-options"] as? String,
-                  flitzOptions == "--with-love"
+                  flitzOptions.contains("--with-love")
             else {
                 return false
             }
