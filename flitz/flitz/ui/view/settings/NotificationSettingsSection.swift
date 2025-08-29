@@ -96,24 +96,24 @@ struct NotificationSettingsSection: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            FZPageSectionTitle(title: "알림 설정")
+            FZPageSectionTitle(title: "ui.settings.notification.title")
             if viewModel.busyInitial {
                 ProgressView()
                     .padding(.vertical, 8)
             } else {
-                FZPageSectionItem("채팅 알림 받기") {
+                FZPageSectionItem("ui.settings.notification.enable_messaging_notifications") {
                     Toggle("", isOn: $viewModel.intermediate.messagingNotificationsEnabled)
                         .disabled(viewModel.busy)
                 }
-                FZPageSectionItem("매칭 알림 받기") {
+                FZPageSectionItem("ui.settings.notification.enable_match_notifications") {
                     Toggle("", isOn: $viewModel.intermediate.matchNotificationsEnabled)
                         .disabled(viewModel.busy)
                 }
-                FZPageSectionItem("중요한 공지사항 알림 받기") {
+                FZPageSectionItem("ui.settings.notification.enable_notice_notifications") {
                     Toggle("", isOn: $viewModel.intermediate.noticeNotificationsEnabled)
                         .disabled(viewModel.busy)
                 }
-                FZPageSectionItem("마케팅 알림 받기") {
+                FZPageSectionItem("ui.settings.notification.enable_marketing_notifications") {
                     Toggle("", isOn: $viewModel.intermediate.marketingNotificationsEnabled)
                         .disabled(viewModel.busy)
                 }

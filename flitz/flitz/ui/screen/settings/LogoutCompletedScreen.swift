@@ -62,7 +62,7 @@ struct LogoutCompletedScreen: View {
                 FZButton(size: .large) {
                     Flitz.exitGracefully()
                 } label: {
-                    Text("Flitz 종료하기")
+                    Text(LocalizedStringKey("ui.general.quit_app"))
                         .font(.fzHeading3)
                         .semibold()
                 }

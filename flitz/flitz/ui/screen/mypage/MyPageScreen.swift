@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyPageHeaderButton: View {
     var iconName: String
-    var title: String
+    var title: LocalizedStringKey
     
     var action: () -> Void
     
@@ -61,7 +61,7 @@ struct MyPageScreen: View {
                         }
                         
                         HStack {
-                            MyPageHeaderButton(iconName: "NoticeIcon", title: "공지사항") {
+                            MyPageHeaderButton(iconName: "NoticeIcon", title: "ui.mypage.notice") {
                                 appState.navState.append(.noticeList)
                             }
                             
@@ -71,7 +71,7 @@ struct MyPageScreen: View {
                                 .frame(maxWidth: 1, maxHeight: .infinity)
                                 .padding(.vertical, 8)
                             
-                            MyPageHeaderButton(iconName: "SettingsIcon", title: "앱 설정") {
+                            MyPageHeaderButton(iconName: "SettingsIcon", title: "ui.mypage.settings") {
                                 appState.navState.append(.settings)
                             }
                         }
@@ -89,11 +89,11 @@ struct MyPageScreen: View {
                     FZPageSectionLargeDivider()
                     
                     VStack(spacing: 0) {
-                        FZPageSectionTitle(title: "개인 정보 보호")
-                        FZPageSectionActionItem("사용자 보호 기능") {
+                        FZPageSectionTitle(title: "ui.mypage.privacy.title")
+                        FZPageSectionActionItem("ui.mypage.privacy.safety") {
                             appState.navState.append(.protectionSettings)
                         }
-                        FZPageSectionActionItem("차단된 사용자") {
+                        FZPageSectionActionItem("ui.mypage.privacy.blocked_users") {
                             appState.navState.append(.blockedUsers)
                         }
                     }
@@ -102,23 +102,23 @@ struct MyPageScreen: View {
                     FZPageSectionDivider()
                     
                     VStack(spacing: 0) {
-                        FZPageSectionTitle(title: "고객 지원 및 도움말")
-                        FZPageSectionActionItem("Prelude 버전에 대해 알아보기") {
+                        FZPageSectionTitle(title: "ui.mypage.support.title")
+                        FZPageSectionActionItem("ui.mypage.support.about_prelude") {
                             openURL(URL(string: "http://docs.flitz.cards/help/prelude/")!)
                         }
-                        FZPageSectionActionItem("피드백 보내기") {
+                        FZPageSectionActionItem("ui.mypage.support.send_feedback") {
                             openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLScDLdnQWOqNZKFSH7YmU5YMAhXD_vkYdfxR_rMUZkt78a_hPw/viewform?usp=dialog")!)
                         }
-                        FZPageSectionActionItem("개인정보 보호정책") {
+                        FZPageSectionActionItem("ui.mypage.support.privacy_policy") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/privacy-policy.html")!)
                         }
-                        FZPageSectionActionItem("위치기반서비스 이용약관") {
+                        FZPageSectionActionItem("ui.mypage.support.tos_location") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/tos-location.html")!)
                         }
-                        FZPageSectionActionItem("서비스 약관") {
+                        FZPageSectionActionItem("ui.mypage.support.tos") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/tos.html")!)
                         }
-                        FZPageSectionActionItem("오픈 소스 라이선스") {
+                        FZPageSectionActionItem("ui.mypage.support.oss_licenses") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/oss.html")!)
                         }
                     }
@@ -127,7 +127,7 @@ struct MyPageScreen: View {
                     FZPageSectionDivider()
                     
                     VStack(spacing: 0) {
-                        FZPageSectionTitle(title: "안전을 위한 리소스")
+                        FZPageSectionTitle(title: "ui.mypage.safety_resources.title")
                         ForEach(SafetyResources.Korean.allCases, id: \.self) { resource in
                             FZPageSectionActionItemWithSubtitle(resource.name, subtitle: resource.description) {
                                 if let importantNote = resource.importantNote {

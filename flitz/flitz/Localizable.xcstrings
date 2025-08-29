@@ -19,9 +19,6 @@
     "**경고**: 특별한 사유가 있지 않은 이상 이 클라이언트로 프로덕션 서버에 접속하는 행위는 삼가하십시오." : {
 
     },
-    "**아웃팅**은 심각한 **범죄 행위**입니다. 다른 사람들의 프라이버시를 존중해 주세요." : {
-
-    },
     "%lld" : {
 
     },
@@ -54,9 +51,6 @@
         }
       }
     },
-    "Flitz 종료하기" : {
-
-    },
     "Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요." : {
       "comment" : "NoCardsAvailableReason::description"
     },
@@ -64,12 +58,6 @@
 
     },
     "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요." : {
-
-    },
-    "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다." : {
-
-    },
-    "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다." : {
 
     },
     "fzapi.user.fuzzy_distance.far" : {
@@ -242,6 +230,313 @@
     "TODO: date selector" : {
 
     },
+    "ui.about_app_footer.oss_license_info" : {
+      "comment" : "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다."
+          }
+        }
+      }
+    },
+    "ui.about_app_footer.oss_notice" : {
+      "comment" : "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz의 일부 컴포넌트는 자유 소프트웨어의 도움을 받아 개발되었습니다."
+          }
+        }
+      }
+    },
+    "ui.about_app_footer.outing_warning" : {
+      "comment" : "**아웃팅**은 심각한 **범죄 행위**입니다. 다른 사람들의 프라이버시를 존중해 주세요.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**아웃팅**은 심각한 **범죄 행위**입니다. 다른 사람들의 프라이버시를 존중해 주세요."
+          }
+        }
+      }
+    },
+    "ui.about_app_footer.reverse_engineering_warning" : {
+      "comment" : "리버스 엔지니어링, 패킷 덤프 등을 통하여 이 소프트웨어 및 통신 내용을 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리버스 엔지니어링, 패킷 덤프 등을 통하여 이 소프트웨어 및 통신 내용을 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다."
+          }
+        }
+      }
+    },
+    "ui.about_app_footer.warning_title" : {
+      "comment" : "알림",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림"
+          }
+        }
+      }
+    },
+    "ui.general.quit_app" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz 종료하기"
+          }
+        }
+      }
+    },
+    "ui.mypage.notice" : {
+      "comment" : "공지사항",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공지사항"
+          }
+        }
+      }
+    },
+    "ui.mypage.privacy.blocked_users" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "차단된 사용자"
+          }
+        }
+      }
+    },
+    "ui.mypage.privacy.safety" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자 보호 기능"
+          }
+        }
+      }
+    },
+    "ui.mypage.privacy.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인 정보 보호"
+          }
+        }
+      }
+    },
+    "ui.mypage.safety_resources.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전을 위한 리소스"
+          }
+        }
+      }
+    },
+    "ui.mypage.settings" : {
+      "comment" : "앱 설정",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 설정"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.about_prelude" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prelude 버전에 대해 알아보기"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.oss_licenses" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오픈 소스 라이선스"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.privacy_policy" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보 보호정책"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.send_feedback" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "피드백 보내기"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고객 지원 및 도움말"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.tos" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서비스 이용약관"
+          }
+        }
+      }
+    },
+    "ui.mypage.support.tos_location" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위치기반서비스 이용약관"
+          }
+        }
+      }
+    },
+    "ui.settings.account.change_password" : {
+      "comment" : "비밀번호 변경",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호 변경"
+          }
+        }
+      }
+    },
+    "ui.settings.account.deactivate_account" : {
+      "comment" : "계정 비활성화",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 비활성화"
+          }
+        }
+      }
+    },
+    "ui.settings.account.logout" : {
+      "comment" : "로그아웃",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃"
+          }
+        }
+      }
+    },
+    "ui.settings.account.title" : {
+      "comment" : "계정 관리",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 관리"
+          }
+        }
+      }
+    },
+    "ui.settings.notification.enable_marketing_notifications" : {
+      "comment" : "마케팅 알림 받기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마케팅 알림 받기"
+          }
+        }
+      }
+    },
+    "ui.settings.notification.enable_match_notifications" : {
+      "comment" : "매칭 알림 받기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매칭 알림 받기"
+          }
+        }
+      }
+    },
+    "ui.settings.notification.enable_messaging_notifications" : {
+      "comment" : "채팅 알림 받기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "채팅 알림 받기"
+          }
+        }
+      }
+    },
+    "ui.settings.notification.enable_notice_notifications" : {
+      "comment" : "중요한 공지사항 알림 받기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중요한 공지사항 알림 받기"
+          }
+        }
+      }
+    },
+    "ui.settings.notification.title" : {
+      "comment" : "알림 설정",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 설정"
+          }
+        }
+      }
+    },
+    "ui.settings.page_title" : {
+      "comment" : "설정",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
+          }
+        }
+      }
+    },
     "Unsupported message type" : {
 
     },
@@ -316,9 +611,6 @@
 
     },
     "로그인" : {
-
-    },
-    "리버스 엔지니어링, 패킷 덤프 등을 통하여 이 소프트웨어 및 통신 내용을 분석하거나 변조하는 행위는 법률에 의해 엄격히 금지되어 있습니다." : {
 
     },
     "마이페이지" : {
@@ -399,9 +691,6 @@
     "서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요." : {
 
     },
-    "설정" : {
-
-    },
     "스토어" : {
 
     },
@@ -432,13 +721,19 @@
     "안전 구역\n(반경 %lldm)" : {
 
     },
+    "안전 구역 기능 켜기 (베타)" : {
+
+    },
     "안전 구역 설정" : {
 
     },
-    "안전한 사람들하고만 매칭할래요" : {
+    "안전 구역 설정 (베타)" : {
 
     },
-    "알림" : {
+    "안전 구역 지정하기" : {
+
+    },
+    "안전한 사람들하고만 매칭할래요" : {
 
     },
     "앱 설정 열기" : {
@@ -448,6 +743,12 @@
 
     },
     "앱이 잠시 중단되었습니다" : {
+
+    },
+    "연락처 미리 차단" : {
+
+    },
+    "연락처를 서버로부터 모두 삭제하고 차단 해제하기" : {
 
     },
     "오류" : {
@@ -493,6 +794,9 @@
 
     },
     "준비 중인 기능입니다" : {
+
+    },
+    "지금 연락처 동기화하기" : {
 
     },
     "차단 해제" : {
@@ -559,6 +863,9 @@
 
     },
     "휴대폰 번호를 입력해 주세요" : {
+
+    },
+    "휴대폰 연락처에 등록된 사람들을 미리 차단하기" : {
 
     },
     "휴대폰 인증" : {

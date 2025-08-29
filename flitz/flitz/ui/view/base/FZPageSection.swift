@@ -25,7 +25,7 @@ struct FZPageSectionDivider: View {
 }
 
 struct FZPageSectionTitle: View {
-    var title: String
+    var title: LocalizedStringKey
     
     var body: some View {
         VStack {
@@ -39,13 +39,13 @@ struct FZPageSectionTitle: View {
 }
 
 struct FZPageSectionItem<Content: View>: View {
-    var title: String
+    var title: LocalizedStringKey
     
     @ViewBuilder
     var content: () -> Content
     
     
-    init(_ title: String, content: @escaping () -> Content) {
+    init(_ title: LocalizedStringKey, content: @escaping () -> Content) {
         self.title = title
         self.content = content
     }
@@ -68,10 +68,10 @@ struct FZPageSectionItem<Content: View>: View {
 }
 
 struct FZPageSectionActionItem: View {
-    var title: String
+    var title: LocalizedStringKey
     var action: () -> Void
     
-    init(_ title: String, action: @escaping () -> Void) {
+    init(_ title: LocalizedStringKey, action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }

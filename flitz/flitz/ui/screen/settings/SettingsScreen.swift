@@ -20,24 +20,24 @@ struct SettingsScreen: View {
                 FZPageSectionDivider()
                 
                 VStack(spacing: 0) {
-                    FZPageSectionTitle(title: "계정 관리")
-                    FZPageSectionActionItem("비밀번호 변경") {
+                    FZPageSectionTitle(title: "ui.settings.account.title")
+                    FZPageSectionActionItem("ui.settings.account.change_password") {
                         appState.navState.append(.passwd)
                     }
                     
-                    FZPageSectionActionItem("로그아웃") {
+                    FZPageSectionActionItem("ui.settings.account.logout") {
                         RootAppState.shared.logout()
                         appState.navState.append(.logoutCompleted(reason: .byUser))
                     }
                     
-                    FZPageSectionActionItem("Flitz 계정 삭제하기") {
+                    FZPageSectionActionItem("ui.settings.account.deactivate_account") {
                         appState.navState.append(.deactivateAccount)
                     }
                 }
                 .padding(.horizontal, 16)
             }
         }
-        .navigationTitle("설정")
+        .navigationTitle("ui.settings.page_title")
     }
 }
 
