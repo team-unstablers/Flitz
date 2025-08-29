@@ -8,6 +8,8 @@
 import SwiftUI
 
 enum SignUpPhase {
+    case agreement
+    
     case phoneNumberVerification
     case krPhoneNumberVerification
     
@@ -22,6 +24,27 @@ class SignUpViewModel: ObservableObject {
     
     @Published
     var phase: [SignUpPhase] = []
+    
+    @Published
+    var countryCode: CountryCode = .KR
+    
+    @Published
+    var turnstileNonce = UUID()
+    
+    @Published
+    var turnstileToken: String = ""
+    
+    @Published
+    var agreeToPrivacyPolicy: Bool = false
+
+    @Published
+    var agreeToTerms: Bool = false
+    
+    @Published
+    var agreeToLocationServiceTerms: Bool = false
+
+    @Published
+    var agreeToMarketingNotifications: Bool = false
     
     @Published
     var username: String = ""
@@ -109,13 +132,8 @@ class SignUpViewModel: ObservableObject {
 
 struct SignUpPhases {
     struct CountrySelectionScreen: View {
-        static let SERVICED_COUNTRIES = ["대한민국", "그 외 국가"]
-        
         @EnvironmentObject
         var viewModel: SignUpViewModel
-        
-        @State
-        var selectedCountry: String = "대한민국"
         
         var body: some View {
             VStack {
@@ -126,9 +144,10 @@ struct SignUpPhases {
                 
                     .padding(.bottom, 60)
                 
-                    Picker("국가 선택", selection: $selectedCountry) {
-                        ForEach(Self.SERVICED_COUNTRIES, id: \.self) {
-                            Text($0)
+                Picker("국가 선택", selection: $viewModel.countryCode) {
+                        ForEach(CountryCode.allCases, id: \.self) {
+                            Text($0.displayName)
+                                .tag($0.rawValue)
                         }
                     }
                     .pickerStyle(.wheel)
@@ -136,7 +155,66 @@ struct SignUpPhases {
                 Spacer()
                 
                 FZButton(size: .large) {
-                    if selectedCountry == "대한민국" {
+                    viewModel.phase.append(.agreement)
+                } label: {
+                    Text("다음")
+                        .font(.fzMain)
+                        .semibold()
+                }
+                .disabled(viewModel.countryCode != .KR)
+            }
+            .safeAreaPadding(.horizontal)
+            .navigationTitle("국가 선택")
+        }
+    }
+    
+    struct AgreementScreen: View {
+        @EnvironmentObject
+        var viewModel: SignUpViewModel
+        
+        var body: some View {
+            VStack {
+                Text("Flitz를 사용하려면 아래 약관에 동의해야 해요.".byCharWrapping)
+                    .font(.fzMain)
+                    .foregroundStyle(Color.Grayscale.gray7)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 60)
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    Group {
+                        Toggle(isOn: $viewModel.agreeToTerms) {
+                            Text(LocalizedStringKey("ui.auth.signup.agreement.agree_terms"))
+                                .tint(.blue)
+                        }
+
+                        Toggle(isOn: $viewModel.agreeToPrivacyPolicy) {
+                            Text(LocalizedStringKey("ui.auth.signup.agreement.agree_privacy_policy"))
+                                .tint(.blue)
+                        }
+                        
+                        Toggle(isOn: $viewModel.agreeToLocationServiceTerms) {
+                            Text(LocalizedStringKey("ui.auth.signup.agreement.agree_location_service_terms"))
+                                .tint(.blue)
+                        }
+                        
+                        // optional
+                        Toggle(isOn: $viewModel.agreeToMarketingNotifications) {
+                            Text(LocalizedStringKey("ui.auth.signup.agreement.agree_marketing_notifications"))
+                        }
+                    }
+                    .toggleStyle(FZCheckboxToggleStyle())
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 16)
+                
+                CFTurnstile(action: "register", nonce: viewModel.turnstileNonce) { token in
+                    viewModel.turnstileToken = token
+                }
+                
+                Spacer()
+                
+                FZButton(size: .large) {
+                    if viewModel.countryCode == .KR {
                         viewModel.phase.append(.krPhoneNumberVerification)
                     } else {
                         viewModel.phase.append(.phoneNumberVerification)
@@ -146,10 +224,9 @@ struct SignUpPhases {
                         .font(.fzMain)
                         .semibold()
                 }
-                .disabled(selectedCountry != "대한민국")
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("국가 선택")
+            .navigationTitle("약관 동의")
         }
     }
     
@@ -446,6 +523,8 @@ struct SignUpScreen: View {
             SignUpPhases.CountrySelectionScreen()
                 .navigationDestination(for: SignUpPhase.self) { phase in
                     switch phase {
+                    case .agreement:
+                        SignUpPhases.AgreementScreen()
                     case .phoneNumberVerification:
                         EmptyView()
                     case .krPhoneNumberVerification:

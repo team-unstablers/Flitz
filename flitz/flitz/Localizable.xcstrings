@@ -31,6 +31,28 @@
     "1000m" : {
 
     },
+    "core.country.kr" : {
+      "comment" : "대한민국",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대한민국"
+          }
+        }
+      }
+    },
+    "core.country.other" : {
+      "comment" : "그 외 국가",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그 외 국가"
+          }
+        }
+      }
+    },
     "FATAL ERROR (reason=%@)\n%@" : {
       "localizations" : {
         "ko" : {
@@ -281,6 +303,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림"
+          }
+        }
+      }
+    },
+    "ui.auth.signup.agreement.agree_location_service_terms" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz의 [위치기반서비스 이용약관](https://docs.flitz.cards/legal/kr/tos-location.html) 에 동의합니다."
+          }
+        }
+      }
+    },
+    "ui.auth.signup.agreement.agree_marketing_notifications" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz 앱으로부터 마케팅 알림을 수신합니다. (선택사항)"
+          }
+        }
+      }
+    },
+    "ui.auth.signup.agreement.agree_privacy_policy" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz의 [개인정보 보호정책](https://docs.flitz.cards/legal/kr/privacy-policy.html) 에 동의합니다."
+          }
+        }
+      }
+    },
+    "ui.auth.signup.agreement.agree_terms" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flitz의 [서비스 약관](https://docs.flitz.cards/legal/kr/tos.html) 에 동의합니다."
           }
         }
       }
@@ -743,6 +805,9 @@
 
     },
     "앱이 잠시 중단되었습니다" : {
+
+    },
+    "약관 동의" : {
 
     },
     "연락처 미리 차단" : {
