@@ -82,6 +82,30 @@
     "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요." : {
 
     },
+    "fz.auth.invalid_request" : {
+      "comment" : "백엔드에서 반환하는 오류",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청이 잘못되었습니다."
+          }
+        }
+      }
+    },
+    "fz.auth.turnstile_failed" : {
+      "comment" : "백엔드에서 반환하는 오류",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로봇 검증에 실패하였습니다."
+          }
+        }
+      }
+    },
     "fzapi.user.fuzzy_distance.far" : {
       "comment" : "멀리 있음",
       "localizations" : {

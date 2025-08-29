@@ -57,9 +57,30 @@ class FZAPIClient {
         self.interceptor = FZTokenRefreshInterceptor(self)
     }
     
-    private func handleRequestError(_ error: AFError?) throws {
+    private func handleRequestError(_ error: AFError?, response: DataRequest) throws {
         guard let error = error else {
             throw FZAPIError.invalidResponse
+        }
+        
+        switch error {
+        case .responseValidationFailed(let reason):
+            switch reason {
+            case .unacceptableStatusCode(let code):
+                if code == 400 {
+                    let jsonDecoder = JSONDecoder()
+                    if let data = response.data,
+                       let simpleResponse = try? jsonDecoder.decode(SimpleResponse.self, from: data) {
+                        throw FZAPIError.badRequest(response: simpleResponse)
+                    }
+                    throw FZAPIError.badRequest(response: nil)
+                }
+                break
+            default:
+                break
+            }
+            break
+        default:
+            break
         }
         
         let underlyingError = error.underlyingError
@@ -105,7 +126,7 @@ class FZAPIClient {
             let dataResponse = await response.serializingData().response
             
             if dataResponse.error != nil {
-                try handleRequestError(dataResponse.error)
+                try handleRequestError(dataResponse.error, response: response)
             }
             
             // 빈 응답이나 빈 JSON 객체 모두 Ditch로 처리
@@ -116,7 +137,7 @@ class FZAPIClient {
         let serializingResponse = await response.serializingDecodable(type).response
         
         guard let value = serializingResponse.value else {
-            try handleRequestError(serializingResponse.error)
+            try handleRequestError(serializingResponse.error, response: response)
             
             throw FZAPIError.invalidResponse
         }

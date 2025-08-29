@@ -105,7 +105,56 @@ class SignUpViewModel: ObservableObject {
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
         }
+    }
+    
+    func startKRPhoneVerification() async -> (String, String, String)? {
+        if busy {
+            return nil
+        }
         
+        busy = true
+        defer { busy = false }
+        
+        let args = RegistrationStartPhoneVerificationArgs(phone_number: nil)
+        
+        do {
+            let response = try await client.registrationStartPhoneVerification(args)
+            
+            guard let nicePayload = response.additional_data?["nice_payload"],
+                  let hmac = response.additional_data?["nice_hmac"],
+                  let niceTokenVersionId = response.additional_data?["nice_token_version_id"]
+            else {
+                throw FZAPIError.invalidResponse
+            }
+            
+            return (nicePayload, hmac, niceTokenVersionId)
+        } catch {
+            // sentry
+            
+            self.errorMessage = error.localizedDescription
+            self.shouldPresentError = true
+            
+            return nil
+        }
+    }
+    
+    func completeKRPhoneVerification(_ args: RegistrationCompletePhoneVerificationArgs) async {
+        if busy {
+            return
+        }
+        
+        busy = true
+        defer { busy = false }
+        
+        do {
+            _ = try await client.registrationCompletePhoneVerification(args)
+            phase.append(.identity)
+        } catch {
+            // sentry
+            
+            self.errorMessage = error.localizedDescription
+            self.shouldPresentError = true
+        }
     }
     
     func performSignUp() async {
@@ -283,6 +332,18 @@ struct SignUpPhases {
         @EnvironmentObject
         var viewModel: SignUpViewModel
         
+        @State
+        var nicePayload: String = ""
+        
+        @State
+        var hmac: String = ""
+        
+        @State
+        var niceTokenVersionId: String = ""
+        
+        @State
+        var shouldPresentNiceWebView: Bool = false
+        
         var body: some View {
             VStack {
                 Text("휴대폰 인증을 통한 본인 확인을 진행해요.\n대한민국에서는 NICE 평가정보의 휴대폰 인증 서비스를 이용해요.".byCharWrapping)
@@ -294,15 +355,60 @@ struct SignUpPhases {
                             
                 Spacer()
                 FZButton(size: .large) {
-                    viewModel.phase.append(.identity)
+                    Task {
+                        guard let result = await viewModel.startKRPhoneVerification() else {
+                            return
+                        }
+                        
+                        self.nicePayload = result.0
+                        self.hmac = result.1
+                        self.niceTokenVersionId = result.2
+                        
+                        self.shouldPresentNiceWebView = true
+                    }
                 } label: {
-                    Text("휴대폰 인증하기")
-                        .font(.fzMain)
-                        .semibold()
+                    if viewModel.busy {
+                        ProgressView()
+                    } else {
+                        Text("휴대폰 인증하기")
+                            .font(.fzMain)
+                            .semibold()
+                    }
                 }
+                .disabled(viewModel.busy)
             }
             .safeAreaPadding(.horizontal)
             .navigationTitle("휴대폰 인증")
+            .sheet(isPresented: $shouldPresentNiceWebView) {
+                NavigationView {
+                    NicePhoneVerification(
+                        payload: nicePayload,
+                        hmac: hmac,
+                        tokenVersionId: niceTokenVersionId
+                    ) { args in
+                        guard let args = args else {
+                            self.viewModel.errorMessage = "휴대폰 인증이 올바르게 완료되지 않았어요. 다시 시도해 주세요."
+                            self.viewModel.shouldPresentError = true
+                            self.shouldPresentNiceWebView = false
+                            return
+                        }
+                        
+                        Task {
+                            await viewModel.completeKRPhoneVerification(args)
+                        }
+                        self.shouldPresentNiceWebView = false
+                    }
+                    .navigationTitle("휴대폰 인증")
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("취소") {
+                                self.shouldPresentNiceWebView = false
+                            }
+                        }
+                    }
+                }
+                
+            }
         }
     }
 

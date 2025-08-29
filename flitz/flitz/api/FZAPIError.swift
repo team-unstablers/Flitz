@@ -15,6 +15,8 @@ enum FZAPIError: LocalizedError {
     case unauthorized
     case invalidResponse
     
+    case badRequest(response: SimpleResponse?)
+    
     case sslFailure
     case killSwitchActivated
     
@@ -34,6 +36,12 @@ enum FZAPIError: LocalizedError {
             return "Unauthorized access"
         case .invalidResponse:
             return "Invalid response from server"
+        case .badRequest(let response):
+            if let reason = response?.reason {
+                return NSLocalizedString(reason, comment: "")
+            }
+            
+            return "Bad request"
         case .sslFailure:
             return "SSL failure occurred"
         case .killSwitchActivated:
@@ -42,4 +50,5 @@ enum FZAPIError: LocalizedError {
             return "Network error: \(error.localizedDescription)"
         }
     }
+    
 }
