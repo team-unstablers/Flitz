@@ -387,9 +387,11 @@ struct SignUpPhases {
                         tokenVersionId: niceTokenVersionId
                     ) { args in
                         guard let args = args else {
-                            self.viewModel.errorMessage = "휴대폰 인증이 올바르게 완료되지 않았어요. 다시 시도해 주세요."
-                            self.viewModel.shouldPresentError = true
-                            self.shouldPresentNiceWebView = false
+                            DispatchQueue.main.async {
+                                self.viewModel.errorMessage = "휴대폰 인증이 올바르게 완료되지 않았어요. 다시 시도해 주세요."
+                                self.viewModel.shouldPresentError = true
+                                self.shouldPresentNiceWebView = false
+                            }
                             return
                         }
                         
