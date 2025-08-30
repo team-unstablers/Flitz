@@ -215,3 +215,4 @@ struct FZUserSettings: Codable {
     let marketing_notifications_enabled_at: String?
 }
 
+

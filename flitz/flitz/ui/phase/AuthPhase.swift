@@ -10,6 +10,7 @@ import SwiftUI
 enum AuthNavigationItem: Hashable {
     case signIn
     case signUp
+    case findPassword
 }
 
 
@@ -42,6 +43,8 @@ struct AuthPhase: View {
                             }
                         case .signUp:
                             EmptyView()
+                        case .findPassword:
+                            FindPasswordScreen()
                         default:
                             EmptyView()
                         }

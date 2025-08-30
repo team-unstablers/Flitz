@@ -30,6 +30,9 @@ struct ServerSelector: View {
 struct SignInScreen: View {
     typealias AuthHandler = (FZAPIContext) -> Void
     
+    @EnvironmentObject
+    var authPhaseState: AuthPhaseState
+    
 #if DEBUG
     @State
     private var host: FZAPIServerHost = .default
@@ -96,7 +99,7 @@ struct SignInScreen: View {
             
             HStack(spacing: 0) {
                 FZButton(palette: .clear, size: .textual) {
-                    
+                    authPhaseState.navState = [.signUp]
                 } label: {
                     Text("회원가입")
                         .font(.fzMain)
@@ -108,7 +111,7 @@ struct SignInScreen: View {
                     .padding(.horizontal, 12)
                 
                 FZButton(palette: .clear, size: .textual) {
-                    
+                    authPhaseState.navState.append(.findPassword)
                 } label: {
                     Text("비밀번호 찾기")
                         .font(.fzMain)

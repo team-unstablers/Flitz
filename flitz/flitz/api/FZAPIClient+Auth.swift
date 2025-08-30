@@ -26,4 +26,19 @@ extension FZAPIClient {
         return response
     }
     
+    func requestPasswordReset(_ args: ResetPasswordRequestArgs) async throws -> SimpleResponse {
+        try await self.request(to: .resetPasswordRequest,
+                               expects: SimpleResponse.self,
+                               method: .post,
+                               parameters: args,
+                               requiresAuth: false)
+    }
+    
+    func confirmPasswordReset(_ args: ResetPasswordConfirmArgs) async throws -> SimpleResponse {
+        try await self.request(to: .resetPasswordConfirm,
+                               expects: SimpleResponse.self,
+                               method: .post,
+                               parameters: args,
+                               requiresAuth: false)
+    }
 }

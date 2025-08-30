@@ -17,6 +17,9 @@ struct FZAPIEndpoint: RawRepresentable {
     static let token = FZAPIEndpoint(rawValue: "/auth/token")
     static let refreshToken = FZAPIEndpoint(rawValue: "/auth/token/refresh")
     
+    static let resetPasswordRequest = FZAPIEndpoint(rawValue: "/users/reset-password/")
+    static let resetPasswordConfirm = FZAPIEndpoint(rawValue: "/users/reset-password/confirm/")
+    
     // MARK: registration
     static let startRegistration = FZAPIEndpoint(rawValue: "/users/register/start/")
     static let completeRegistration = FZAPIEndpoint(rawValue: "/users/register/complete/")
