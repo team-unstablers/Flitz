@@ -1,0 +1,18 @@
+/*
+  InfoPlist.strings
+  Flitz
+
+  Created by Gyuhwan Park on 8/16/25.
+  
+*/
+
+NSLocalNetworkUsageDescription = "Flitz app accesses local network for development purposes. (This message should not appear in production environment)";
+
+NSBluetoothPeripheralUsageDescription = "Bluetooth permission is required to exchange photo cards with other users.";
+NSBluetoothAlwaysUsageDescription = "Bluetooth permission is required to exchange photo cards with other users.";
+
+NSLocationAlwaysUsageDescription = "Location permission is required to safely exchange photo cards with other users.\nPlease select 'Allow Always'.";
+NSLocationWhenInUseUsageDescription = "Location permission is required to exchange photo cards with other users.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "Location permission is required to safely exchange photo cards with other users.\nPlease select 'Allow Always'.";
+
+NSContactsUsageDescription = "Flitz wants to access your contacts to use the contact pre-blocking feature.";
