@@ -9,23 +9,23 @@
 		<string>INSendMessageIntent</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>NSLocalNetworkUsageDescription</string>
+	<string>Flitz app accesses local network for development purposes. (This message should not appear in production environment)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>PretendardVariable.ttf</string>
 	</array>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>NSBluetoothPeripheralUsageDescription</string>
+	<string>Bluetooth permission is required to exchange photo cards with other users.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>NSBluetoothAlwaysUsageDescription</string>
+	<string>Bluetooth permission is required to exchange photo cards with other users.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>NSLocationWhenInUseUsageDescription</string>
+	<string>Location permission is required to safely exchange photo cards with other users.\nPlease select &apos;Allow Always&apos;.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>NSLocationAlwaysUsageDescription</string>
+	<string>Location permission is required to exchange photo cards with other users.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
+	<string>Location permission is required to safely exchange photo cards with other users.\nPlease select &apos;Allow Always&apos;.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>NSContactsUsageDescription</string>
+	<string>Flitz wants to access your contacts to use the contact pre-blocking feature.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
