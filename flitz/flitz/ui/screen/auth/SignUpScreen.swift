@@ -66,52 +66,66 @@ class FZIntermediateCredential: ObservableObject {
     var usernameValidationTask: Task<Void, Never>? = nil
     
     func validateUsername() {
-        let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanUsername = username
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            // remove non-alphanumeric characters except underscore
+            .filter { $0.isLetter || $0.isNumber || $0 == "_" }
         
-        
+        defer {
+            self.objectWillChange.send()
+        }
+
         if cleanUsername.isEmpty {
             usernameError = .required
-        } else {
-            usernameError = .checkInProgress
+            return
+        }
+        
+
+        usernameError = .checkInProgress
+        
+        self.usernameValidationTask?.cancel()
+        self.usernameValidationTask = Task {
             
-            self.usernameValidationTask?.cancel()
-            self.usernameValidationTask = Task {
-                guard let client = self.client else {
-                    DispatchQueue.main.async {
-                        self.usernameError = .notAcceptable
-                    }
-                    return
+            guard let client = self.client else {
+                DispatchQueue.main.async {
+                    self.usernameError = .notAcceptable
+                    self.objectWillChange.send()
                 }
+                return
+            }
+            
+            do {
+                let result = try await client.registrationUsernameAvailability(username: cleanUsername)
                 
-                do {
-                    let result = try await client.registrationUsernameAvailability(username: cleanUsername)
-                    
-                    DispatchQueue.main.async {
-                        if result.is_success {
-                            self.usernameError = nil
-                        } else {
-                            self.usernameError = .notAcceptable
-                        }
-                    }
-                } catch {
-                    // TODO: log to sentry
-                    print(error)
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if result.is_success {
+                        self.usernameError = nil
+                    } else {
                         self.usernameError = .notAcceptable
                     }
+                    
+                    self.objectWillChange.send()
+                }
+            } catch {
+                // TODO: log to sentry
+                print(error)
+                DispatchQueue.main.async {
+                    self.usernameError = .notAcceptable
+                    self.objectWillChange.send()
                 }
             }
         }
         
-        
-        if (cleanUsername == username) {
-            return
+        if (cleanUsername != username) {
+            self.username = cleanUsername
         }
-        
-        self.username = cleanUsername
     }
     
     func validatePassword() {
+        defer {
+            self.objectWillChange.send()
+        }
+        
         guard password.count >= 8 else {
             self.passwordError = .tooShort(minLength: 8)
             return

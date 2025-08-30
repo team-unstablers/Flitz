@@ -142,6 +142,10 @@ class FZIntermediateUser: ObservableObject {
     }
     
     func validate() {
+        defer {
+            self.objectWillChange.send()
+        }
+        
         // @start displayName
         if displayName.isEmpty {
             validationError.displayName = .required
