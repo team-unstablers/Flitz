@@ -36,6 +36,9 @@ struct SignInScreen: View {
 #endif
     
     @State
+    private var busy = false
+    
+    @State
     private var username = ""
     
     @State
@@ -62,13 +65,15 @@ struct SignInScreen: View {
                     .background(.clear)
             }
             .padding(.bottom, 20)
-            
+            .disabled(busy)
+
             FZEntry("비밀번호") {
                 SecureField("비밀번호를 입력해주세요", text: $password)
                     .autocorrectionDisabled(true)
                     .background(.clear)
             }
             .padding(.bottom, 24)
+            .disabled(busy)
             
             CFTurnstile(action: "request_token", nonce: turnstileNonce) { token in
                 print(token)
@@ -78,11 +83,16 @@ struct SignInScreen: View {
             FZButton(size: .large) {
                 self.performSignIn()
             } label: {
-                Text("로그인")
-                    .font(.fzMain)
-                    .semibold()
+                if busy {
+                    ProgressView()
+                } else {
+                    Text("로그인")
+                        .font(.fzMain)
+                        .semibold()
+                }
             }
             .padding(.vertical, 24)
+            .disabled(username.isEmpty || password.isEmpty || turnstileToken.isEmpty || busy)
             
             HStack(spacing: 0) {
                 FZButton(palette: .clear, size: .textual) {
@@ -129,6 +139,8 @@ struct SignInScreen: View {
     }
     
     func performSignIn() {
+        busy = true
+        
         var context = FZAPIContext()
 #if DEBUG
         context.host = host
@@ -142,6 +154,7 @@ struct SignInScreen: View {
                                         turnstile_token: self.turnstileToken)
         
         Task {
+            defer { busy = false }
             do {
                 let token = try await client.authorize(with: credentials)
                 var newContext = context
@@ -162,33 +175,6 @@ struct SignInScreen: View {
                 self.turnstileNonce = UUID()
             }
         }
-    }
-    
-    func performSignUp() {
-        /*
-         var context = FZAPIContext()
-         #if DEBUG
-         context.host = host
-         #endif
-         
-         let client = FZAPIClient(context: context)
-         let credentials = FZCredentials(username: self.username,
-         password: self.password,
-         device_info: "FlitzCardEditorTest.app",
-         apns_token: AppDelegate.apnsToken)
-         
-         Task {
-         do {
-         try await client.signup(with: credentials)
-         
-         DispatchQueue.main.async {
-         self.performSignIn()
-         }
-         } catch {
-         print(error)
-         }
-         }
-         */
     }
 }
 

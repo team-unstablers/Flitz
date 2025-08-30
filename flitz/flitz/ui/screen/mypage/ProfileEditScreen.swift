@@ -91,6 +91,11 @@ class FZIntermediateUser: ObservableObject {
         }
     }
     
+    /// NOTE: READ-ONLY FIELD
+    @Published
+    var username: String = ""
+
+    /// NOTE: READ-ONLY FIELD
     @Published
     var birthDate: String = ""
     
@@ -106,6 +111,7 @@ class FZIntermediateUser: ObservableObject {
     @Published
     var email: String = ""
     
+    /// NOTE: READ-ONLY FIELD
     @Published
     var phoneNumber: String = ""
 
@@ -179,6 +185,8 @@ class FZIntermediateUser: ObservableObject {
     
     static func from(_ profile: FZSelfUser, _ identity: FZUserIdentity?) -> FZIntermediateUser {
         let intermediate = FZIntermediateUser()
+        
+        intermediate.username = profile.username
         
         intermediate.displayName = profile.display_name
         intermediate.profileImageUrl = profile.profile_image_url
@@ -609,6 +617,14 @@ struct ProfileEditScreen: View {
                     
                     ProfileEditSectionTitle("개인 정보")
                     ProfileEditSection {
+                        ProfileEditSectionEntity(title: "유저네임") {
+                            TextField("등록되지 않음", text: $viewModel.intermediate.username)
+                                .font(.fzHeading3)
+                                .disabled(true)
+                        }
+                        
+                        ProfileEditSectionDivider()
+
                         ProfileEditSectionEntity(title: "생년월일") {
                             TextField("등록되지 않음", text: $viewModel.intermediate.birthDate)
                                 .font(.fzHeading3)
@@ -617,6 +633,7 @@ struct ProfileEditScreen: View {
                         
                         ProfileEditSectionDivider()
 
+                        /*
                         ProfileEditSectionEntity(title: "이메일 주소") {
                             HStack {
                                 TextField("이메일 주소 등록되지 않음", text: $viewModel.intermediate.email)
@@ -631,7 +648,8 @@ struct ProfileEditScreen: View {
                                 }
                             }
                         }
-                        
+                         */
+
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "휴대폰 번호") {
@@ -639,6 +657,7 @@ struct ProfileEditScreen: View {
                                 TextField("", text: $viewModel.intermediate.phoneNumber)
                                     .font(.fzHeading3)
                                     .disabled(true)
+                                /*
                                 Spacer()
                                 FZButton(palette: .clear, size: .textual) {
                                     
@@ -646,6 +665,7 @@ struct ProfileEditScreen: View {
                                     Text("번호 변경하기")
                                         .font(.fzMain)
                                 }
+                                 */
                             }
                         }
                     }
