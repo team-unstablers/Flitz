@@ -133,7 +133,10 @@ extension WaveCommunicator: WaveDiscovererDelegate {
         Task {
             do {
                 try await self.client.reportWaveDiscovery(args)
-                discoverer.markAsDiscovered(uuid)
+                
+                DispatchQueue.global(qos: .background).async {
+                    discoverer.markAsDiscovered(uuid)
+                }
             } catch {
                 logger.error("\(error)")
             }

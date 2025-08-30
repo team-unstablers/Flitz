@@ -217,6 +217,9 @@ class SignUpViewModel: ObservableObject {
         } catch {
             // sentry
             
+            turnstileNonce = UUID()
+            turnstileToken = ""
+            
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
         }

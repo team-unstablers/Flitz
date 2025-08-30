@@ -92,7 +92,7 @@ class FZIntermediateUser: ObservableObject {
     }
     
     @Published
-    var birthDate: Date = Date()
+    var birthDate: String = ""
     
     @Published
     var profileImageUrl: String? = nil
@@ -187,8 +187,7 @@ class FZIntermediateUser: ObservableObject {
         intermediate.bio = profile.bio
         intermediate.hashtags = profile.hashtags
         
-        // FIXME
-        intermediate.birthDate = Date()
+        intermediate.birthDate = profile.birth_date ?? ""
         
         intermediate.email = profile.email ?? ""
         intermediate.phoneNumber = profile.phone_number ?? ""
@@ -608,25 +607,46 @@ struct ProfileEditScreen: View {
                         }
                     }
                     
-                    ProfileEditSectionTitle("중요 정보")
+                    ProfileEditSectionTitle("개인 정보")
                     ProfileEditSection {
                         ProfileEditSectionEntity(title: "생년월일") {
-                            TextField("TODO: date selector", text: $viewModel.intermediate.displayName)
+                            TextField("등록되지 않음", text: $viewModel.intermediate.birthDate)
                                 .font(.fzHeading3)
+                                .disabled(true)
                         }
                         
                         ProfileEditSectionDivider()
 
                         ProfileEditSectionEntity(title: "이메일 주소") {
-                            TextField("이메일 주소를 입력해 주세요", text: $viewModel.intermediate.email)
-                                .font(.fzHeading3)
+                            HStack {
+                                TextField("이메일 주소 등록되지 않음", text: $viewModel.intermediate.email)
+                                    .font(.fzHeading3)
+                                    .disabled(true)
+                                Spacer()
+                                FZButton(palette: .clear, size: .textual) {
+                                    
+                                } label: {
+                                    Text("이메일 주소 변경하기")
+                                        .font(.fzMain)
+                                }
+                            }
                         }
                         
                         ProfileEditSectionDivider()
                         
                         ProfileEditSectionEntity(title: "휴대폰 번호") {
-                            TextField("휴대폰 번호를 입력해 주세요", text: $viewModel.intermediate.phoneNumber)
-                                .font(.fzHeading3)
+                            HStack {
+                                TextField("", text: $viewModel.intermediate.phoneNumber)
+                                    .font(.fzHeading3)
+                                    .disabled(true)
+                                Spacer()
+                                FZButton(palette: .clear, size: .textual) {
+                                    
+                                } label: {
+                                    Text("번호 변경하기")
+                                        .font(.fzMain)
+                                }
+                            }
                         }
                     }
                     
