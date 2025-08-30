@@ -74,12 +74,14 @@ struct CardDetailControlsView: View {
     let onDismiss: () -> Void
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 16) {
+            /*
             Text(card.title.isEmpty ? "(제목 없음)" : card.title)
                 .font(.fzHeading2)
                 .foregroundStyle(.white)
                 .bold()
                 .shadow(color: .black.opacity(0.25), radius: 8)
+             */
             
             HStack {
                 FZButton(size: .normal) {
