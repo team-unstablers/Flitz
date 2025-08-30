@@ -36,7 +36,7 @@ struct FZAPIServerHost: RawRepresentable, Codable, Hashable {
 #endif
     }
     
-    static let production = FZAPIServerHost(rawValue: "https://prod.api.flitz.cards")
+    static let production = FZAPIServerHost(rawValue: "https://loveppears.flitz.cards")
     
 #if DEBUG
     static let development = FZAPIServerHost(rawValue: "https://api-dev.flitz.cards")
