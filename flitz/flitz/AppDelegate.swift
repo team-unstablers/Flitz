@@ -17,8 +17,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         application.registerForRemoteNotifications()
         
         UserDefaults.standard.register(defaults: [
+            "FirstRun": true,
             "FlitzWaveEnabled": true,
         ])
+        
+        // IMPORTANT: remove keychain-based context on first run
+        if UserDefaults.standard.bool(forKey: "FirstRun") {
+            FZAPIContext.delete()
+            RootAppState.shared.reloadContext()
+            
+            UserDefaults.standard.set(false, forKey: "FirstRun")
+        }
         
         UNUserNotificationCenter.current().delegate = self
         
