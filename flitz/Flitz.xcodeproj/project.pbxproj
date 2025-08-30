@@ -65,6 +65,7 @@
 		F699D0982D00325500761976 /* flitzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D0A22D00325500761976 /* flitzUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D20F2D005B1A00761976 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Flitz/Info.plist; sourceTree = "<group>"; };
+		F6AF72532E634F2600CE9734 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		F6DA52012E47C0710061155D /* FlitzNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FlitzNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -168,6 +169,7 @@
 		F699D07F2D00325300761976 = {
 			isa = PBXGroup;
 			children = (
+				F6AF72522E634F2100CE9734 /* ci_scripts */,
 				F64996F42D2A87740090E3F6 /* Flitz.entitlements */,
 				F699D20F2D005B1A00761976 /* Info.plist */,
 				F699D08A2D00325300761976 /* flitz */,
@@ -188,6 +190,14 @@
 				F6DA52012E47C0710061155D /* FlitzNotificationService.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F6AF72522E634F2100CE9734 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				F6AF72532E634F2600CE9734 /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		F6DA520E2E47C09D0061155D /* Frameworks */ = {
