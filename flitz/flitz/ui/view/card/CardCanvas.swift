@@ -78,7 +78,11 @@ struct CardCanvas: View {
                     }
                 }
             } else {
+#if DEBUG
                 Rectangle().fill([.gray, .blue, .red, .yellow, .green, .purple, .pink, .orange, .indigo, .mint].randomElement()!)
+#else
+                Rectangle().fill(.white)
+#endif
             }
         }
         /*
