@@ -137,7 +137,9 @@ struct FZHashtagFieldPreview: View {
 #endif
 
 #Preview {
+#if DEBUG
     FZHashtagFieldPreview()
         .font(.fzHeading3)
         .padding(16)
+#endif
 }

@@ -4,16 +4,34 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>CFBundleURLTypes</key>
+	<key>NSUserActivityTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>flitz</string>
-			</array>
-		</dict>
+		<string>INSendMessageIntent</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>NSLocalNetworkUsageDescription</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>PretendardVariable.ttf</string>
+	</array>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>NSBluetoothPeripheralUsageDescription</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>NSBluetoothAlwaysUsageDescription</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>NSLocationWhenInUseUsageDescription</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>NSLocationAlwaysUsageDescription</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
+	<key>NSContactsUsageDescription</key>
+	<string>NSContactsUsageDescription</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>bluetooth-peripheral</string>
+		<string>location</string>
+		<string>bluetooth-central</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
@@ -101,25 +119,5 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSExtension</key>
-	<dict>
-		<key>NSExtensionAttributes</key>
-		<dict/>
-	</dict>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>INSendMessageIntent</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>PretendardVariable.ttf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-		<string>bluetooth-peripheral</string>
-		<string>location</string>
-		<string>bluetooth-central</string>
-	</array>
 </dict>
 </plist>

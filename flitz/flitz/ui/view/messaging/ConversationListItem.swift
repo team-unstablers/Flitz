@@ -129,6 +129,7 @@ fileprivate extension DirectMessageConversation {
 }
 
 #Preview {
+#if DEBUG
     let userSelf = DirectMessageParticipant(user: .mock1,
                                             read_at: "2020-04-01T00:00:00Z",
                                             unread_count: 3)
@@ -157,13 +158,14 @@ fileprivate extension DirectMessageConversation {
                                                   latest_message: latest_message_1)
     
     let conversation2 = DirectMessageConversation(id: "test2",
-                                                    participants: [
-                                                        userSelf,
-                                                        userOther
-                                                    ],
-                                                    latest_message: latest_message_2)
+                                                  participants: [
+                                                    userSelf,
+                                                    userOther
+                                                  ],
+                                                  latest_message: latest_message_2)
     
     
     ConversationListItem(conversation: conversation1)
     ConversationListItem(conversation: conversation2)
+#endif
 }

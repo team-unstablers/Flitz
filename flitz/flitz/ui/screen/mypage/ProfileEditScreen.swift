@@ -775,6 +775,8 @@ class MockProfileEditViewModel: ProfileEditViewModel {
 #endif
 
 #Preview {
+#if DEBUG
     ProfileEditScreen(viewModel: MockProfileEditViewModel())
         .environmentObject(RootAppState())
+#endif
 }

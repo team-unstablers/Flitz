@@ -37,10 +37,12 @@ struct ProfileButton: View {
 }
 
 #Preview {
+#if DEBUG
     let profile = FZSelfUser.mock1
     
     VStack {
         ProfileButton(profile: profile)
     }
     .padding(.horizontal, 16)
+#endif
 }

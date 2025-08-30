@@ -91,5 +91,7 @@ struct FZInlineTabPreview: View {
 #endif
 
 #Preview {
+#if DEBUG
     FZInlineTabPreview()
+#endif
 }

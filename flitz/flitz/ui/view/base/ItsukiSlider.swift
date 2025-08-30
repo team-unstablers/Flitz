@@ -251,5 +251,7 @@ struct SliderDemo: View {
 #endif
 
 #Preview {
+#if DEBUG
     SliderDemo()
+#endif
 }

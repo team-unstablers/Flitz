@@ -95,5 +95,7 @@ fileprivate struct FZChipPreview: View {
 #endif
 
 #Preview {
+#if DEBUG
     FZChipPreview()
+#endif
 }

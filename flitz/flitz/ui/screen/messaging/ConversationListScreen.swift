@@ -206,7 +206,9 @@ class ConversationListPreviewViewModel: ConversationListViewModel {
 #endif
 
 #Preview {
+#if DEBUG
     ConversationListScreen(viewModel: ConversationListPreviewViewModel())
         .environmentObject(RootAppState())
+#endif
 }
 

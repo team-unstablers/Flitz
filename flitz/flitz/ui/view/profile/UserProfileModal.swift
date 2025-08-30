@@ -410,6 +410,7 @@ class UserProfileModalViewModelPreview: UserProfileModalViewModel {
 #endif
 
 #Preview {
+#if DEBUG
     ZStack {
         Text("test\ntest\ntest\ntest\ntest\ntest\ntest\ntest")
             .padding()
@@ -418,4 +419,5 @@ class UserProfileModalViewModelPreview: UserProfileModalViewModel {
         UserProfileModal(userId: "test", viewModel: UserProfileModalViewModelPreview(userId: "test"))
             .environmentObject(RootAppState())
     }
+#endif
 }
