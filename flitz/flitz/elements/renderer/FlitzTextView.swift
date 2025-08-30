@@ -60,16 +60,16 @@ extension Flitz.Renderer {
                                         RoundedRectangle(cornerRadius: 8)
                                             .fill(Color.init(r8: 192, g8: 192, b8: 255, a: 1.0))
                                             .frame(width: geom.size.width + 15.5, height: geom.size.height + 15.5)
-                                            .shadow(color: Color(r8: 0, g8: 192, b8: 255, a: 1.0), radius: 0.75, x: -0.5, y: -0.5)
-                                            .shadow(color: Color(r8: 192, g8: 0, b8: 255, a: 1.0), radius: 0.75, x:  0.5, y:  0.5)
-                                            .compositingGroup()
-                                            .blur(radius: 1.0)
                                             .position(x: geom.size.width / 2, y: geom.size.height / 2)
                                     }
                                 }
                         }
                     }
-                    
+                    .compositingGroup()
+                    .shadow(color: Color(r8: 0, g8: 192, b8: 255, a: 1.0), radius: 0.75, x: -0.5, y: -0.5)
+                    .shadow(color: Color(r8: 192, g8: 0, b8: 255, a: 1.0), radius: 0.75, x:  0.5, y:  0.5)
+                    .blur(radius: 1.0)
+
                     VStack(spacing: 0) {
                         ForEach(element.text.split(separator: "\n", omittingEmptySubsequences: false).map { String($0) }, id: \.self) { line in
                             SwiftUI.Text(line == "" ? "  " : line)
