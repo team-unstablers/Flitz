@@ -5,7 +5,7 @@
 //  Created by Gyuhwan Park on 8/15/25.
 //
 
-enum FZFormError {
+enum FZFormError: Equatable, Hashable {
     case required
     case tooLong(maxLength: Int)
     case tooShort(minLength: Int)

@@ -34,25 +34,13 @@ class FZIntermediateCredential: ObservableObject {
     var client: FZAPIClient? = nil
     
     @Published
-    var username: String = "" {
-        didSet {
-            validateUsername()
-        }
-    }
+    var username: String = ""
     
     @Published
-    var password: String = "" {
-        didSet {
-            validatePassword()
-        }
-    }
+    var password: String = ""
      
     @Published
-    var confirmPassword: String = "" {
-        didSet {
-            validatePassword()
-        }
-    }
+    var confirmPassword: String = ""
     
     @Published
     var usernameError: FZFormError? = nil
@@ -65,67 +53,67 @@ class FZIntermediateCredential: ObservableObject {
     
     var usernameValidationTask: Task<Void, Never>? = nil
     
-    func validateUsername() {
-        let cleanUsername = username
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            // remove non-alphanumeric characters except underscore
-            .filter { $0.isLetter || $0.isNumber || $0 == "_" }
-        
-        defer {
-            self.objectWillChange.send()
-        }
+    deinit { usernameValidationTask?.cancel() }
 
-        if cleanUsername.isEmpty {
-            usernameError = .required
+    private func normalizeUsername(_ s: String) -> String {
+        // 소문자 + 앞뒤 공백 제거 + [a-z0-9_]만 허용
+        let trimmed = s.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return trimmed.replacingOccurrences(of: #"[^a-z0-9_\.]"#, with: "", options: .regularExpression)
+    }
+
+    func validateUsername() {
+        let normalized = normalizeUsername(username)
+
+        // 1) 먼저 정규화 반영 후 즉시 리턴 (중복 Task 생성 방지)
+        if username != normalized {
+            username = normalized
             return
         }
-        
+
+        // 2) 로컬 규칙 검사
+        usernameValidationTask?.cancel()
+        guard !normalized.isEmpty else { usernameError = .required; return }
+        // 필요하면 길이 제한 등 추가
+        // guard (3...20).contains(normalized.count) else { usernameError = .notAcceptable; return }
 
         usernameError = .checkInProgress
-        
-        self.usernameValidationTask?.cancel()
-        self.usernameValidationTask = Task {
-            
+
+        // 3) 디바운스 + 레이스 방지 토큰(현재 값 스냅샷)
+        let current = normalized
+
+        usernameValidationTask = Task { [weak self] in
+            // 디바운스
+            try? await Task.sleep(nanoseconds: 350_000_000)
+            guard let self else { return }
+            if Task.isCancelled { return }
+
             guard let client = self.client else {
-                DispatchQueue.main.async {
-                    self.usernameError = .notAcceptable
-                    self.objectWillChange.send()
-                }
+                await MainActor.run { self.usernameError = .notAcceptable }
                 return
             }
-            
+
             do {
-                let result = try await client.registrationUsernameAvailability(username: cleanUsername)
-                
-                DispatchQueue.main.async {
-                    if result.is_success {
-                        self.usernameError = nil
-                    } else {
-                        self.usernameError = .notAcceptable
-                    }
-                    
-                    self.objectWillChange.send()
+                let result = try await client.registrationUsernameAvailability(username: current)
+                if Task.isCancelled { return }
+
+                // 4) 응답 적용 전에 입력이 바뀌었는지 확인
+                guard await self.username == current else { return }
+
+                await MainActor.run {
+                    self.usernameError = result.is_success ? nil : .notAcceptable
                 }
+            } catch is CancellationError {
+                // 조용히 무시
             } catch {
-                // TODO: log to sentry
-                print(error)
-                DispatchQueue.main.async {
+                await MainActor.run {
+                    // 네트워크 오류 케이스를 구분하고 싶으면 전용 에러로
                     self.usernameError = .notAcceptable
-                    self.objectWillChange.send()
                 }
             }
         }
-        
-        if (cleanUsername != username) {
-            self.username = cleanUsername
-        }
     }
-    
+
     func validatePassword() {
-        defer {
-            self.objectWillChange.send()
-        }
-        
         guard password.count >= 8 else {
             self.passwordError = .tooShort(minLength: 8)
             return
@@ -740,6 +728,9 @@ struct SignUpPhases {
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
                             }
+                            .onChange(of: viewModel.intermediateCredential.username) { _, _ in
+                                viewModel.intermediateCredential.validateUsername()
+                            }
                             
                             FZInlineEntry("비밀번호", error: viewModel.intermediateCredential.passwordError) {
                                 SecureField("비밀번호를 입력해 주세요", text: $viewModel.intermediateCredential.password)
@@ -747,12 +738,18 @@ struct SignUpPhases {
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
                             }
-                            
+                            .onChange(of: viewModel.intermediateCredential.password) { _, _ in
+                                viewModel.intermediateCredential.validatePassword()
+                            }
+
                             FZInlineEntry("비밀번호 재입력", error: viewModel.intermediateCredential.confirmPasswordError) {
                                 SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.intermediateCredential.confirmPassword)
                                     .textContentType(.password)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
+                            }
+                            .onChange(of: viewModel.intermediateCredential.confirmPassword) { _, _ in
+                                viewModel.intermediateCredential.validatePassword()
                             }
                         }
                     }
