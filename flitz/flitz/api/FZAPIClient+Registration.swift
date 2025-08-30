@@ -30,12 +30,20 @@ extension FZAPIClient {
                                requiresAuth: true)
     }
     
-    func completeRegistration(with credentials: UserRegistrationArgs) async throws {
+    func registrationUsernameAvailability(username: String) async throws -> SimpleResponse {
+        try await self.request(to: .registrationUsernameAvailability,
+                               expects: SimpleResponse.self,
+                               method: .post,
+                               parameters: UsernameAvailabilityArgs(username: username),
+                               requiresAuth: true)
+    }
+    
+    func completeRegistration(with credentials: UserRegistrationArgs) async throws -> FZUserToken {
         try await self.request(to: .completeRegistration,
-                               expects: Ditch.self,
+                               expects: FZUserToken.self,
                                method: .post,
                                parameters: credentials,
-                               requiresAuth: false)
+                               requiresAuth: true)
     }
    
 }

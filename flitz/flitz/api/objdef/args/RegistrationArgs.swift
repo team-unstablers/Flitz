@@ -40,3 +40,7 @@ struct UserRegistrationArgs: Codable {
     var bio: String
     var hashtags: [String]
 }
+
+struct UsernameAvailabilityArgs: Codable {
+    var username: String
+}

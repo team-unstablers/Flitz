@@ -18,6 +18,123 @@ enum SignUpPhase {
     case credentials
 }
 
+enum SignUpError: LocalizedError {
+    case tokenValidationFailed
+    
+    var errorDescription: String? {
+        switch self {
+        case .tokenValidationFailed:
+            return NSLocalizedString("fzapi.signup.token_validation_failed", comment: "회원 가입에는 성공했지만 토큰 검증에 실패했어요. (휴대폰 시간이 너무 늦거나 빠른가요?)")
+        }
+    }
+}
+
+@MainActor
+class FZIntermediateCredential: ObservableObject {
+    var client: FZAPIClient? = nil
+    
+    @Published
+    var username: String = "" {
+        didSet {
+            validateUsername()
+        }
+    }
+    
+    @Published
+    var password: String = "" {
+        didSet {
+            validatePassword()
+        }
+    }
+     
+    @Published
+    var confirmPassword: String = "" {
+        didSet {
+            validatePassword()
+        }
+    }
+    
+    @Published
+    var usernameError: FZFormError? = nil
+    
+    @Published
+    var passwordError: FZFormError? = nil
+    
+    @Published
+    var confirmPasswordError: FZFormError? = nil
+    
+    var usernameValidationTask: Task<Void, Never>? = nil
+    
+    func validateUsername() {
+        let cleanUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        
+        if cleanUsername.isEmpty {
+            usernameError = .required
+        } else {
+            usernameError = .checkInProgress
+            
+            self.usernameValidationTask?.cancel()
+            self.usernameValidationTask = Task {
+                guard let client = self.client else {
+                    DispatchQueue.main.async {
+                        self.usernameError = .notAcceptable
+                    }
+                    return
+                }
+                
+                do {
+                    let result = try await client.registrationUsernameAvailability(username: cleanUsername)
+                    
+                    DispatchQueue.main.async {
+                        if result.is_success {
+                            self.usernameError = nil
+                        } else {
+                            self.usernameError = .notAcceptable
+                        }
+                    }
+                } catch {
+                    // TODO: log to sentry
+                    print(error)
+                    DispatchQueue.main.async {
+                        self.usernameError = .notAcceptable
+                    }
+                }
+            }
+        }
+        
+        
+        if (cleanUsername == username) {
+            return
+        }
+        
+        self.username = cleanUsername
+    }
+    
+    func validatePassword() {
+        guard password.count >= 8 else {
+            self.passwordError = .tooShort(minLength: 8)
+            return
+        }
+        
+        // password must include at least one number and one special character
+        guard password.filter({ $0.isNumber }).count > 0,
+              password.filter({ $0.isPunctuation || $0.isSymbol }).count > 0
+        else {
+            self.passwordError = .passwordNotStrongEnough
+            return
+        }
+        
+        self.passwordError = nil
+        
+        if password != confirmPassword {
+            self.confirmPasswordError = .passwordNotEqual
+        } else {
+            self.confirmPasswordError = nil
+        }
+    }
+}
+
 @MainActor
 class SignUpViewModel: ObservableObject {
     let client = FZAPIClient(context: .load())
@@ -58,16 +175,10 @@ class SignUpViewModel: ObservableObject {
     var agreeToMarketingNotifications: Bool = false
     
     @Published
-    var username: String = ""
-    
-    @Published
-    var password: String = ""
-    
-    @Published
-    var confirmPassword: String = ""
-    
-    @Published
     var intermediate: FZIntermediateUser = FZIntermediateUser()
+    
+    @Published
+    var intermediateCredential: FZIntermediateCredential = FZIntermediateCredential()
     
     func configure(with authPhaseState: AuthPhaseState) {
         self.authPhaseState = authPhaseState
@@ -94,6 +205,8 @@ class SignUpViewModel: ObservableObject {
             client.context.token = session.token
             client.context.valid()
             
+            self.intermediateCredential.client = client
+
             if countryCode == .KR {
                 phase.append(.krPhoneNumberVerification)
             } else {
@@ -158,37 +271,33 @@ class SignUpViewModel: ObservableObject {
     }
     
     func performSignUp() async {
+        if busy {
+            return
+        }
+        
+        busy = true
+        defer { busy = false }
+        
         let registrationArgs = UserRegistrationArgs(
-            username: username,
-            password: password,
+            username: intermediateCredential.username,
+            password: intermediateCredential.password,
             display_name: intermediate.displayName,
             title: intermediate.title,
             bio: intermediate.bio,
             hashtags: intermediate.hashtags
         )
         
-        var context = FZAPIContext()
-        context.host = .default
-        
         do {
-            let apiClient = FZAPIClient(context: context)
-            try await apiClient.completeRegistration(with: registrationArgs)
+            let token = try await client.completeRegistration(with: registrationArgs)
             
-            print("Sign up successful!")
+            var newContext = FZAPIContext()
             
-            let credentials = FZCredentials(username: self.username,
-                                            password: self.password,
-                                            device_info: FZAPIClient.userAgent,
-                                            apns_token: AppDelegate.apnsToken,
-                                            turnstile_token: "FIXME")
-            let token = try await apiClient.authorize(with: credentials)
-            
-            var newContext = context
             newContext.token = token.token
             newContext.refreshToken = token.refresh_token
             
-            // FIXME: assert 쓰지 마세요!!
-            assert(newContext.valid())
+            guard newContext.valid() else {
+                throw SignUpError.tokenValidationFailed
+            }
             
             newContext.save()
 
@@ -216,9 +325,11 @@ class SignUpViewModel: ObservableObject {
             }
             
             try await newClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
-            
         } catch {
-            print(error.localizedDescription)
+            // TODO: sentry
+            
+            self.errorMessage = error.localizedDescription
+            self.shouldPresentError = true
         }
         
     }
@@ -321,10 +432,20 @@ struct SignUpPhases {
                             .semibold()
                     }
                 }
-                .disabled(viewModel.busy)
+                .disabled(viewModel.busy || !validated)
             }
             .safeAreaPadding(.horizontal)
             .navigationTitle("약관 동의")
+        }
+        
+        var validated: Bool {
+            return (
+                viewModel.agreeToTerms &&
+                viewModel.agreeToPrivacyPolicy &&
+                viewModel.agreeToLocationServiceTerms &&
+                
+                viewModel.turnstileToken.count > 0
+            )
         }
     }
     
@@ -534,14 +655,14 @@ struct SignUpPhases {
                         }
                         
                         ProfileEditSection {
-                            ProfileEditSectionEntity(title: "닉네임") {
+                            ProfileEditSectionEntity(title: "닉네임", error: viewModel.intermediate.validationError.displayName) {
                                 TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
                                     .font(.fzHeading3)
                             }
                             
                             ProfileEditSectionDivider()
                             
-                            ProfileEditSectionEntity(title: "한줄 칭호") {
+                            ProfileEditSectionEntity(title: "한줄 칭호", error: viewModel.intermediate.validationError.title) {
                                 TextField("당신을 나타내는 한줄 칭호!", text: $viewModel.intermediate.title)
                                     .font(.fzHeading3)
                             }
@@ -554,34 +675,12 @@ struct SignUpPhases {
                             
                             ProfileEditSectionDivider()
                             
-                            ProfileEditSectionEntity(title: "자기소개") {
+                            ProfileEditSectionEntity(title: "자기소개", error: viewModel.intermediate.validationError.bio) {
                                 TextField("멋진 자기 소개를 입력해 보세요!", text: $viewModel.intermediate.bio, axis: .vertical)
                                     .lineLimit(3...5)
                                     .font(.fzHeading3)
                             }
                         }
-                        
-                        /*
-                         VStack(spacing: 40) {
-                         FZInlineEntry("닉네임") {
-                         TextField("닉네임을 입력하세요", text: $viewModel.username)
-                         .textContentType(.username)
-                         .autocapitalization(.none)
-                         .disableAutocorrection(true)
-                         }
-                         
-                         FZInlineEntry("한줄 칭호") {
-                         SecureField("당신을 나타내는 한줄 칭호를 입력하세요", text: $viewModel.password)
-                         .textContentType(.password)
-                         .autocapitalization(.none)
-                         .disableAutocorrection(true)
-                         }
-                         
-                         FZInlineEntry("해시태그") {
-                         EmptyView()
-                         }
-                         }
-                         */
                     }
                 }
                 VStack {
@@ -593,6 +692,9 @@ struct SignUpPhases {
                             .semibold()
                     }
                     .padding(.vertical, 8)
+                    .disabled(
+                        !viewModel.intermediate.validationError.isValid
+                    )
                 }
             }
             .safeAreaPadding(.horizontal)
@@ -618,22 +720,22 @@ struct SignUpPhases {
                             .padding(.bottom, 60)
                         
                         VStack(spacing: 40) {
-                            FZInlineEntry("유저네임") {
-                                TextField("유저네임을 입력해 주세요", text: $viewModel.username)
+                            FZInlineEntry("유저네임", error: viewModel.intermediateCredential.usernameError) {
+                                TextField("유저네임을 입력해 주세요", text: $viewModel.intermediateCredential.username)
                                     .textContentType(.username)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
                             }
                             
-                            FZInlineEntry("비밀번호") {
-                                SecureField("비밀번호를 입력해 주세요", text: $viewModel.password)
+                            FZInlineEntry("비밀번호", error: viewModel.intermediateCredential.passwordError) {
+                                SecureField("비밀번호를 입력해 주세요", text: $viewModel.intermediateCredential.password)
                                     .textContentType(.password)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
                             }
                             
-                            FZInlineEntry("비밀번호 재입력") {
-                                SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.confirmPassword)
+                            FZInlineEntry("비밀번호 재입력", error: viewModel.intermediateCredential.confirmPasswordError) {
+                                SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.intermediateCredential.confirmPassword)
                                     .textContentType(.password)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
@@ -652,15 +754,29 @@ struct SignUpPhases {
                             }
                         }
                     } label: {
-                        Text("회원 가입 마치기")
-                            .font(.fzMain)
-                            .semibold()
+                        if viewModel.busy {
+                            ProgressView()
+                        } else {
+                            Text("회원 가입 마치기")
+                                .font(.fzMain)
+                                .semibold()
+                        }
                     }
                     .padding(.top, 8)
+                    .disabled(viewModel.busy || !validated)
                 }
             }
             .safeAreaPadding(.horizontal)
             .navigationTitle("잠깐! 마지막으로..")
+        }
+        
+        var validated: Bool {
+            return  viewModel.intermediateCredential.usernameError == nil &&
+            viewModel.intermediateCredential.passwordError == nil &&
+            viewModel.intermediateCredential.confirmPasswordError == nil &&
+            !viewModel.intermediateCredential.username.isEmpty &&
+            !viewModel.intermediateCredential.password.isEmpty &&
+            !viewModel.intermediateCredential.confirmPassword.isEmpty
         }
     }
 }
@@ -696,6 +812,9 @@ struct SignUpScreen: View {
                         SignUpPhases.CredentialsScreen {
                             signUpCompletionHandler()
                         }
+                            .if(viewModel.busy) {
+                                $0.navigationBarBackButtonHidden()
+                            }
                     default:
                         EmptyView()
                     }

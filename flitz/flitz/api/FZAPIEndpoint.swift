@@ -21,6 +21,8 @@ struct FZAPIEndpoint: RawRepresentable {
     static let startRegistration = FZAPIEndpoint(rawValue: "/users/register/start/")
     static let completeRegistration = FZAPIEndpoint(rawValue: "/users/register/complete/")
     
+    static let registrationUsernameAvailability = FZAPIEndpoint(rawValue: "/users/register/username-availability/")
+    
     static let registrationStartPhoneVerification = FZAPIEndpoint(rawValue: "/users/register/phone-verification/start/")
     static let registrationCompletePhoneVerification = FZAPIEndpoint(rawValue: "/users/register/phone-verification/complete/")
 

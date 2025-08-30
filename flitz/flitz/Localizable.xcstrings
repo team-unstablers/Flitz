@@ -106,6 +106,9 @@
         }
       }
     },
+    "fzapi.signup.token_validation_failed" : {
+      "comment" : "회원 가입에는 성공했지만 토큰 검증에 실패했어요. (휴대폰 시간이 너무 늦거나 빠른가요?)"
+    },
     "fzapi.user.fuzzy_distance.far" : {
       "comment" : "멀리 있음",
       "localizations" : {

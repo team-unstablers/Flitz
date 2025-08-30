@@ -41,6 +41,7 @@ struct FZEntry<Content: View>: View {
 
 struct FZInlineEntry<Content: View>: View {
     let label: String
+    let error: FZFormError?
     
     @ViewBuilder
     let content: () -> Content
@@ -48,18 +49,28 @@ struct FZInlineEntry<Content: View>: View {
     @FocusState
     private var isFocused: Bool
     
-    init(_ label: String, @ViewBuilder content: @escaping () -> Content) {
+    init(_ label: String, error: FZFormError? = nil, @ViewBuilder content: @escaping () -> Content) {
         self.label = label
+        self.error = error
+        
         self.content = content
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(label)
-                .font(.fzMain)
-                .foregroundStyle(Color.Brand.black0)
-                .padding(.bottom, 20)
-            
+            HStack(spacing: 6) {
+                Text(label)
+                    .font(.fzMain)
+                    .foregroundStyle(Color.Brand.black0)
+                
+                if let error = error {
+                    Text(error.message)
+                        .font(.fzSmall)
+                        .foregroundStyle(Color.red)
+                }
+            }
+            .padding(.bottom, 20)
+
             content()
                 .focused($isFocused)
             Rectangle()
