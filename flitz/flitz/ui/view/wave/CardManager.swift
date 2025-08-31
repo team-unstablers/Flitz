@@ -129,9 +129,18 @@ struct CardManagerView: View {
                     await viewModel.newCard()
                 }
             } label: {
-                Text("새 카드 만들기")
+                if viewModel.cards.count >= 4 {
+                    Text("카드는 4장까지 만들 수 있습니다")
+                        .font(.fzHeading3)
+                        .semibold()
+                } else {
+                    Text("새 카드 만들기")
+                        .font(.fzHeading3)
+                        .semibold()
+                }
             }
                 .padding(16)
+                .disabled(viewModel.cards.count >= 4) // 현 시점에서는 최대 4장까지만 카드 생성 가능
             
             FZInfiniteGridView(
                 data: viewModel.cards,
