@@ -129,3 +129,5 @@ DerivedData/
 .vscode
 .index-build
 .swiftpm
+
+.sentryclirc
