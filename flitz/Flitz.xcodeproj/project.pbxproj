@@ -8,18 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = F63BE5142E3CF33B0086DAF4 /* Starscream */; };
+		F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3DE04B9DE8774333A7EBC34C /* Sentry */; };
 		F689AB572E44D9B200BB1E6F /* BrightroomEngine in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB562E44D9B200BB1E6F /* BrightroomEngine */; };
 		F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB582E44D9B200BB1E6F /* BrightroomUI */; };
 		F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB5A2E44D9B200BB1E6F /* BrightroomUIPhotosCrop */; };
 		F699D0E22D0039DF00761976 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E12D0039DF00761976 /* Alamofire */; };
 		F699D0E52D0039E700761976 /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E42D0039E700761976 /* AlamofireImage */; };
 		F699D0E82D0039F400761976 /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F699D0E72D0039F400761976 /* Collections */; };
+		F6AF72542E64104E00CE9734 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		F6AF72552E64104E00CE9734 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3DE04B9DE8774333A7EBC34C /* Sentry */; };
+		F6AF72562E64104E00CE9734 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		F6AF72572E64104E00CE9734 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		F6D335032E596CA60030043B /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = F6D335022E596CA60030043B /* GRDB */; };
 		F6DA51EB2E477A140061155D /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA51EA2E477A140061155D /* SwiftUIX */; };
 		F6DA52082E47C0710061155D /* FlitzNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6DA52012E47C0710061155D /* FlitzNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F6DA52102E47C09D0061155D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA520F2E47C09D0061155D /* Alamofire */; };
 		F6DA52122E47C09D0061155D /* AlamofireImage in Frameworks */ = {isa = PBXBuildFile; productRef = F6DA52112E47C09D0061155D /* AlamofireImage */; };
-		F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3DE04B9DE8774333A7EBC34C /* Sentry */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6AF72552E64104E00CE9734 /* Sentry in Frameworks */,
 				F6D335032E596CA60030043B /* GRDB in Frameworks */,
 				F699D0E82D0039F400761976 /* Collections in Frameworks */,
 				F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */,
@@ -138,7 +143,7 @@
 				F689AB5B2E44D9B200BB1E6F /* BrightroomUIPhotosCrop in Frameworks */,
 				F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */,
 				F689AB572E44D9B200BB1E6F /* BrightroomEngine in Frameworks */,
-				F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */,
+				F6AF72542E64104E00CE9734 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +151,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */,
+				F6AF72562E64104E00CE9734 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,7 +159,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */,
+				F6AF72572E64104E00CE9734 /* (null) in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +356,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				ko,
-				en,
 				Base,
 			);
 			mainGroup = F699D07F2D00325300761976;
@@ -409,6 +413,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		62FB7E7C04684DA78ECDBAF1 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsible for uploading debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\n  export SENTRY_ORG=team-unstablers\n  export SENTRY_PROJECT=flitz\n  ERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\n  if [ ! $? -eq 0 ]; then\n    echo \"warning: sentry-cli - $ERROR\"\n  fi\nelse\n  echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F699D0842D00325300761976 /* Sources */ = {
@@ -588,10 +610,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
 				DEVELOPMENT_TEAM = XHA76UVA95;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Flitz/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Flitz (dev)";
@@ -621,8 +645,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = Debug;
 		};
@@ -633,10 +655,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
 				DEVELOPMENT_TEAM = XHA76UVA95;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Flitz/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Flitz;
@@ -666,8 +690,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_USER_SCRIPT_SANDBOXING = "NO";
 			};
 			name = Release;
 		};
@@ -854,6 +876,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6395E7B1E4F84DDC85A6AED1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/daltoniam/Starscream.git";
@@ -910,17 +940,14 @@
 				minimumVersion = 0.2.4;
 			};
 		};
-		6395E7B1E4F84DDC85A6AED1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3DE04B9DE8774333A7EBC34C /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6395E7B1E4F84DDC85A6AED1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 		F63BE5142E3CF33B0086DAF4 /* Starscream */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F63BE5132E3CF33B0086DAF4 /* XCRemoteSwiftPackageReference "Starscream" */;
@@ -976,41 +1003,7 @@
 			package = F699D0E32D0039E700761976 /* XCRemoteSwiftPackageReference "AlamofireImage" */;
 			productName = AlamofireImage;
 		};
-		3DE04B9DE8774333A7EBC34C /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6395E7B1E4F84DDC85A6AED1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
-		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		62FB7E7C04684DA78ECDBAF1 /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script is responsible for uploading debug symbols and source context for Sentry.
-if which sentry-cli >/dev/null; then
-  export SENTRY_ORG=team-unstablers
-  export SENTRY_PROJECT=flitz
-  ERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)
-  if [ ! $? -eq 0 ]; then
-    echo \"warning: sentry-cli - $ERROR\"
-  fi
-else
-  echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"
-fi
-";
-			name = "Upload Debug Symbols to Sentry";
-		};
-/* End PBXShellScriptBuildPhase section */
 	};
 	rootObject = F699D0802D00325300761976 /* Project object */;
 }
