@@ -121,8 +121,13 @@ struct FavoritedCards: View {
                 onLoadMore: {
                     await viewModel.loadMore()
                 }
-            ) { favorite in
+            ) { index, favorite in
                 Button {
+                    // 컨텍스트 메뉴가 동작해야 해서 disabled() 대신 핸들러 차원에서 막는다
+                    if index >= 6 {
+                        return
+                    }
+                    
                     appState.currentModal = .cardDetail(cardId: favorite.card.id)
                 } label: {
                     if let renderedCardImage = viewModel.renderCaches[favorite.card.id] {
@@ -161,6 +166,7 @@ struct FavoritedCards: View {
                 .frame(width: 150, height: 200)
                 // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
                 .padding()
+                .blur(radius: index >= 6 ? 5 : 0)
                 .contextMenu {
                     Button("보관함에서 삭제하기", role: .destructive) {
                         Task {

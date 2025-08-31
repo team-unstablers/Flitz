@@ -7,7 +7,7 @@ public struct FZInfiniteGridView<Data, Content, LoadingView>: View where Data: R
     
     private let data: Data
     private let columns: [GridItem]
-    private let content: (Data.Element) -> Content
+    private let content: (Int, Data.Element) -> Content
     private let loadingView: () -> LoadingView
     private let onLoadMore: () async -> Void
     
@@ -46,7 +46,7 @@ public struct FZInfiniteGridView<Data, Content, LoadingView>: View where Data: R
         loadThreshold: Int = 6,
         @ViewBuilder loadingView: @escaping () -> LoadingView,
         onLoadMore: @escaping () async -> Void,
-        @ViewBuilder content: @escaping (Data.Element) -> Content
+        @ViewBuilder content: @escaping (Int, Data.Element) -> Content
     ) {
         self.data = data
         self.columns = columns
@@ -68,8 +68,8 @@ public struct FZInfiniteGridView<Data, Content, LoadingView>: View where Data: R
                 columns: columns,
                 spacing: verticalSpacing ?? spacing
             ) {
-                ForEach(Array(data)) { item in
-                    content(item)
+                ForEach(Array(data.enumerated()), id: \.element.id) { index, item in
+                    content(index, item)
                         .onAppear {
                             checkIfLoadMoreNeeded(item)
                         }
@@ -129,7 +129,7 @@ extension FZInfiniteGridView where LoadingView == ProgressView<EmptyView, EmptyV
         verticalSpacing: CGFloat? = nil,
         loadThreshold: Int = 6,
         onLoadMore: @escaping () async -> Void,
-        @ViewBuilder content: @escaping (Data.Element) -> Content
+        @ViewBuilder content: @escaping (Int, Data.Element) -> Content
     ) {
         self.init(
             data: data,
@@ -156,7 +156,7 @@ extension FZInfiniteGridView {
         loadThreshold: Int = 6,
         @ViewBuilder loadingView: @escaping () -> LoadingView,
         onLoadMore: @escaping () async -> Void,
-        @ViewBuilder content: @escaping (Data.Element) -> Content
+        @ViewBuilder content: @escaping (Int, Data.Element) -> Content
     ) {
         self.init(
             data: data,
@@ -218,7 +218,7 @@ extension FZInfiniteGridView {
                             }
                         }
                     }
-                ) { item in
+                ) { index, item in
                     VStack {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(item.color)
@@ -296,7 +296,7 @@ extension FZInfiniteGridView {
                             }
                         }
                     }
-                ) { card in
+                ) { index, card in
                     VStack {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.blue.opacity(0.3))

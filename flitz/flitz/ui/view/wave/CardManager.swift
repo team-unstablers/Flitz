@@ -156,7 +156,7 @@ struct CardManagerView: View {
                 onLoadMore: {
                     await viewModel.loadMore()
                 }
-            ) { card in
+            ) { index, card in
                 Button {
                     appState.currentModal = .myCardDetail(cardId: card.id)
                 } label: {
