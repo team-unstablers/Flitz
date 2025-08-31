@@ -17,6 +17,8 @@ enum FZButtonSize {
 struct FZButton<Content: View>: View {
     @Environment(\.colorScheme)
     var colorScheme: ColorScheme
+    @Environment(\.isEnabled)
+    private var isEnabled
     
     var palette: FZButtonPalette = .primary
     var size: FZButtonSize = .normal
@@ -28,11 +30,11 @@ struct FZButton<Content: View>: View {
     var isDisabled: Bool = false
     
     var body: some View {
-        var backgroundColor = colorScheme == .light ?
+        let backgroundColor = colorScheme == .light ?
             palette.lightBackground :
             palette.darkBackground
         
-        var foregroundColor = colorScheme == .light ?
+        let foregroundColor = colorScheme == .light ?
             palette.lightForeground :
             palette.darkForeground
         
@@ -50,19 +52,12 @@ struct FZButton<Content: View>: View {
                 $0.padding(.vertical, 8)
                   .padding(.horizontal, 24)
             }
-            .background(isDisabled ? palette.disabledBackground : backgroundColor)
-            .foregroundStyle(isDisabled ? foregroundColor.opacity(0.75) : foregroundColor)
+            .background(!isEnabled ? palette.disabledBackground : backgroundColor)
+            .foregroundStyle(!isEnabled ? foregroundColor.opacity(0.75) : foregroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 6))
             // .padding(16)
             
         }
-        .disabled(isDisabled)
-    }
-    
-    func disabled(_ isDisabled: Bool) -> Self {
-        var copy = self
-        copy.isDisabled = isDisabled
-        return copy
     }
 }
 
