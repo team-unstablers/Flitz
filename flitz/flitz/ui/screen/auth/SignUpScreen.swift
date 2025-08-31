@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Sentry
+
 enum SignUpPhase {
     case agreement
     
@@ -215,7 +217,7 @@ class SignUpViewModel: ObservableObject {
                 phase.append(.phoneNumberVerification)
             }
         } catch {
-            // sentry
+            SentrySDK.capture(error: error)
             
             turnstileNonce = UUID()
             turnstileToken = ""
@@ -247,8 +249,8 @@ class SignUpViewModel: ObservableObject {
             
             return (nicePayload, hmac, niceTokenVersionId)
         } catch {
-            // sentry
-            
+            SentrySDK.capture(error: error)
+
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
             
@@ -268,8 +270,8 @@ class SignUpViewModel: ObservableObject {
             _ = try await client.registrationCompletePhoneVerification(args)
             phase.append(.identity)
         } catch {
-            // sentry
-            
+            SentrySDK.capture(error: error)
+
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
         }
@@ -331,8 +333,8 @@ class SignUpViewModel: ObservableObject {
             
             try await newClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
         } catch {
-            // TODO: sentry
-            
+            SentrySDK.capture(error: error)
+
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
         }

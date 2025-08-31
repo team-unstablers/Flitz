@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Sentry
 
 struct FZSecAPIContext: Codable {
     static let logger = createFZOSLogger("FZSecAPIContext")
@@ -140,6 +141,8 @@ struct FZSecAPIContext: Codable {
             else {
                 return false
             }
+            
+            SentrySDK.setUser(User(userId: id))
             
             self.payload = dict
 
