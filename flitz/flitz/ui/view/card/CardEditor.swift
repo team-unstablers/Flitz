@@ -101,6 +101,25 @@ struct CardEditor: View {
     func fetchCard() {
         Task {
             defer { initialBusy = false }
+            
+            if cardId == "__NEW__" {
+                let cardContent = Flitz.Card(
+                    version: .v1,
+                    background: nil,
+                    elements: [],
+                    properties: [:]
+                )
+                
+                let now = Date().ISO8601Format()
+                
+                self.card = FZCard(id: "__NEW__",
+                                   title: "Untitled",
+                                   content: cardContent,
+                                   created_at: now,
+                                   updated_at: now)
+                return
+            }
+            
             do {
                 let card = try await client.card(by: cardId)
                 try? await self.assetsLoader.resolveAll(from: card.content)
@@ -122,6 +141,15 @@ struct CardEditor: View {
             busy = true
             
             do {
+                if card.id == "__NEW__" {
+                    let newCard = try await self.client.createCard()
+                    
+                    card.id = newCard.id
+                    card.title = newCard.title
+                    card.created_at = newCard.created_at
+                    card.updated_at = newCard.updated_at
+                }
+                
                 try await client.uploadCardAssets(of: card)
                 let card = try await client.patchCard(which: card)
                 try? await self.assetsLoader.resolveAll(from: card.content)

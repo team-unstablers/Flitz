@@ -108,13 +108,7 @@ class CardManagerViewModel: ObservableObject {
     
     
     func newCard() async {
-        do {
-            let card = try await self.client.createCard()
-            
-            RootAppState.shared.navState.append(.cardEditor(cardId: card.id))
-        } catch {
-            print(error)
-        }
+        RootAppState.shared.navState.append(.cardEditor(cardId: "__NEW__"))
     }
 }
 
