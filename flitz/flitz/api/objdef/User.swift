@@ -152,6 +152,8 @@ struct FZSelfUser: Codable, Identifiable {
     var free_coins: Int
     var paid_coins: Int
     
+    var main_card_id: String?
+
 #if DEBUG
     static let mock1 = FZSelfUser(id: "test",
                                   username: "cheesekun",
@@ -166,7 +168,9 @@ struct FZSelfUser: Codable, Identifiable {
                                   profile_image_url: "https://avatars.githubusercontent.com/u/964412?v=4",
                                   
                                   free_coins: 0,
-                                  paid_coins: 0)
+                                  paid_coins: 0,
+                                  
+                                  main_card_id: nil)
 #endif
 }
 

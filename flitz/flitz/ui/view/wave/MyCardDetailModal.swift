@@ -75,6 +75,8 @@ struct CardDetailControlsView: View {
     
     var body: some View {
         VStack(spacing: 16) {
+            let mainCardId = appState.profile?.main_card_id
+            
             /*
             Text(card.title.isEmpty ? "(제목 없음)" : card.title)
                 .font(.fzHeading2)
@@ -85,11 +87,18 @@ struct CardDetailControlsView: View {
             
             HStack {
                 FZButton(size: .normal) {
-                    Task {
-                        await viewModel.setCardAsMain()
-                    }   
+                    if card.id != mainCardId {
+                        Task {
+                            await viewModel.setCardAsMain()
+                            appState.loadProfile()
+                        }
+                    }
                  } label: {
-                    Text("메인 카드로 설정하기")
+                     if card.id == mainCardId {
+                         Text("메인 카드로 설정됨")
+                     } else {
+                         Text("메인 카드로 설정하기")
+                     }
                 }
             }
             
