@@ -42,7 +42,8 @@ class RootAppState: ObservableObject {
     var conversationBadged: Bool = false
     
     var conversationUpdated = PassthroughSubject<Void, Never>()
-    
+    var conversationBadgeUpdated = PassthroughSubject<Void, Never>()
+
     init() {
         self.waveCommunicator = WaveCommunicator(with: self.client)
         self.waveCommunicator.delegate = self

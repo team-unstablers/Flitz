@@ -60,7 +60,7 @@ struct RootTabView: View {
         .onAppear {
             updateConversationUnreadCount()
         }
-        .onReceive(appState.conversationUpdated) { _ in
+        .onReceive(appState.conversationBadgeUpdated) { _ in
             updateConversationUnreadCount()
         }
     }

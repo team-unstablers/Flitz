@@ -36,13 +36,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             )
             
             appState.conversationUpdated.send()
-            
+            appState.conversationBadgeUpdated.send()
+
             if shouldNotDisplay {
                 return .none
             }
         }
         if type == "match" {
             appState.conversationUpdated.send()
+            appState.conversationBadgeUpdated.send()
+            
             return .all
         }
         

@@ -24,6 +24,7 @@ class ConversationListViewModel: ObservableObject {
         self.apiClient = apiClient
         Task {
             await loadConversations()
+            RootAppState.shared.conversationBadgeUpdated.send()
         }
     }
     
@@ -154,6 +155,7 @@ struct ConversationListScreen: View {
             Task {
                 // FIXME
                 await viewModel.loadConversations()
+                appState.conversationBadgeUpdated.send()
             }
         }
     }
