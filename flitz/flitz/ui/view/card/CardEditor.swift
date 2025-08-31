@@ -15,6 +15,12 @@ struct CardEditor: View {
     
     @Binding
     var client: FZAPIClient
+    
+    @State
+    var initialBusy: Bool = true
+    
+    @State
+    var busy: Bool = false
 
     @State
     var card: FZCard?
@@ -26,24 +32,63 @@ struct CardEditor: View {
     var isElementEditorPresented: Bool = false
     
     var body: some View {
-        VStack {
-            if let card = card {
-                CardEditorInternal(card: card.content,
-                                   isElementEditorPresented: $isElementEditorPresented)
+        ZStack {
+            VStack {
+                if let card = card {
+                    CardEditorInternal(card: card.content,
+                                       isElementEditorPresented: $isElementEditorPresented)
                     .environment(\.fzAssetsLoader, assetsLoader)
-            } else {
-                EmptyView()
+                } else {
+                    EmptyView()
+                }
             }
+            .background(.black)
+            
+            if initialBusy {
+                VStack(spacing: 6) {
+                    Text("불러오는 중")
+                        .font(.fzHeading3)
+                        .semibold()
+                        .foregroundStyle(.white)
+                    
+                    Text("잠시만 기다려 주세요...")
+                        .font(.fzMain)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black.opacity(0.5))
+            }
+            
+            if busy {
+                VStack(spacing: 6) {
+                    Text("저장 중")
+                        .font(.fzHeading3)
+                        .semibold()
+                        .foregroundStyle(.white)
+
+                    Text("잠시만 기다려 주세요...")
+                        .font(.fzMain)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.black.opacity(0.5))
+            }
+            
         }
-        .background(.black)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarTransparent(true)
         .animation(.default, value: isElementEditorPresented)
+        .animation(.default, value: busy)
+        .animation(.default, value: initialBusy)
         .toolbarVisibility(isElementEditorPresented ? .hidden : .visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("저장") {
-                    self.saveCard()
+                if busy {
+                    ProgressView()
+                } else {
+                    Button("저장") {
+                        self.saveCard()
+                    }
                 }
             }
         }
@@ -55,6 +100,7 @@ struct CardEditor: View {
     
     func fetchCard() {
         Task {
+            defer { initialBusy = false }
             do {
                 let card = try await client.card(by: cardId)
                 try? await self.assetsLoader.resolveAll(from: card.content)
@@ -70,9 +116,11 @@ struct CardEditor: View {
     
     func saveCard() {
         guard var card = card else { return }
-        card.title = "test"
-        
+    
         Task {
+            defer { busy = false }
+            busy = true
+            
             do {
                 try await client.uploadCardAssets(of: card)
                 let card = try await client.patchCard(which: card)
