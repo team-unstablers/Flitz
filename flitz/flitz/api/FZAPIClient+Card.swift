@@ -93,31 +93,40 @@ extension FZAPIClient {
     }
     
     /// 알아서 모든 로컬 에셋을 업로드합니다
+    @MainActor
     func uploadCardAssets(of card: FZCard) async throws {
-        try await card.content.background?.uploadToServer(using: self, cardId: card.id)
-        
-        for element in card.content.elements {
-            if let imageElement = element as? Flitz.Image {
-                try await imageElement.source.uploadToServer(using: self, cardId: card.id)
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try? await card.content.background?.uploadToServer(using: self, cardId: card.id)
+            }
+            
+            for element in card.content.elements {
+                if let imageElement = element as? Flitz.Image {
+                    try? await imageElement.source.uploadToServer(using: self, cardId: card.id)
+                }
             }
         }
     }
- 
 }
 
 
 fileprivate extension Flitz.ImageSource {
+    
+    @MainActor
     mutating func uploadToServer(using client: FZAPIClient, cardId: String) async throws {
         guard case .uiImage(let image) = self else {
             return
         }
         
-        guard let jpeg = image.jpegData(compressionQuality: 0.92) else {
+        let resizedImage = image.resize2(maxWidth: 1280, maxHeight: 1280)
+        
+        guard let jpeg = resizedImage.jpegData(compressionQuality: 0.91) else {
+            // ?????
             fatalError("JPEG 저장 실패")
         }
         
         let assetRef = try await client.uploadCardAsset(of: cardId, asset: jpeg, type: .image)
-        
         self = .origin(assetRef.id, URL(string: assetRef.public_url)!)
     }
+    
 }

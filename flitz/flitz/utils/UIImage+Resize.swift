@@ -64,4 +64,29 @@ extension UIImage {
     var pixelSize: CGSize {
         return CGSize(width: size.width * scale, height: size.height * scale)
     }
+    
+    /// 이미지의 가로/세로 중 긴 쪽을 기준으로 리사이즈합니다.
+    /// - Parameters:
+    ///   - maxWidth: 최대 너비 (픽셀, 가로가 더 긴 경우에만 사용)
+    ///   - maxHeight: 최대 높이 (픽셀, 세로가 더 긴 경우에만 사용)
+    /// - Returns: 리사이즈된 이미지
+    func resize2(maxWidth: Int? = nil, maxHeight: Int? = nil) -> UIImage {
+        let currentWidth = self.size.width * self.scale
+        let currentHeight = self.size.height * self.scale
+        
+        if currentWidth > currentHeight {
+            // 가로가 더 긴 경우 - maxWidth 기준으로 리사이즈
+            if let maxWidth = maxWidth {
+                return resize(maxWidth: maxWidth, maxHeight: Int.max)
+            }
+        } else {
+            // 세로가 더 긴 경우 - maxHeight 기준으로 리사이즈
+            if let maxHeight = maxHeight {
+                return resize(maxWidth: Int.max, maxHeight: maxHeight)
+            }
+        }
+        
+        // 제약이 없거나 적용할 수 없는 경우 원본 반환
+        return self
+    }
 }
