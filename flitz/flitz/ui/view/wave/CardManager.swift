@@ -18,15 +18,21 @@ class CardManagerViewModel: ObservableObject {
     @Published var hasMoreData = true
     
     private var currentPage: Paginated<FZCard>?
-    private var isLoading = false
+    
+    @Published
+    var initialBusy = true
+    
+    @Published
+    var busy = false
     
     var client: FZAPIClient = RootAppState.shared.client
     
     /// 내 카드 목록을 가져옵니다.
     func fetchCards() async {
-        guard !isLoading else { return }
+        guard !busy else { return }
+        defer { initialBusy = false }
         
-        isLoading = true
+        busy = true
         do {
             let page = try await self.client.cards()
             self.currentPage = page
@@ -36,15 +42,15 @@ class CardManagerViewModel: ObservableObject {
         } catch {
             print(error)
         }
-        isLoading = false
+        busy = false
     }
     
     func loadMore() async {
         guard let currentPage = currentPage,
               let nextUrl = currentPage.next,
-              !isLoading else { return }
+              !busy else { return }
         
-        isLoading = true
+        busy = true
         do {
             guard let page = try await client.nextPage(currentPage) else {
                 return
@@ -67,7 +73,7 @@ class CardManagerViewModel: ObservableObject {
         } catch {
             print("[CardManagerViewModel] Failed to load more cards: \(error)")
         }
-        isLoading = false
+        busy = false
     }
     
     func prerenderAllCards() async {
@@ -140,7 +146,7 @@ struct CardManagerView: View {
                 }
             }
                 .padding(16)
-                .disabled(viewModel.cards.count >= 4) // 현 시점에서는 최대 4장까지만 카드 생성 가능
+                .disabled(viewModel.initialBusy || viewModel.cards.count >= 4) // 현 시점에서는 최대 4장까지만 카드 생성 가능
             
             FZInfiniteGridView(
                 data: viewModel.cards,
