@@ -483,6 +483,16 @@
         }
       }
     },
+    "ui.mypage.support.support_form" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고객 지원 문의하기"
+          }
+        }
+      }
+    },
     "ui.mypage.support.title" : {
       "localizations" : {
         "ko" : {
@@ -619,6 +629,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정"
+          }
+        }
+      }
+    },
+    "ui.support.ticket_detail.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원 티켓 상세"
+          }
+        }
+      }
+    },
+    "ui.support.ticket_list.new" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 티켓"
+          }
+        }
+      }
+    },
+    "ui.support.ticket_list.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원 티켓 목록"
           }
         }
       }
@@ -786,6 +826,9 @@
     "삭제하기" : {
 
     },
+    "새 문의 티켓" : {
+
+    },
     "새 비밀번호를 입력해 주세요" : {
 
     },
@@ -898,6 +941,9 @@
 
     },
     "저장 중" : {
+
+    },
+    "전송하기" : {
 
     },
     "전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다." : {

@@ -30,6 +30,9 @@ enum RootNavigationItem: Hashable {
     
     case noticeList
     case noticeDetail(noticeId: String)
+    
+    case ticketList
+    case ticketDetail(ticketId: String)
 }
 
 struct RootNavigation: View {
@@ -79,6 +82,11 @@ struct RootNavigation: View {
                             NoticeListScreen()
                         case .noticeDetail(let noticeId):
                             NoticeDetailScreen(noticeId: noticeId)
+                            
+                        case .ticketList:
+                            SupportTicketListScreen()
+                        case .ticketDetail(let ticketId):
+                            SupportTicketDetailScreen(ticketId: ticketId)
                             
                         default:
                             EmptyView()

@@ -63,6 +63,9 @@ struct RootTabView: View {
         .onReceive(appState.conversationBadgeUpdated) { _ in
             updateConversationUnreadCount()
         }
+        .onScenePhase(.active, immediate: true) {
+            updateConversationUnreadCount()
+        }
     }
     
     func updateConversationUnreadCount() {

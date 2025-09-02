@@ -109,6 +109,9 @@ struct MyPageScreen: View {
                         FZPageSectionActionItem("ui.mypage.support.send_feedback") {
                             openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLScDLdnQWOqNZKFSH7YmU5YMAhXD_vkYdfxR_rMUZkt78a_hPw/viewform?usp=dialog")!)
                         }
+                        FZPageSectionActionItem("ui.mypage.support.support_form") {
+                            appState.navState.append(.ticketList)
+                        }
                         FZPageSectionActionItem("ui.mypage.support.privacy_policy") {
                             openURL(URL(string: "https://docs.flitz.cards/legal/kr/privacy-policy.html")!)
                         }

@@ -143,6 +143,16 @@ struct FZAPIEndpoint: RawRepresentable {
     static func notice(id: String) -> FZAPIEndpoint {
         return FZAPIEndpoint(rawValue: "/notices/\(id)/")
     }
+    
+    // MARK: support
+    static let supportTickets = FZAPIEndpoint(rawValue: "/support-tickets/")
+    static func supportTicket(id: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/support-tickets/\(id)/")
+    }
+    
+    static func supportTicketResponses(ticketId: String) -> FZAPIEndpoint {
+        return FZAPIEndpoint(rawValue: "/support-tickets/\(ticketId)/responses/")
+    }
 
     // MARK: utility functions
     func urlString(for server: String) -> String {
