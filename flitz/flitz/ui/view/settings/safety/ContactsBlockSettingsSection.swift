@@ -128,17 +128,15 @@ struct ContactsBlockSettingsSection: View {
             }
         }
         .animation(.spring, value: viewModel.busyInitial)
-        .onChange(of: viewModel.enabled) { _, newValue in
-            if viewModel.busyInitial || viewModel.busy {
-                return
-            }
-            
-            if newValue {
-                shouldPresentAlert = true
-            } else {
-                Task {
-                    await viewModel.reflectEnabled()
-                    await viewModel.removeAll()
+        .if(!(viewModel.busyInitial || viewModel.busy)) {
+            $0.onChange(of: viewModel.enabled) { _, newValue in
+                if newValue {
+                    shouldPresentAlert = true
+                } else {
+                    Task {
+                        await viewModel.reflectEnabled()
+                        await viewModel.removeAll()
+                    }
                 }
             }
         }
