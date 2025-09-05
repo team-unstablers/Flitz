@@ -66,6 +66,9 @@ struct ContactsBlockSettingsSection: View {
     @StateObject
     private var viewModel = ContactsBlockSettingsSectionViewModel()
     
+    @State
+    var shouldPresentAlert = false
+    
     var body: some View {
         VStack(spacing: 0) {
             FZPageSectionTitle(title: "연락처 미리 차단")
@@ -126,14 +129,38 @@ struct ContactsBlockSettingsSection: View {
         }
         .animation(.spring, value: viewModel.busyInitial)
         .onChange(of: viewModel.enabled) { _, newValue in
-            Task {
-                await viewModel.reflectEnabled()
+            if viewModel.busyInitial || viewModel.busy {
+                return
+            }
+            
+            if newValue {
+                shouldPresentAlert = true
+            } else {
+                Task {
+                    await viewModel.reflectEnabled()
+                    await viewModel.removeAll()
+                }
             }
         }
         .onAppear {
             Task {
                 await viewModel.loadSettings()
             }
+        }
+        .alert(isPresented: $shouldPresentAlert) {
+            Alert(
+                title: Text("연락처를 서버에 동기화하시겠습니까?"),
+                message: Text("연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n계속 진행하시겠습니까?"),
+                primaryButton: .default(Text("예")) {
+                    Task {
+                        await viewModel.reflectEnabled()
+                        await ContactsBlockerTask().execute()
+                    }
+                },
+                secondaryButton: .cancel() {
+                    viewModel.enabled = false
+                }
+            )
         }
         /*
         .onReceive(viewModel.intermediate.objectWillChange) {
