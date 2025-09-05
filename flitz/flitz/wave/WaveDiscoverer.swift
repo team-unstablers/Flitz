@@ -167,7 +167,10 @@ extension WaveDiscoverer: CBPeripheralDelegate {
             self.centralManager.cancelPeripheralConnection(peripheral)
         }
         
-        guard let id = String(data: characteristic.value!, encoding: .utf8) else {
+        guard let value = characteristic.value,
+              !value.isEmpty,
+              let id = String(data: value, encoding: .utf8)
+        else {
             logger.warning("Failed to decode session ID from characteristic value")
             return
         }
