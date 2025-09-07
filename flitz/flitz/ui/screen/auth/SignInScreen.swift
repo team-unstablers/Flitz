@@ -30,6 +30,8 @@ struct ServerSelector: View {
 struct SignInScreen: View {
     typealias AuthHandler = (FZAPIContext) -> Void
     
+    private let logger = createFZOSLogger("SignInScreen")
+    
     @EnvironmentObject
     var authPhaseState: AuthPhaseState
     
@@ -52,6 +54,9 @@ struct SignInScreen: View {
     
     @State
     private var turnstileNonce = UUID()
+    
+    @State
+    private var showLoginFailureAlert = false
     
     var authHandler: AuthHandler
     
@@ -139,6 +144,11 @@ struct SignInScreen: View {
         .toolbarVisibility(.hidden, for: .navigationBar)
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .alert("로그인 실패", isPresented: $showLoginFailureAlert) {
+            Button("확인") { }
+        } message: {
+            Text("로그인에 실패했습니다. 유저네임 / 비밀번호를 확인 후 다시 시도해주세요.")
+        }
     }
     
     func performSignIn() {
@@ -171,7 +181,11 @@ struct SignInScreen: View {
                     self.authHandler(newContext)
                 }
             } catch {
-                print(error)
+                logger.error("로그인 실패: \(error.localizedDescription)")
+                
+                DispatchQueue.main.async {
+                    self.showLoginFailureAlert = true
+                }
                 
                 // reset turnstile
                 self.turnstileToken = ""
