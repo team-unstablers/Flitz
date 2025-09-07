@@ -277,9 +277,9 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
-    func performSignUp() async {
+    func performSignUp() async -> Bool {
         if busy {
-            return
+            return false
         }
         
         busy = true
@@ -323,7 +323,7 @@ class SignUpViewModel: ObservableObject {
             
             
             guard let pendingImage = intermediate.pendingProfileImage else {
-                return
+                return true
             }
             
             let imageData = pendingImage.jpegData(compressionQuality: 0.9)
@@ -332,11 +332,13 @@ class SignUpViewModel: ObservableObject {
             }
             
             try await newClient.setProfileImage(file: data, fileName: "image.jpg", mimeType: "image/jpeg")
+            return true
         } catch {
             SentrySDK.capture(error: error)
 
             self.errorMessage = error.localizedDescription
             self.shouldPresentError = true
+            return false
         }
         
     }
@@ -762,11 +764,13 @@ struct SignUpPhases {
                 VStack {
                     FZButton(size: .large) {
                         Task {
-                            await viewModel.performSignUp()
-                            DispatchQueue.main.async {
-                                RootAppState.shared.reloadContext()
-                                
-                                signUpCompletionHandler()
+                            let success = await viewModel.performSignUp()
+                            if success {
+                                DispatchQueue.main.async {
+                                    RootAppState.shared.reloadContext()
+                                    
+                                    signUpCompletionHandler()
+                                }
                             }
                         }
                     } label: {
