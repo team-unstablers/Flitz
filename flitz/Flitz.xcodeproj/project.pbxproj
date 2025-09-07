@@ -357,6 +357,7 @@
 			knownRegions = (
 				ko,
 				Base,
+				en,
 			);
 			mainGroup = F699D07F2D00325300761976;
 			minimizedProjectReferenceProxies = 1;
@@ -610,7 +611,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
 				DEVELOPMENT_TEAM = XHA76UVA95;
@@ -655,7 +656,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Flitz/Flitz.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"flitz/Preview Content\"";
 				DEVELOPMENT_TEAM = XHA76UVA95;

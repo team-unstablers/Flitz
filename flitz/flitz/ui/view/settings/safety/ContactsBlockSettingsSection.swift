@@ -148,7 +148,7 @@ struct ContactsBlockSettingsSection: View {
         .alert(isPresented: $shouldPresentAlert) {
             Alert(
                 title: Text("연락처를 서버에 동기화하시겠습니까?"),
-                message: Text("연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n계속 진행하시겠습니까?"),
+                message: Text("연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\n\n계속 진행하시겠습니까?"),
                 primaryButton: .default(Text("예")) {
                     Task {
                         await viewModel.reflectEnabled()
