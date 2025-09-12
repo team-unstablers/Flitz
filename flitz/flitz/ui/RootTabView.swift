@@ -25,6 +25,9 @@ struct RootTabView: View {
     var _updateUnreadCountTask: Task<Void, Never>? = nil
     
     init() {
+    }
+    
+    func resetTabBarStyle() {
         UITabBar.appearance().isTranslucent = true
         UITabBar.appearance().backgroundColor = .white
     }
@@ -58,6 +61,7 @@ struct RootTabView: View {
                 }
         }
         .onAppear {
+            resetTabBarStyle()
             updateConversationUnreadCount()
         }
         .onReceive(appState.conversationBadgeUpdated) { _ in

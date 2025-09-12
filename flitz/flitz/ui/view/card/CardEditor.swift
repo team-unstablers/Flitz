@@ -58,7 +58,6 @@ struct CardEditor: View {
                                            isElementEditorPresented: $isElementEditorPresented)
                         .environment(\.fzAssetsLoader, assetsLoader)
                     }
-                    .background(.black)
                     .tag(CardEditorTab.editor)
                     .tabItem {
                         Image(systemName: "pencil")
@@ -86,7 +85,6 @@ struct CardEditor: View {
                         }
                 }
                 .tintColor(.yellow)
-                .colorScheme(currentTab == .editor ? .dark : .light)
             } else {
                 EmptyView()
             }
@@ -122,6 +120,9 @@ struct CardEditor: View {
             }
             
         }
+        .background(currentTab == .editor ? .black : .white)
+        .colorScheme(currentTab == .editor ? .dark : .light)
+        .animation(.easeInOut, value: currentTab)
         .navigationTitle("ui.card.editor.title")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarTransparent(true)
@@ -141,10 +142,16 @@ struct CardEditor: View {
             }
         }
         .onAppear {
+            self.resetTabBarStyle()
             self.fetchCard()
         }
     }
     
+    func resetTabBarStyle() {
+        UITabBar.appearance().isTranslucent = true
+        UITabBar.appearance().backgroundColor = .clear
+    }
+
     
     func fetchCard() {
         Task {
