@@ -361,7 +361,7 @@ class FZCardViewCardInstance: Identifiable, Hashable {
             return
         }
         
-        let scaleX = Float(mainTexture.size.height) / Float(mainTexture.size.width)
+        let scaleX = Float(mainTexture.height) / Float(mainTexture.width)
         
         material.lightingModel = .physicallyBased
 
