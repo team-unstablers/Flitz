@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AppClip
 
 @main
 struct WaveSpotApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRoot()
+                .preferredColorScheme(.light)
+                .font(.main)
         }
     }
 }

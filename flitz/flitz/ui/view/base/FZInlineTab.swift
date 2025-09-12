@@ -58,7 +58,7 @@ struct FZInlineTab: View {
                         Text(tab.title)
                             .foregroundStyle(selectedTabId == tab.id ? Color.Brand.black0 : Color.Grayscale.gray6)
                             .font(.fzHeading3)
-                            .semibold()
+                            .fontWeight(.semibold)
                             .frame(maxWidth: .infinity, maxHeight: 44)
                             .padding(.vertical, 8)
                     }

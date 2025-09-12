@@ -10,6 +10,10 @@ import Foundation
 import CoreLocation
 import CoreBluetooth
 
+enum WaveSpotClientError: LocalizedError {
+    case timeout
+}
+
 protocol WaveSpotClientDelegate: AnyObject {
     func waveSpotClientDidRequestLocationPermission(_ client: WaveSpotClient)
     
@@ -23,6 +27,8 @@ class WaveSpotClient: NSObject {
 #else
     static let BEACON_UUID = UUID(uuidString: "2ADF31E0-FF0E-4947-84E5-EA21F718AB4E")!
 #endif
+    
+    static let shared = WaveSpotClient()
     
     let logger = createFZOSLogger("WaveSpotClient")
     
@@ -43,6 +49,7 @@ class WaveSpotClient: NSObject {
     }
     
     private var authorizationTask: Task<Void, Error>? = nil
+    private var authorizationTimeoutTask: Task<Void, Never>? = nil
     
     override init() {
         super.init()
@@ -64,6 +71,8 @@ class WaveSpotClient: NSObject {
         }
         
         if authorizationTask == nil {
+            authorizationTimeoutTask?.cancel()
+            authorizationTimeoutTask = nil
             authorizationTask = Task {
                 do {
                     try await authorizeInner(location: location, beacon: beacon)
@@ -88,6 +97,18 @@ class WaveSpotClient: NSObject {
         locationManager.startRangingBeacons(satisfying: constraint)
         
         logger.info("Started scanning for beacons.")
+        
+        authorizationTimeoutTask = Task {
+            do {
+                try await Task.sleep(for: .seconds(10))
+            } catch {
+                return
+            }
+            
+            self.stopScanning()
+            self.delegate?.waveSpotClient(self, didFailWithError: WaveSpotClientError.timeout)
+            self.authorizationTimeoutTask = nil
+        }
     }
     
     private func stopScanning() {
@@ -110,6 +131,11 @@ extension WaveSpotClient: CLLocationManagerDelegate {
         @unknown default:
             logger.error("Unknown authorization status.")
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: any Error) {
+        logger.error("Location manager failed with error: \(error.localizedDescription)")
+        self.delegate?.waveSpotClient(self, didFailWithError: error)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
