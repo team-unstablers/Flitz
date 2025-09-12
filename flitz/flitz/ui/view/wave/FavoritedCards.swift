@@ -168,7 +168,7 @@ struct FavoritedCards: View {
                 .padding()
                 .blur(radius: index >= 6 ? 5 : 0)
                 .contextMenu {
-                    Button("보관함에서 삭제하기", role: .destructive) {
+                    Button(NSLocalizedString("ui.wave.favorites.context.remove", comment: "보관함에서 삭제하기"), role: .destructive) {
                         Task {
                             do {
                                 try await viewModel.client.deleteFavoriteCard(by: favorite.id)

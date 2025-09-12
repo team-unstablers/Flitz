@@ -37,7 +37,10 @@ struct ConfirmDeactivateScreen: View {
             ScrollView {
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("\(appState.profile?.display_name ?? "사용자")님,\n정말 계정을 삭제하시겠어요?".byCharWrapping)
+                        Text(String(
+                            format: NSLocalizedString("ui.settings.deactivation.title", comment: "%@님, 정말 계정을 삭제하시겠어요?"),
+                            appState.profile?.display_name ?? "사용자"
+                        ).byCharWrapping)
                             .font(.fzHeading1)
                             .bold()
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,7 +48,7 @@ struct ConfirmDeactivateScreen: View {
                         HStack(alignment: .top) {
                             Image("NoteIcon")
                                 .padding(.top, 3)
-                            Text("계정을 삭제하면 포토카드,메시지 등 기존의 모든 활동정보가 삭제됩니다. 계정 삭제후 7일동안 다시 가입을 할 수 없습니다.".byCharWrapping)
+                            Text(NSLocalizedString("ui.settings.deactivation.description", comment: "계정을 삭제하면 포토카드,메시지 등 기존의 모든 활동정보가 삭제됩니다. 계정 삭제후 7일동안 다시 가입을 할 수 없습니다.").byCharWrapping)
                                 .font(.fzMain)
                                 .foregroundStyle(Color.Grayscale.gray6)
                         }
@@ -63,12 +66,15 @@ struct ConfirmDeactivateScreen: View {
                     }
                     .padding(.top, 40)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("\(appState.profile?.display_name ?? "사용자")님이 떠나시는 이유는 무엇인가요?".byCharWrapping)
+                        Text(String(
+                            format: NSLocalizedString("ui.settings.deactivation.reason.title", comment: "%@님이 떠나시는 이유는 무엇인가요?"),
+                            appState.profile?.display_name ?? "사용자"
+                        ).byCharWrapping)
                             .font(.fzHeading2)
                             .bold()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.top, 60)
-                        Text("그 동안 Flitz를 이용해 주셔서 감사합니다.\n사용자님이 느끼셨던 점을 저희에게 공유해주시면 더욱 좋은 서비스를 제공할 수 있도록 노력하겠습니다.".byCharWrapping)
+                        Text(NSLocalizedString("ui.settings.deactivation.reason.description", comment: "그 동안 Flitz를 이용해 주셔서 감사합니다.\n사용자님이 느끼셨던 점을 저희에게 공유해주시면 더욱 좋은 서비스를 제공할 수 있도록 노력하겠습니다.").byCharWrapping)
                             .font(.fzMain)
                             .foregroundStyle(Color.Grayscale.gray6)
                     }
@@ -99,7 +105,7 @@ struct ConfirmDeactivateScreen: View {
                         .toggleStyle(FZRadioToggleStyle())
                          */
                         
-                        TextField("피드백을 남겨주세요. (번거로우시면 꼭 남겨주시지 않으셔도 괜찮아요!)".byCharWrapping, text: $feedbackText, axis: .vertical)
+                        TextField(NSLocalizedString("ui.settings.deactivation.reason.placeholder", comment: "피드백을 남겨주세요. (번거로우시면 꼭 남겨주시지 않으셔도 괜찮아요!)").byCharWrapping, text: $feedbackText, axis: .vertical)
                             .focused($isFeedbackTextFocused)
                             .font(.fzMain)
                             .lineLimit(4...5)
@@ -119,7 +125,7 @@ struct ConfirmDeactivateScreen: View {
             }
             VStack {
                 Toggle(isOn: $agreeToTerms) {
-                    Text("회원 탈퇴 안내 사항을 확인하였으며, 이에 동의합니다.".byCharWrapping)
+                    Text(NSLocalizedString("ui.settings.deactivation.reason.confirmation", comment: "회원 탈퇴 안내 사항을 확인하였으며, 이에 동의합니다.").byCharWrapping)
                 }
                     .toggleStyle(FZCheckboxToggleStyle())
                     .disabled(busy)
@@ -130,7 +136,7 @@ struct ConfirmDeactivateScreen: View {
                     if busy {
                         ProgressView()
                     } else {
-                        Text("회원 탈퇴하기")
+                        Text(NSLocalizedString("ui.settings.account.deactivate_button", comment: "회원 탈퇴하기"))
                             .font(.fzHeading3)
                             .semibold()
                     }
@@ -148,20 +154,20 @@ struct ConfirmDeactivateScreen: View {
         .onTapGesture {
             isFeedbackTextFocused = false
         }
-        .navigationTitle("계정 삭제하기")
+        .navigationTitle(NSLocalizedString("ui.settings.deactivate.page_title", comment: "계정 삭제하기"))
         .navigationBarBackButtonHidden(busy)
-        .alert("비밀번호 입력", isPresented: $showPasswordAlert) {
-            SecureField("비밀번호를 입력하세요", text: $passwordInput)
-            Button("취소", role: .cancel) {
+        .alert("ui.settings.account.deactivate_password_alert.title", isPresented: $showPasswordAlert) {
+            SecureField(NSLocalizedString("ui.settings.deactivate.textfield.password.placeholder", comment: ""), text: $passwordInput)
+            Button(NSLocalizedString("ui.common.cancel", comment: "취소"), role: .cancel) {
                 passwordInput = ""
             }
-            Button("확인") {
+            Button(NSLocalizedString("ui.common.confirm", comment: "확인")) {
                 Task {
                     await deactivateAccount(password: passwordInput)
                 }
             }
         } message: {
-            Text("계정을 비활성화하려면 계정 비밀번호를 입력해주세요.")
+            Text(NSLocalizedString("ui.settings.account.deactivate_password.message", comment: "계정을 비활성화하려면 계정 비밀번호를 입력해주세요."))
         }
     }
     
@@ -186,7 +192,7 @@ struct ConfirmDeactivateScreen: View {
             let response = try await client.deactivateSelf(args)
             
             if !response.is_success {
-                errorMessage = response.reason ?? "알 수 없는 오류가 발생하였습니다"
+                errorMessage = response.reason ?? NSLocalizedString("fzapi.unknown_error", comment: "알 수 없는 오류가 발생하였습니다")
                 return
             }
             

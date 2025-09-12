@@ -318,9 +318,9 @@ class ProfileEditViewModel: ObservableObject {
 }
 
 struct ProfileEditSectionTitle: View {
-    let title: String
+    let title: LocalizedStringKey
     
-    init(_ title: String) {
+    init(_ title: LocalizedStringKey) {
         self.title = title
     }
     
@@ -351,7 +351,7 @@ struct ProfileEditSection<Content: View>: View {
 }
 
 struct ProfileEditSectionEntity<Content: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     
     var error: FZFormError? = nil
 
@@ -392,7 +392,7 @@ struct ProfileEditSectionDivider: View {
 struct ProfileIdentityNote: View {
     var body: some View {
         VStack(alignment: .leading) {
-            (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text("안내"))
+            (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text(NSLocalizedString("ui.mypage.profile.identity_notice_title", comment: "안내")))
                 .font(.heading3)
                 .bold()
                 .foregroundStyle(.black.opacity(0.9))
@@ -400,8 +400,8 @@ struct ProfileIdentityNote: View {
                 .padding(.bottom, 4)
             
             Group {
-                Text("입력하신 정체성과 선호하는 사람들에 대한 정보는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요.".byCharWrapping)
-                Text("트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요.".byCharWrapping)
+                Text(NSLocalizedString("ui.profile.edit.privacy_notice.identity_info", comment: "입력하신 정체성과 선호하는 사람들에 대한 정보는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요.").byCharWrapping)
+                Text(NSLocalizedString("ui.profile.edit.privacy_notice.transgender_info", comment: "트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요.").byCharWrapping)
             }
             .font(.small)
             .foregroundStyle(.black.opacity(0.8))
@@ -500,17 +500,17 @@ struct ProfileEditImage: View {
                         SwiftUICropView(editingStack: editorContext.editingStack, isAutoApplyEditingStackEnabled: true)
                             .croppingAspectRatio(PixelAspectRatio(width: 1, height: 1))
                     }
-                    .navigationTitle("이미지 자르기")
+                    .navigationTitle(NSLocalizedString("ui.mypage.profile.image_crop.page_title", comment: "이미지 자르기"))
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button("취소") {
+                            Button(NSLocalizedString("ui.common.cancel", comment: "취소")) {
                                 editorVisible = false
                                 self.editorContext = nil
                             }
                         }
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            Button("저장") {
+                            Button(NSLocalizedString("ui.common.save", comment: "저장")) {
                                 defer {
                                     editorVisible = false
                                     self.editorContext = nil
@@ -586,47 +586,47 @@ struct ProfileEditScreen: View {
                 }
                 
                 VStack(alignment: .leading) {
-                    ProfileEditSectionTitle("기본 정보")
+                    ProfileEditSectionTitle("ui.mypage.profile.section.basic.title") // 기본 정보
                     ProfileEditSection {
-                        ProfileEditSectionEntity(title: "닉네임", error: viewModel.intermediate.validationError.displayName) {
-                            TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.nickname.title", error: viewModel.intermediate.validationError.displayName) {
+                            TextField("ui.mypage.profile.section.basic.nickname.placeholder", text: $viewModel.intermediate.displayName)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "한줄 칭호", error: viewModel.intermediate.validationError.title) {
-                            TextField("당신을 나타내는 한줄 칭호!", text: $viewModel.intermediate.title)
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.title.title", error: viewModel.intermediate.validationError.title) {
+                            TextField("ui.mypage.profile.section.basic.title.placeholder", text: $viewModel.intermediate.title)
                                 .font(.fzHeading3)
                         }
                         
                         ProfileEditSectionDivider()
                         
-                        ProfileEditSectionEntity(title: "해시태그") {
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.hashtags.title") {
                             FZHashtagField(hashtags: $viewModel.intermediate.hashtags)
                         }
 
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "자기소개", error: viewModel.intermediate.validationError.bio) {
-                            TextField("멋진 자기 소개를 입력해 보세요!", text: $viewModel.intermediate.bio, axis: .vertical)
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.bio.title", error: viewModel.intermediate.validationError.bio) {
+                            TextField("ui.mypage.profile.section.basic.bio.placeholder", text: $viewModel.intermediate.bio, axis: .vertical)
                                 .lineLimit(3...5)
                                 .font(.fzHeading3)
                         }
                     }
                     
-                    ProfileEditSectionTitle("개인 정보")
+                    ProfileEditSectionTitle("ui.mypage.profile.section.account.title") // 계정 정보
                     ProfileEditSection {
-                        ProfileEditSectionEntity(title: "유저네임") {
-                            TextField("등록되지 않음", text: $viewModel.intermediate.username)
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.account.username.title") {
+                            TextField("ui.mypage.profile.section.account.username.placeholder", text: $viewModel.intermediate.username)
                                 .font(.fzHeading3)
                                 .disabled(true)
                         }
                         
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "생년월일") {
-                            TextField("등록되지 않음", text: $viewModel.intermediate.birthDate)
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.account.birthdate.title") {
+                            TextField("ui.mypage.profile.section.account.birthdate.placeholder", text: $viewModel.intermediate.birthDate)
                                 .font(.fzHeading3)
                                 .disabled(true)
                         }
@@ -652,7 +652,7 @@ struct ProfileEditScreen: View {
 
                         ProfileEditSectionDivider()
                         
-                        ProfileEditSectionEntity(title: "휴대폰 번호") {
+                        ProfileEditSectionEntity(title: "ui.mypage.profile.section.account.phonenumber.title") {
                             HStack {
                                 TextField("", text: $viewModel.intermediate.phoneNumber)
                                     .font(.fzHeading3)
@@ -670,22 +670,22 @@ struct ProfileEditScreen: View {
                         }
                     }
                     
-                    ProfileEditSectionTitle("정체성 및 선호도")
+                    ProfileEditSectionTitle("ui.mypage.profile.section.identity.title") // 정체성 & 선호하는 사람들
                     ProfileEditSection {
-                        ProfileEditSectionEntity(title: "정체성") {
+                        ProfileEditSectionEntity(title: "ui.mypage.section.identity.identity.title") {
                             FZSingleChipSelector(selectedChip: $viewModel.intermediate.gender)
                                 .padding(.bottom, 8)
                             
                             Group {
                                 Toggle(isOn: $viewModel.intermediate.isTransgender) {
-                                    Text("트랜스젠더예요" + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
+                                    Text(NSLocalizedString("ui.mypage.profile.trans_identity", comment: "트랜스젠더예요") + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
                                         .font(.fzMain)
                                 }
                                 .tint(Color.Pride.trans1)
                                 
                                 if viewModel.intermediate.isTransgender {
                                     Toggle(isOn: $viewModel.intermediate.transVisibleToOthers) {
-                                        Text("트랜스젠더 여부를 프로필에 표시할래요")
+                                        Text(NSLocalizedString("ui.mypage.profile.trans_visibility", comment: "트랜스젠더 여부를 프로필에 표시할래요"))
                                             .font(.fzMain)
                                     }
                                     .tint(Color.Pride.trans2)
@@ -696,24 +696,24 @@ struct ProfileEditScreen: View {
                         
                         ProfileEditSectionDivider()
 
-                        ProfileEditSectionEntity(title: "선호하는 사람들") {
+                        ProfileEditSectionEntity(title: "ui.mypage.section.identity.preferred_people.title") {
                             FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
                             
                             if (viewModel.intermediate.isTransgender) {
                                  Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
-                                    Text("안전한 사람들하고만 매칭할래요")
+                                    Text(NSLocalizedString("ui.mypage.profile.trans_safe_match", comment: "안전한 사람들하고만 매칭할래요"))
                                         .font(.fzMain)
                                 }
                                 .tint(Color.Pride.trans1)
                                 .padding(.vertical, 4)
                                 
                                 if (viewModel.intermediate.enableTransSafeMatch) {
-                                    Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
+                                    Text(NSLocalizedString("ui.mypage.profile.trans_safe_match_desc", comment: "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요."))
                                         .font(.fzSmall)
                                 }
                             } else {
                                 Toggle(isOn: $viewModel.intermediate.isTransPreferred) {
-                                    Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
+                                    Text(NSLocalizedString("ui.mypage.profile.trans_welcome", comment: "트랜스젠더 사람들을 환영해요") + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
                                         .font(.fzMain)
                                 }
                                 .tint(Color.Pride.trans1)
@@ -732,14 +732,14 @@ struct ProfileEditScreen: View {
             }
             
         }
-        .navigationTitle("프로필 설정")
+        .navigationTitle(NSLocalizedString("ui.mypage.profile.page_title", comment: "프로필 설정"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if viewModel.busy {
                     ProgressView()
                 } else {
-                    Button("저장") {
+                    Button(NSLocalizedString("ui.common.save", comment: "저장")) {
                         Task {
                             async let saveImage = viewModel.saveProfileImage()
                             async let saveProfile = viewModel.saveProfile()

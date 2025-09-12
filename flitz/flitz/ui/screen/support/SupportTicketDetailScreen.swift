@@ -103,7 +103,7 @@ struct SupportTicketDetailScreen: View {
                         
                         Section {
                             VStack(spacing: 16) {
-                                TextField("새로운 답변 추가하기...".byCharWrapping, text: $responseContent, axis: .vertical)
+                                TextField(NSLocalizedString("ui.support.ticket_detail.new_response_placeholder", comment: "새로운 답변 추가하기...").byCharWrapping, text: $responseContent, axis: .vertical)
                                     .focused($isFocused)
                                     .font(.fzMain)
                                     .lineLimit(10...10)
@@ -121,7 +121,7 @@ struct SupportTicketDetailScreen: View {
                                         await postResponse()
                                     }
                                 } label: {
-                                    Text("답변 추가하기".byCharWrapping)
+                                    Text(NSLocalizedString("ui.support.ticket_detail.add_response_button", comment: "답변 추가하기").byCharWrapping)
                                         .font(.fzHeading3)
                                         .semibold()
                                 }
@@ -133,7 +133,7 @@ struct SupportTicketDetailScreen: View {
                                 Divider()
                                     .background(Color.Grayscale.gray2)
                                 
-                                Text("새로운 답변 추가하기".byCharWrapping)
+                                Text(NSLocalizedString("ui.support.ticket_detail.new_response_section_title", comment: "새로운 답변 추가하기").byCharWrapping)
                                     .font(.fzHeading2)
                                     .foregroundStyle(Color.Brand.black0)
                                     .semibold()

@@ -59,21 +59,21 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                 ZStack {
                     VStack {
                         Slider(value: $radius, in: 300...1000, step: 100) {
-                            Text("반경")
+                            Text(NSLocalizedString("ui.settings.safety.radius", comment: "반경"))
                         } minimumValueLabel: {
                             Text("300m")
                         } maximumValueLabel: {
                             Text("1000m")
                         }
                         
-                        Button("안전 구역 삭제") {
+                        Button(NSLocalizedString("ui.settings.safety.zone.delete", comment: "안전 구역 삭제")) {
                             picked = nil
                         }
                             .foregroundStyle(.red)
                     }
                         .opacity(picked != nil ? 1.0 : 0.0)
                     
-                    Text("위치를 길게 눌러서 선택하세요.")
+                    Text(NSLocalizedString("ui.settings.safety.location_select_instruction", comment: "위치를 길게 눌러서 선택하세요."))
                         .font(.fzMain)
                         .foregroundStyle(Color.Brand.black0)
                         .opacity(picked == nil ? 1.0 : 0.0)
@@ -84,7 +84,7 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                     Map(position: $position) {
                         if let p = picked {
                             Marker(coordinate: p) {
-                                Text("안전 구역\n(반경 \(Int(radius))m)")
+                                Text(String(format: NSLocalizedString("ui.settings.safety.safe_zone_marker", comment: "안전 구역\n(반경 %dm)"), Int(radius)))
                             }
                             MapCircle(center: p, radius: radius)               // ← 300m
                                 .foregroundStyle(.blue.opacity(0.18))       // 채우기
@@ -136,24 +136,24 @@ struct WaveSafetyZoneSettingsLocationSheet: View {
                 }
                 .cornerRadius(12)
                 
-                Button("현재 위치로 이동") {
+                Button(NSLocalizedString("ui.settings.safety.location.move_to_current", comment: "현재 위치로 이동")) {
                     position = .userLocation(fallback: .automatic)
                 }
                 .padding(.top, 4)
             }
             .padding()
             .toolbarVisibility(.visible, for: .navigationBar)
-            .navigationTitle("안전 구역 설정")
+            .navigationTitle(NSLocalizedString("ui.safety.zone_settings.page_title", comment: "안전 구역 설정"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("취소") {
+                    Button(NSLocalizedString("ui.common.cancel", comment: "취소")) {
                         dismissHandler()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("완료") {
+                    Button(NSLocalizedString("ui.common.done", comment: "완료")) {
                         submitHandler(picked, radius)
                     }
                 }

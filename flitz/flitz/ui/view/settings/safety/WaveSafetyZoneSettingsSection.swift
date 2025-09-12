@@ -113,12 +113,12 @@ struct WaveSafetyZoneSettingsSection: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            FZPageSectionTitle(title: "안전 구역 설정 (베타)")
+            FZPageSectionTitle(title: "ui.settings.safety.safety_zone.title")
             if viewModel.busyInitial {
                 ProgressView()
                     .padding(.vertical, 8)
             } else {
-                FZPageSectionItem("안전 구역 기능 켜기 (베타)") {
+                FZPageSectionItem("ui.settings.safety.safety_zone.toggle") {
                     Toggle("", isOn: $viewModel.intermediate.isEnabled)
                 }
                 /*
@@ -126,18 +126,18 @@ struct WaveSafetyZoneSettingsSection: View {
                     Toggle("", isOn: $viewModel.intermediate.enableWaveAfterExit)
                 }
                  */
-                FZPageSectionActionItem("안전 구역 지정하기") {
+                FZPageSectionActionItem("ui.settings.safety.safety_zone.set_location") {
                     viewModel.locationSheetPresented = true
                 }
                 
                 
                 FZPageSectionNote() {
                     if viewModel.intermediate.isEnabled && (viewModel.intermediate.latitude == nil || viewModel.intermediate.longitude == nil) {
-                        (Text("아직 안전 구역을 지정하지 않았습니다!").bold() + Text(" '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다.".byCharWrapping))
+                        Text(NSLocalizedString("ui.settings.safety.safety_zone.warning_not_set", comment: "아직 안전 구역을 지정하지 않았습니다! '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다.").byCharWrapping)
                             .padding(.bottom, 4)
                     }
                     
-                    Text("안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견하거나 카드 교환을 할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다.".byCharWrapping)
+                    Text(NSLocalizedString("ui.settings.safety.safety_zone.beta_notice", comment: "안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견하거나 카드 교환을 할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다.").byCharWrapping)
                 }
             }
         }

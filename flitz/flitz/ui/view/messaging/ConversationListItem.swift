@@ -71,11 +71,11 @@ struct ConversationListItem: View {
             .contentShape(Rectangle())
             .overlay(Divider(), alignment: .bottom)
             .contextMenu {
-                Button("사용자 차단하기", role: .destructive) {
+                Button(NSLocalizedString("ui.messaging.conversation.context.block_user", comment: "사용자 차단하기"), role: .destructive) {
                     
                 }
                 
-                Button("대화 신고하기", role: .destructive) {
+                Button(NSLocalizedString("ui.messaging.conversation.context.report_conversation", comment: "대화 신고하기"), role: .destructive) {
                     isFlagSheetVisible = true
                 }
             }

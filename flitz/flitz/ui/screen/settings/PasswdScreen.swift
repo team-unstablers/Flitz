@@ -71,22 +71,22 @@ struct PasswdScreen: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 40) {
-                FZInlineEntry("현재 비밀번호") {
-                    SecureField("현재 비밀번호를 입력해 주세요", text: $viewModel.currentPassword)
+                FZInlineEntry(NSLocalizedString("ui.settings.password.textfield.currentpassword.label", comment: "")) {
+                    SecureField(NSLocalizedString("ui.settings.passwd.textfield.current_password.placeholder", comment: ""), text: $viewModel.currentPassword)
                         .textContentType(.password)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
                 
-                FZInlineEntry("새 비밀번호") {
-                    SecureField("새 비밀번호를 입력해 주세요", text: $viewModel.newPassword)
+                FZInlineEntry(NSLocalizedString("ui.settings.password.textfield.newpassword.label", comment: "")) {
+                    SecureField(NSLocalizedString("ui.settings.passwd.textfield.new_password.placeholder", comment: ""), text: $viewModel.newPassword)
                         .textContentType(.password)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
                 
-                FZInlineEntry("비밀번호 재입력") {
-                    SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.confirmPassword)
+                FZInlineEntry(NSLocalizedString("ui.settings.password.textfield.confirmpassword.label", comment: "")) {
+                    SecureField(NSLocalizedString("ui.settings.passwd.textfield.confirm_password.placeholder", comment: ""), text: $viewModel.confirmPassword)
                         .textContentType(.password)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
@@ -94,10 +94,10 @@ struct PasswdScreen: View {
             }
         }
         .padding()
-        .navigationTitle("비밀번호 변경")
+        .navigationTitle(NSLocalizedString("ui.settings.change_password.page_title", comment: "비밀번호 변경"))
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("변경") {
+                Button(NSLocalizedString("ui.settings.change_password.action.change", comment: "변경")) {
                     if !viewModel.validate() {
                     }
                     
@@ -111,7 +111,7 @@ struct PasswdScreen: View {
             }
         }
         .alert(isPresented: $viewModel.showErrorAlert) {
-            Alert(title: Text("오류"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("확인")))
+            Alert(title: Text(NSLocalizedString("ui.settings.account.error_alert_title", comment: "오류")), message: Text(viewModel.errorMessage), dismissButton: .default(Text(NSLocalizedString("ui.settings.account.error_alert_ok", comment: "확인"))))
         }
     }
 }

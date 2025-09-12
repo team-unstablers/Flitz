@@ -196,7 +196,7 @@ struct MyPageScreen: View {
                     
                 }
             }
-            .navigationTitle("마이페이지")
+            .navigationTitle(NSLocalizedString("ui.mypage.page_title", comment: "마이페이지"))
         }
     }
 }

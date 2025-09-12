@@ -15,7 +15,7 @@ enum AssertionFailureReason {
     var description: String {
         switch self {
         case .sslFailure:
-            return "안전한 연결을 수립할 수 없었어요.\n\n이 문제는 보호되지 않은 공공 Wi-Fi나 일부 회사/학교 네트워크에서 발생할 수 있으니, 다른 네트워크 환경에서 다시 시도해 주세요."
+            return NSLocalizedString("ui.safety.assertion.ssl_failure_description", comment: "안전한 연결을 수립할 수 없었어요.\n\n이 문제는 보호되지 않은 공공 Wi-Fi나 일부 회사/학교 네트워크에서 발생할 수 있으니, 다른 네트워크 환경에서 다시 시도해 주세요.")
         case .other(let reason):
             return reason
         }
@@ -33,7 +33,7 @@ enum AssertionFailureReason {
     var asLocalizedDisplayText: String {
         switch self {
         case .sslFailure:
-            return "서버의 신원이 불분명합니다"
+            return NSLocalizedString("ui.safety.assertion.server_identity_unclear", comment: "서버의 신원이 불분명합니다")
         case .other(let reason):
             return reason
         }
@@ -53,12 +53,12 @@ struct AssertionFailureDialogBody: View {
     var body: some View {
         VStack {
             VStack(spacing: 16) {
-                Text("앱이 잠시 중단되었습니다")
+                Text(NSLocalizedString("ui.safety.assertion.app_suspended", comment: "앱이 잠시 중단되었습니다"))
                     .font(.fzHeading2)
                     .bold()
                 
                 Group {
-                    Text("Flitz에서 사용자님의 안전을 위해 앱을 잠시 중단했어요.".byCharWrapping)
+                    Text(NSLocalizedString("ui.safety.assertion.safety_suspension_message", comment: "Flitz에서 사용자님의 안전을 위해 앱을 잠시 중단했어요.").byCharWrapping)
                     Text(reason.description.byCharWrapping)
                 }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -67,7 +67,7 @@ struct AssertionFailureDialogBody: View {
                 FZButton(size: .large) {
                     Flitz.exitGracefully()
                 } label: {
-                    Text("앱 종료하기")
+                    Text(NSLocalizedString("ui.safety.assertion.exit_app", comment: "앱 종료하기"))
                         .font(.fzHeading3)
                         .semibold()
                 }

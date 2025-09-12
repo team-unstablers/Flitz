@@ -26,7 +26,7 @@ struct FZHashtagField: View {
     var isFocused: Bool
 
     var body: some View {
-        TextField("해시태그를 입력하세요", text: $hashtagString, axis: .vertical)
+        TextField(NSLocalizedString("ui.common.hashtag.placeholder", comment: "해시태그를 입력하세요"), text: $hashtagString, axis: .vertical)
             .lineLimit(2...3)
             .font(.fzHeading3)
             .foregroundStyle(Color.blue.opacity(0.8))

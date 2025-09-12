@@ -35,26 +35,26 @@ struct RootTabView: View {
                 .tag(RootTab.wave)
                 .tabItem {
                     Image(systemName: "arrow.2.circlepath")
-                    Text("웨이브")
+                    Text(NSLocalizedString("ui.tab.wave", comment: "웨이브"))
                 }
             ConversationListScreen()
                 .tag(RootTab.messages)
                 .tabItem {
                     Image(systemName: "message")
-                    Text("메시지")
+                    Text(NSLocalizedString("ui.tab.message", comment: "메시지"))
                 }
                 .badge(conversationUnreadCount > 0 ? (conversationUnreadCount > 99 ? "99+" : "\(conversationUnreadCount)") : nil)
             StoreRootScreen()
                 .tag(RootTab.store)
                 .tabItem {
                     Image(systemName: "house")
-                    Text("스토어")
+                    Text(NSLocalizedString("ui.tab.store", comment: "스토어"))
                 }
             MyPageScreen()
                 .tag(RootTab.profile)
                 .tabItem {
                     Image(systemName: "person")
-                    Text("프로필")
+                    Text(NSLocalizedString("ui.tab.profile", comment: "프로필"))
                 }
         }
         .onAppear {

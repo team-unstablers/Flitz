@@ -138,15 +138,15 @@ struct FindPasswordScreen: View {
                 if viewModel.currentPhase == 0 {
                     VStack {
                         VStack(spacing: 40) {
-                            FZInlineEntry("유저네임") {
-                                TextField("유저네임을 입력해 주세요", text: $viewModel.username)
+                            FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.username.label", comment: "")) {
+                                TextField(NSLocalizedString("ui.auth.findpassword.textfield.username.placeholder", comment: "유저네임을 입력해 주세요"), text: $viewModel.username)
                                     .textContentType(.username)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
                             }
                             
-                            FZInlineEntry("휴대폰 번호") {
-                                TextField("계정과 연결된 휴대폰 번호를 입력해 주세요", text: $viewModel.phoneNumber)
+                            FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.phonenumber.label", comment: "")) {
+                                TextField(NSLocalizedString("ui.auth.findpassword.textfield.phonenumber.placeholder", comment: "계정과 연결된 휴대폰 번호를 입력해 주세요"), text: $viewModel.phoneNumber)
                                     .textContentType(.telephoneNumber)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
@@ -155,22 +155,22 @@ struct FindPasswordScreen: View {
                     }
                 } else {
                     VStack(spacing: 40) {
-                        FZInlineEntry("인증번호") {
-                            SecureField("문자로 수신받은 인증 번호를 입력해 주세요", text: $viewModel.verificationCode)
+                        FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.verification_code.label", comment: "")) {
+                            SecureField(NSLocalizedString("ui.auth.findpassword.textfield.verification_code.placeholder", comment: ""), text: $viewModel.verificationCode)
                                 .textContentType(.password)
                                 .autocapitalization(.none)
                                 .disableAutocorrection(true)
                         }
                         
-                        FZInlineEntry("새 비밀번호") {
-                            SecureField("새 비밀번호를 입력해 주세요", text: $viewModel.newPassword)
+                        FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.newpassword.label", comment: "")) {
+                            SecureField(NSLocalizedString("ui.auth.findpassword.textfield.new_password.placeholder", comment: ""), text: $viewModel.newPassword)
                                 .textContentType(.password)
                                 .autocapitalization(.none)
                                 .disableAutocorrection(true)
                         }
                         
-                        FZInlineEntry("비밀번호 재입력") {
-                            SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.confirmPassword)
+                        FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.confirmpassword.label", comment: "")) {
+                            SecureField(NSLocalizedString("ui.auth.findpassword.textfield.confirm_password.placeholder", comment: ""), text: $viewModel.confirmPassword)
                                 .textContentType(.password)
                                 .autocapitalization(.none)
                                 .disableAutocorrection(true)
@@ -188,7 +188,7 @@ struct FindPasswordScreen: View {
                     if viewModel.busy {
                         ProgressView()
                     } else {
-                        Text("인증 문자 받기")
+                        Text(NSLocalizedString("ui.auth.findpassword.send_verification", comment: "인증 문자 받기"))
                             .font(.fzHeading3)
                             .semibold()
                     }
@@ -204,7 +204,7 @@ struct FindPasswordScreen: View {
                     if viewModel.busy {
                         ProgressView()
                     } else {
-                        Text("비밀번호 변경하기")
+                        Text(NSLocalizedString("ui.auth.findpassword.change_password", comment: "비밀번호 변경하기"))
                             .font(.fzHeading3)
                             .semibold()
                     }
@@ -213,9 +213,9 @@ struct FindPasswordScreen: View {
             }
         }
         .padding()
-        .navigationTitle("비밀번호 찾기")
+        .navigationTitle(NSLocalizedString("ui.auth.find_password.page_title", comment: "비밀번호 찾기"))
         .alert(isPresented: $viewModel.showErrorAlert) {
-            Alert(title: Text("오류"), message: Text(viewModel.errorMessage), dismissButton: .default(Text("확인")))
+            Alert(title: Text(NSLocalizedString("ui.common.error", comment: "오류")), message: Text(viewModel.errorMessage), dismissButton: .default(Text(NSLocalizedString("ui.common.confirm", comment: "확인"))))
         }
     }
 }

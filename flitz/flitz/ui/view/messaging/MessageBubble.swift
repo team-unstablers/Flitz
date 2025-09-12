@@ -18,7 +18,7 @@ struct MessageMetadataIndicator: View {
     var body: some View {
         VStack(alignment: isFromCurrentUser ? .trailing : .leading, spacing: 2) {
             if isFromCurrentUser && isRead {
-                Text("읽음")
+                Text(NSLocalizedString("ui.messaging.bubble.read", comment: "읽음"))
             }
             Text(self.message.created_at.asISO8601Date?.localeTimeString ?? "")
         }
@@ -60,7 +60,7 @@ struct MessageBubble: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .contextMenu {
                         if isFromCurrentUser {
-                            Button("메시지 삭제", role: .destructive) {
+                            Button(NSLocalizedString("ui.messaging.bubble.delete", comment: "메시지 삭제"), role: .destructive) {
                                 /*
                                 Task {
                                     await viewModel.deleteMessage(id: message.id.uuidString)
@@ -68,7 +68,7 @@ struct MessageBubble: View {
                                  */
                             }
                         } else {
-                            Button("메시지 신고", role: .destructive) {
+                            Button(NSLocalizedString("ui.messaging.bubble.report", comment: "메시지 신고"), role: .destructive) {
                                 isFlagSheetVisible = true
                             }
                         }

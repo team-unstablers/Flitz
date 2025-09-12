@@ -28,7 +28,7 @@ struct UserBlockItem: View {
                 }
             }
             Spacer()
-            Button("차단 해제", role: .destructive) {
+            Button(NSLocalizedString("ui.safety.action.unblock", comment: "차단 해제"), role: .destructive) {
                 action()
             }
         }

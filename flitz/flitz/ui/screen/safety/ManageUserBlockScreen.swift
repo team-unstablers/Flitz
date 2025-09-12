@@ -79,12 +79,12 @@ struct ManageUserBlockScreen: View {
             } else {
                 if viewModel.blocks.isEmpty {
                     VStack(spacing: 8) {
-                        Text("차단된 사용자가 없어요")
+                        Text(NSLocalizedString("ui.safety.blocked_users.empty_list.title", comment: "차단된 사용자가 없어요"))
                             .font(.heading2)
                             .bold()
                             .foregroundStyle(Color.Grayscale.gray8)
                         
-                        Text("차단된 사용자와는 카드 교환 및 대화가 불가능해요.")
+                        Text(NSLocalizedString("ui.safety.blocked_users.empty_list.description", comment: "차단된 사용자와는 카드 교환 및 대화가 불가능해요."))
                             .multilineTextAlignment(.center)
                             .font(.main)
                             .foregroundStyle(Color.Grayscale.gray7)
@@ -117,7 +117,7 @@ struct ManageUserBlockScreen: View {
                 }
             }
         }
-        .navigationTitle("차단된 사용자")
+        .navigationTitle(NSLocalizedString("ui.safety.blocked_users.page_title", comment: "차단된 사용자"))
         .onAppear {
             viewModel.configure(with: appState.client)
         }

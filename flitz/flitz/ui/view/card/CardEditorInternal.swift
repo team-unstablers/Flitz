@@ -84,16 +84,16 @@ struct CardEditorInternal: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 HStack {
-                    CardEditorButton(icon: "CardEditorFrameButtonIcon", description: "배경 이미지") {
+                    CardEditorButton(icon: "CardEditorFrameButtonIcon", description: NSLocalizedString("ui.card.editor.tool.background", comment: "배경 이미지")) {
                         showBackgroundImagePicker = true
                     }
                 }
                 Spacer()
                 HStack {
-                    CardEditorButton(icon: "CardEditorTextButtonIcon", description: "텍스트 추가") {
+                    CardEditorButton(icon: "CardEditorTextButtonIcon", description: NSLocalizedString("ui.card.editor.tool.add_text", comment: "텍스트 추가")) {
                         card.elements.append(Flitz.Text("텍스트 입력"))
                     }
-                    CardEditorButton(icon: "CardEditorStickerButtonIcon", description: "스티커 추가") {
+                    CardEditorButton(icon: "CardEditorStickerButtonIcon", description: NSLocalizedString("ui.card.editor.tool.add_sticker", comment: "스티커 추가")) {
                         showImagePicker = true
                     }
                 }

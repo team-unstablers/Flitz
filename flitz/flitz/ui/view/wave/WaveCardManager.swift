@@ -88,12 +88,12 @@ class WaveCardManagerViewModel: ObservableObject {
 struct WaveCardNotRevealed: View {
     var body: some View {
         VStack() {
-            Text("아직은 카드를 볼 수 없어요")
+            Text(NSLocalizedString("ui.wave.not_ready.title", comment: "아직은 카드를 볼 수 없어요"))
                 .font(.heading2)
                 .bold()
                 .foregroundStyle(Color.Grayscale.gray8)
             
-            Text("시간이 지나면 카드를 볼 수 있게 될 거에요.\n조금만 기다려 주세요!")
+            Text(NSLocalizedString("ui.wave.not_ready.message", comment: "시간이 지나면 카드를 보을 수 있게 될 거에요.\n조금만 기다려 주세요!"))
                 .multilineTextAlignment(.center)
                 .font(.main)
                 .foregroundStyle(Color.Grayscale.gray7)

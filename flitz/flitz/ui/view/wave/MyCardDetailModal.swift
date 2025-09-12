@@ -95,9 +95,9 @@ struct CardDetailControlsView: View {
                     }
                  } label: {
                      if card.id == mainCardId {
-                         Text("메인 카드로 설정됨")
+                         Text(NSLocalizedString("ui.wave.my_card.main_set", comment: "메인 카드로 설정됨"))
                      } else {
-                         Text("메인 카드로 설정하기")
+                         Text(NSLocalizedString("ui.wave.my_card.set_main", comment: "메인 카드로 설정하기"))
                      }
                 }
             }
@@ -110,7 +110,7 @@ struct CardDetailControlsView: View {
                         appState.navState.append(.cardEditor(cardId: card.id))
                     }
                 } label: {
-                    Text("편집하기")
+                    Text(NSLocalizedString("ui.wave.my_card.edit", comment: "편집하기"))
                 }
                 
                 FZButton(size: .normal) {
@@ -125,7 +125,7 @@ struct CardDetailControlsView: View {
                         }
                     }
                 } label: {
-                    Text("삭제하기")
+                    Text(NSLocalizedString("ui.wave.my_card.delete", comment: "삭제하기"))
                         .foregroundColor(.red)
                 }
             }

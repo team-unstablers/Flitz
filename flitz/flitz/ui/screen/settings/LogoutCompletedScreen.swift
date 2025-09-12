@@ -69,7 +69,7 @@ struct LogoutCompletedScreen: View {
             }
             .padding(16)
         }
-        .navigationTitle("로그아웃 완료")
+        .navigationTitle(NSLocalizedString("ui.settings.logout_completed.page_title", comment: "로그아웃 완료"))
         .navigationBarBackButtonHidden(true)
     }
 }
