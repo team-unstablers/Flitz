@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum CardEditorTab: Hashable {
+    case editor
+    case preview
+}
+
 struct CardEditor: View {
     @EnvironmentObject
     var appState: RootAppState
@@ -15,6 +20,9 @@ struct CardEditor: View {
     
     @Binding
     var client: FZAPIClient
+    
+    @State
+    var currentTab: CardEditorTab = .editor
     
     @State
     var initialBusy: Bool = true
@@ -31,19 +39,58 @@ struct CardEditor: View {
     @State
     var isElementEditorPresented: Bool = false
     
+    @State
+    var previewWorld: FZCardViewWorld = {
+        let world = FZCardViewWorld()
+        world.setup()
+        return world
+    }()
+    
+    @State
+    var cardNode: FZCardViewCardInstance? = nil
+    
     var body: some View {
         ZStack {
-            VStack {
-                if let card = card {
-                    CardEditorInternal(card: card.content,
-                                       isElementEditorPresented: $isElementEditorPresented)
-                    .environment(\.fzAssetsLoader, assetsLoader)
-                } else {
-                    EmptyView()
+            if let card = card {
+                TabView(selection: $currentTab) {
+                    VStack {
+                        CardEditorInternal(card: card.content,
+                                           isElementEditorPresented: $isElementEditorPresented)
+                        .environment(\.fzAssetsLoader, assetsLoader)
+                    }
+                    .background(.black)
+                    .tag(CardEditorTab.editor)
+                    .tabItem {
+                        Image(systemName: "pencil")
+                        Text(NSLocalizedString("ui.card.editor.tab.edit", comment: "편집"))
+                    }
+                    
+                    VStack {
+                        FZCardView(world: previewWorld, enableGesture: true, gestureRecognizer: nil)
+                            .onAppear {
+                                if cardNode == nil {
+                                    let newCardNode = previewWorld.spawn(card: card.content, forId: cardId)
+                                    self.cardNode = newCardNode
+                                }
+                                
+                                guard let cardNode = cardNode else { return }
+                                cardNode.updateContent()
+                            }
+                            .shadow(color: .black.opacity(0.25), radius: 8)
+                    }
+                        .padding(32)
+                        .tag(CardEditorTab.preview)
+                        .tabItem {
+                            Image(systemName: "eye")
+                            Text(NSLocalizedString("ui.card.editor.tab.preview", comment: "미리보기"))
+                        }
                 }
+                .tintColor(.yellow)
+                .colorScheme(currentTab == .editor ? .dark : .light)
+            } else {
+                EmptyView()
             }
-            .background(.black)
-            
+
             if initialBusy {
                 VStack(spacing: 6) {
                     Text(NSLocalizedString("ui.card.editor.loading.title", comment: "불러오는 중"))
@@ -75,6 +122,7 @@ struct CardEditor: View {
             }
             
         }
+        .navigationTitle("ui.card.editor.title")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarTransparent(true)
         .animation(.default, value: isElementEditorPresented)
@@ -164,3 +212,12 @@ struct CardEditor: View {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    NavigationStack {
+        CardEditor(cardId: "__NEW__", client: .constant(FZAPIClient(context: FZAPIContext())))
+            .environmentObject(RootAppState())
+    }
+}
+#endif

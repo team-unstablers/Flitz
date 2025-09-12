@@ -1398,6 +1398,38 @@
         }
       }
     },
+    "ui.card.editor.tab.edit" : {
+      "comment" : "편집",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집"
+          }
+        }
+      }
+    },
+    "ui.card.editor.tab.preview" : {
+      "comment" : "미리보기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기"
+          }
+        }
+      }
+    },
+    "ui.card.editor.title" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카드 편집하기"
+          }
+        }
+      }
+    },
     "ui.card.editor.tool.add_sticker" : {
       "comment" : "스티커 추가",
       "localizations" : {
