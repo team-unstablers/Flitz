@@ -61,7 +61,8 @@
             "value" : "FATAL ERROR (reason=%1$@)\n%2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Flitz version %@ \"%@\"\nCopyright © 2025 team unstablers Inc.\nAll rights reserved." : {
       "localizations" : {
@@ -71,7 +72,8 @@
             "value" : "Flitz version %1$@ \"%2$@\"\nCopyright © 2025 team unstablers Inc.\nAll rights reserved."
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "fz.auth.invalid_request" : {
       "comment" : "백엔드에서 반환하는 오류",
@@ -284,7 +286,8 @@
             "value" : "rot: %1$@ scl: %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "ui.about_app_footer.oss_license_info" : {
       "comment" : "Flitz에서 사용된 자유 소프트웨어와 각 라이선스는 [오픈 소스 라이선스 페이지](https://docs.flitz.cards/legal/oss.html)에서 확인할 수 있습니다.",
@@ -3164,7 +3167,7 @@
       }
     },
     "Unsupported message type" : {
-
+      "shouldTranslate" : false
     },
     "x: %@ y: %@" : {
       "localizations" : {
@@ -3174,7 +3177,8 @@
             "value" : "x: %1$@ y: %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     }
   },
   "version" : "1.0"
