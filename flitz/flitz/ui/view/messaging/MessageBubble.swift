@@ -60,7 +60,7 @@ struct MessageBubble: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .contextMenu {
                         if isFromCurrentUser {
-                            Button(NSLocalizedString("ui.messaging.bubble.delete", comment: "멤시지 삭제"), role: .destructive) {
+                            Button(NSLocalizedString("ui.messaging.bubble.delete", comment: "메시지 삭제"), role: .destructive) {
                                 /*
                                 Task {
                                     await viewModel.deleteMessage(id: message.id.uuidString)

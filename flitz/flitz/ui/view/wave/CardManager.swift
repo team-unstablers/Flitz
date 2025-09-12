@@ -184,7 +184,7 @@ struct CardManagerView: View {
                         appState.navState.append(.cardEditor(cardId: card.id))
                     }
                     
-                    Button(NSLocalizedString("ui.wave.card_manager.context_set_main", comment: "멤인 카드로 설정")) {
+                    Button(NSLocalizedString("ui.wave.card_manager.context_set_main", comment: "메인 카드로 설정")) {
                         Task {
                             do {
                                 try await viewModel.client.setCardAsMain(which: card.id)

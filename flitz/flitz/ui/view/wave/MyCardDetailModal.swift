@@ -95,9 +95,9 @@ struct CardDetailControlsView: View {
                     }
                  } label: {
                      if card.id == mainCardId {
-                         Text(NSLocalizedString("ui.wave.my_card.main_set", comment: "멤인 카드로 설정됨"))
+                         Text(NSLocalizedString("ui.wave.my_card.main_set", comment: "메인 카드로 설정됨"))
                      } else {
-                         Text(NSLocalizedString("ui.wave.my_card.set_main", comment: "멤인 카드로 설정하기"))
+                         Text(NSLocalizedString("ui.wave.my_card.set_main", comment: "메인 카드로 설정하기"))
                      }
                 }
             }

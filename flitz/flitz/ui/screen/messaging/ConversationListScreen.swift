@@ -140,7 +140,7 @@ struct ConversationListScreen: View {
                     }
                 }
             } message: {
-                Text(NSLocalizedString("ui.messaging.list.leave_alert.message", comment: "이 대화에서 나가시겠습니까? 모든 멤시지가 삭제됩니다."))
+                Text(NSLocalizedString("ui.messaging.list.leave_alert.message", comment: "이 대화에서 나가시겠습니까? 모든 메시지가 삭제됩니다."))
             }
         }
         .onAppear {
