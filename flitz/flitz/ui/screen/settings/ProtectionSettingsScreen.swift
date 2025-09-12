@@ -24,7 +24,7 @@ struct ProtectionSettingsScreen: View {
                     .padding(.horizontal, 16)
             }
         }
-        .navigationTitle("사용자 보호 기능 설정")
+        .navigationTitle(NSLocalizedString("ui.safety.protection_settings.page_title", comment: "사용자 보호 기능 설정"))
     }
 }
 

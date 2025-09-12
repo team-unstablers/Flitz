@@ -62,7 +62,7 @@ struct NoticeDetailScreen: View {
                     .padding()
             }
         }
-        .navigationTitle("공지사항")
+        .navigationTitle(NSLocalizedString("ui.notice.detail.page_title", comment: "공지사항"))
         .onAppear {
             Task {
                 await fetchNotice()

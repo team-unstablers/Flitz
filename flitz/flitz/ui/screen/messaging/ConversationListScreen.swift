@@ -94,12 +94,12 @@ struct ConversationListScreen: View {
                 } else {
                     if viewModel.conversations.isEmpty {
                         VStack(spacing: 8) {
-                            Text("아직 대화 내역이 없어요")
+                            Text(NSLocalizedString("ui.messaging.list.empty.title", comment: "아직 대화 내역이 없어요"))
                                 .font(.heading2)
                                 .bold()
                                 .foregroundStyle(Color.Grayscale.gray8)
                             
-                            Text("서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요.")
+                            Text(NSLocalizedString("ui.messaging.list.empty.message", comment: "서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요."))
                                 .multilineTextAlignment(.center)
                                 .font(.main)
                                 .foregroundStyle(Color.Grayscale.gray7)
@@ -131,16 +131,16 @@ struct ConversationListScreen: View {
                     }
                 }
             }
-            .navigationTitle("메시지")
-            .alert("대화 나가기", isPresented: $viewModel.showDeleteAlert) {
-                Button("취소", role: .cancel) { }
-                Button("나가기", role: .destructive) {
+            .navigationTitle(NSLocalizedString("ui.messaging.list.page_title", comment: "메시지"))
+            .alert("ui.messaging.list.leave_alert.title", isPresented: $viewModel.showDeleteAlert) {
+                Button(NSLocalizedString("ui.common.cancel", comment: "취소"), role: .cancel) { }
+                Button(NSLocalizedString("ui.messaging.list.leave", comment: "나가기"), role: .destructive) {
                     Task {
                         await viewModel.confirmDelete()
                     }
                 }
             } message: {
-                Text("이 대화에서 나가시겠습니까? 모든 메시지가 삭제됩니다.")
+                Text(NSLocalizedString("ui.messaging.list.leave_alert.message", comment: "이 대화에서 나가시겠습니까? 모든 멤시지가 삭제됩니다."))
             }
         }
         .onAppear {

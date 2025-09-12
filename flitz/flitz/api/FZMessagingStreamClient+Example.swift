@@ -143,8 +143,8 @@ import Combine
              
              // 메시지 입력
              HStack {
-                 TextField("메시지 입력...", text: $messageText)
-                 Button("전송") {
+                 TextField(NSLocalizedString("ui.messaging.textfield.message_example.placeholder", comment: "메시지 입력..."), text: $messageText)
+                 Button(NSLocalizedString("ui.messaging.action.send", comment: "전송")) {
                      viewModel.sendMessage(messageText)
                      messageText = ""
                  }

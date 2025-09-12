@@ -104,7 +104,7 @@ struct ECController: View {
             
             ECControlMenu(size: .medium) {
                 // TODO: icon
-                Button("카드 신고하기", role: .destructive) {
+                Button(NSLocalizedString("ui.wave.card.context.report", comment: "카드 신고하기"), role: .destructive) {
                     isFlagSheetVisible = true
                 }
             } label: {

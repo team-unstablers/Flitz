@@ -13,12 +13,12 @@ struct DeactivateCompletedScreen: View {
             ScrollView {
                 VStack(spacing: 0) {
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("이용해 주셔서 감사합니다".byCharWrapping)
+                        Text(NSLocalizedString("ui.settings.deactivate_completed.thank_you_title", comment: "이용해 주셔서 감사합니다").byCharWrapping)
                             .font(.fzHeading1)
                             .bold()
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        Text("계정 삭제가 완료되었습니다.\n그동안 Flitz를 이용해 주셔서 감사합니다.".byCharWrapping)
+                        Text(NSLocalizedString("ui.settings.deactivate_completed.completion_message", comment: "계정 삭제가 완료되었습니다.\n그동안 Flitz를 이용해 주셔서 감사합니다.").byCharWrapping)
                             .font(.fzMain)
                             .foregroundStyle(Color.Grayscale.gray6)
                         
@@ -49,7 +49,7 @@ struct DeactivateCompletedScreen: View {
             }
             .padding(16)
         }
-        .navigationTitle("계정 삭제 완료")
+        .navigationTitle(NSLocalizedString("ui.settings.deactivate_completed.page_title", comment: "계정 삭제 완료"))
         .navigationBarBackButtonHidden(true)
     }
 }

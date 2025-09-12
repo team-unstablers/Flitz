@@ -221,44 +221,44 @@ extension View {
     
     VStack(alignment: .leading) {
         VStack(alignment: .leading, spacing: 0) {
-            Text("가나다라마바사 Heading 1")
+            Text(NSLocalizedString("ui.style.typography.sample_heading1", comment: "가나다라마바사 Heading 1"))
                 .font(.heading1)
                 .bold()
-            Text("이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다. 이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다. 이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다.")
+            Text(NSLocalizedString("ui.style.typography.sample_body_england", comment: "이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다. 이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다. 이 편지는 영국에서 시작되어 영국에서 끝나는 편지입니다."))
                 .font(.main)
         }
         VStack(alignment: .leading, spacing: 0) {
-            Text("가나다라마바사 Heading 2")
+            Text(NSLocalizedString("ui.style.typography.sample_heading2", comment: "가나다라마바사 Heading 2"))
                 .font(.heading2)
                 .bold()
-            Text("이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다. 이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다. 이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다.")
+            Text(NSLocalizedString("ui.style.typography.sample_body_japan", comment: "이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다. 이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다. 이 편지는 일본에서 시작되어 일본에서 끝나는 편지입니다."))
                 .font(.main)
         }
         
         VStack(alignment: .leading, spacing: 0) {
-            Text("가나다라마바사 Heading 3")
+            Text(NSLocalizedString("ui.style.typography.sample_heading3", comment: "가나다라마바사 Heading 3"))
                 .font(.heading3)
                 .bold()
-            Text("이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다. 이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다. 이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다.")
+            Text(NSLocalizedString("ui.style.typography.sample_body_china", comment: "이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다. 이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다. 이 편지는 중국에서 시작되어 중국에서 끝나는 편지입니다."))
                 .font(.main)
         }
         
         VStack(alignment: .leading, spacing: 0) {
-            Text("⚠️ 경고")
+            Text(NSLocalizedString("ui.style.typography.warning_sample", comment: "⚠️ 경고"))
                 .font(.small)
                 .bold()
                 .foregroundStyle(Color.Subcolor.red)
-            Text("이 편지는 한국에 도달하지 않을 수도 있습니다.")
+            Text(NSLocalizedString("ui.style.typography.warning_message_sample", comment: "이 편지는 한국에 도달하지 않을 수도 있습니다."))
                 .font(.small)
                 .foregroundStyle(Color.Grayscale.gray7)
         }
         
         VStack(alignment: .leading, spacing: 0) {
-            Text("✅ 성공")
+            Text(NSLocalizedString("ui.style.typography.success_sample", comment: "✅ 성공"))
                 .font(.small)
                 .bold()
                 .foregroundStyle(Color.Subcolor.green)
-            Text("이 편지는 무사히 한국에 도달하였습니다.")
+            Text(NSLocalizedString("ui.style.typography.success_message_sample", comment: "이 편지는 무사히 한국에 도달하였습니다."))
                 .font(.small)
                 .foregroundStyle(Color.Grayscale.gray7)
         }

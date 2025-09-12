@@ -69,19 +69,19 @@ struct CardPreview: View {
                     FZButton {
                         showNormalMap.toggle()
                     } label: {
-                        Text("노멀 맵")
+                        Text(NSLocalizedString("ui.profile.card.normal_map", comment: "노멀 맵"))
                     }
                     
                     FZButton {
                         appState.navState.append(.cardEditor(cardId: cardId))
                     } label: {
-                        Text("편집하기")
+                        Text(NSLocalizedString("ui.profile.card.edit", comment: "편집하기"))
                     }
                     
                     FZButton {
                         setCardAsMain()
                     } label: {
-                        Text("메인 카드로 설정")
+                        Text(NSLocalizedString("ui.profile.card.set_main", comment: "메인 카드로 설정"))
                     }
                 }
             }

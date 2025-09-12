@@ -182,12 +182,12 @@ struct AttachmentScreen: View {
         }
         .actionSheet(isPresented: $showingActionSheet) {
             ActionSheet(
-                title: Text("이미지 옵션"),
+                title: Text(NSLocalizedString("ui.messaging.attachment.options", comment: "이미지 옵션")),
                 buttons: [
-                    .default(Text("사진 앱에 저장")) {
+                    .default(Text(NSLocalizedString("ui.messaging.attachment.save", comment: "사진 앱에 저장"))) {
                         saveImageToPhotos()
                     },
-                    .cancel(Text("취소"))
+                    .cancel(Text(NSLocalizedString("ui.messaging.attachment.cancel", comment: "취소")))
                 ]
             )
         }

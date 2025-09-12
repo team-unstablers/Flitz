@@ -130,11 +130,11 @@ struct CardManagerView: View {
                 }
             } label: {
                 if viewModel.cards.count >= 4 {
-                    Text("카드는 4장까지 만들 수 있습니다")
+                    Text(NSLocalizedString("ui.wave.card_manager.limit_message", comment: "카드는 4장까지 만들 수 있습니다"))
                         .font(.fzHeading3)
                         .semibold()
                 } else {
-                    Text("새 카드 만들기")
+                    Text(NSLocalizedString("ui.wave.card_manager.create_new", comment: "새 카드 만들기"))
                         .font(.fzHeading3)
                         .semibold()
                 }
@@ -180,11 +180,11 @@ struct CardManagerView: View {
                 // .background(.init(red: .random(in: 0...1), green: .random(in: 0...1), blue: .random(in: 0...1))
                 .padding()
                 .contextMenu {
-                    Button("카드 편집하기") {
+                    Button(NSLocalizedString("ui.wave.card_manager.context_edit", comment: "카드 편집하기")) {
                         appState.navState.append(.cardEditor(cardId: card.id))
                     }
                     
-                    Button("메인 카드로 설정") {
+                    Button(NSLocalizedString("ui.wave.card_manager.context_set_main", comment: "멤인 카드로 설정")) {
                         Task {
                             do {
                                 try await viewModel.client.setCardAsMain(which: card.id)
@@ -195,7 +195,7 @@ struct CardManagerView: View {
                         }
                     }
                     
-                    Button("카드 삭제하기") {
+                    Button(NSLocalizedString("ui.wave.card_manager.context_delete", comment: "카드 삭제하기")) {
                         Task {
                             do {
                                 try await viewModel.client.deleteCard(by: card.id)

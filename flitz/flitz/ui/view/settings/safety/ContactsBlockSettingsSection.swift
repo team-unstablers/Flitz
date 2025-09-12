@@ -71,12 +71,12 @@ struct ContactsBlockSettingsSection: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            FZPageSectionTitle(title: "연락처 미리 차단")
+            FZPageSectionTitle(title: "ui.settings.safety.contacts_block.title")
             if viewModel.busyInitial {
                 ProgressView()
                     .padding(.vertical, 8)
             } else {
-                FZPageSectionItem("휴대폰 연락처에 등록된 사람들을 미리 차단하기") {
+                FZPageSectionItem("ui.settings.safety.contacts_block.toggle") {
                     Toggle("", isOn: $viewModel.enabled)
                 }
                 
@@ -87,13 +87,13 @@ struct ContactsBlockSettingsSection: View {
                  */
                 
                 if viewModel.enabled {
-                    FZPageSectionActionItem("지금 연락처 동기화하기") {
+                    FZPageSectionActionItem("ui.settings.safety.contacts_block.sync_now") {
                         Task {
                             await ContactsBlockerTask().execute()
                         }
                     }
                 } else {
-                    FZPageSectionActionItem("연락처를 서버로부터 모두 삭제하고 차단 해제하기") {
+                    FZPageSectionActionItem("ui.settings.safety.contacts_block.remove_all") {
                         Task {
                             await viewModel.removeAll()
                         }
@@ -108,18 +108,18 @@ struct ContactsBlockSettingsSection: View {
                 
                 FZPageSectionNote {
                     VStack(alignment: .leading) {
-                        Text("이 기능을 사용하면, 연락처에 등록된 사람이 추후 Flitz 서비스에 가입하거나, Flitz 앱을 켠 상태로 마주치게 되더라도 서로를 확인할 수 없게 됩니다.".byCharWrapping)
+                        Text(NSLocalizedString("ui.settings.safety.contacts_block.description", comment: "이 기능을 사용하면, 연락처에 등록된 사람이 추후 Flitz 서비스에 가입하거나, Flitz 앱을 켠 상태로 마주치게 되더라도 서로를 확인할 수 없게 됩니다.").byCharWrapping)
                         
-                        (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text("안내"))
+                        (Text(Image(systemName: "exclamationmark.triangle.fill")) + Text(" ") + Text(NSLocalizedString("ui.settings.safety.notice_title", comment: "안내")))
                             .font(.heading3)
                             .bold()
                             .foregroundStyle(.black.opacity(0.9))
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 4)
                         
-                        Text("이 기능을 사용하면 연락처 정보가 ".byCharWrapping) + Text("복호화 불가능한 형태로 해시 처리되어 Flitz 서버에 저장됩니다.".byCharWrapping).bold() + Text(" 또한, ".byCharWrapping) + Text("전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다.").bold()
+                        Text(NSLocalizedString("ui.settings.safety.contacts_block_privacy_notice", comment: "이 기능을 사용하면 연락처 정보가 복호화 불가능한 형태로 해시 처리되어 Flitz 서버에 저장됩니다. 또한, 전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다.").byCharWrapping)
                         
-                        Text("[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)")
+                        Text(NSLocalizedString("ui.settings.safety.contacts_block.hash_docs", comment: "[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)"))
                             .font(.small)
                             .padding(.vertical, 4)
                             .tintColor(.blue)
@@ -147,9 +147,9 @@ struct ContactsBlockSettingsSection: View {
         }
         .alert(isPresented: $shouldPresentAlert) {
             Alert(
-                title: Text("연락처를 서버에 동기화하시겠습니까?"),
-                message: Text("연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\n\n계속 진행하시겠습니까?"),
-                primaryButton: .default(Text("예")) {
+                title: Text(NSLocalizedString("ui.settings.safety.sync_contacts_alert_title", comment: "연락처를 서버에 동기화하시겠습니까?")),
+                message: Text(NSLocalizedString("ui.settings.safety.sync_contacts_alert_message", comment: "연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\n\n계속 진행하시겠습니까?")),
+                primaryButton: .default(Text(NSLocalizedString("ui.settings.safety.sync_contacts_alert_yes", comment: "예"))) {
                     Task {
                         await viewModel.reflectEnabled()
                         await ContactsBlockerTask().execute()

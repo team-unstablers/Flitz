@@ -91,12 +91,12 @@ struct CardFlagSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
-                    Text("카드에 어떤 문제가 있었나요?".byCharWrapping)
+                    Text(NSLocalizedString("ui.safety.flag.card_what_problem", comment: "카드에 어떤 문제가 있었나요?").byCharWrapping)
                         .font(.fzHeading1)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text("어떤 문제가 있었는지 알려주시면, Flitz 팀에서 빠르게 조치할 수 있어요.".byCharWrapping)
+                    Text(NSLocalizedString("ui.safety.flag.problem_description", comment: "어떤 문제가 있었는지 알려주시면, Flitz 팀에서 빠르게 조치할 수 있어요.").byCharWrapping)
                         .font(.fzMain)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 8)
@@ -105,32 +105,32 @@ struct CardFlagSheet: View {
                     VStack(alignment: .leading, spacing: 16) {
                         Group {
                             Toggle(isOn: $intermediate.reasonOffensiveContents) {
-                                Text("다른 사용자를 괴롭히거나, 공격적인 내용을 담고 있어요")
+                                Text(NSLocalizedString("ui.safety.report.harassment", comment: "다른 사용자를 괴롭히거나, 공격적인 내용을 담고 있어요"))
                             }
                             
                             Toggle(isOn: $intermediate.reasonPornographicContents) {
-                                Text("음란물이나 성적 수치심을 주는 내용을 담고 있어요")
+                                Text(NSLocalizedString("ui.safety.report.sexual_content", comment: "음란물이나 성적 수치심을 주는 내용을 담고 있어요"))
                             }
                             
                             Toggle(isOn: $intermediate.reasonImpersonation) {
-                                Text("다른 사람을 사칭하거나 도용하고 있어요")
+                                Text(NSLocalizedString("ui.safety.report.impersonation", comment: "다른 사람을 사칭하거나 도용하고 있어요"))
                             }
                             
                             Toggle(isOn: $intermediate.reasonIllegalContents) {
-                                Text("불법 행위를 제안하거나 조장하고 있어요 (예: 마약, 성매매 등)")
+                                Text(NSLocalizedString("ui.safety.report.illegal_contents", comment: "불법 행위를 제안하거나 조장하고 있어요 (예: 마약, 성매매 등)"))
                             }
                             
                             Toggle(isOn: $intermediate.reasonMinor) {
-                                Text("미성년자 또는 청소년이 이 앱을 사용하고 있어요")
+                                Text(NSLocalizedString("ui.safety.report.minor", comment: "미성년자 또는 청소년이 이 앱을 사용하고 있어요"))
                             }
 
                             Toggle(isOn: $intermediate.reasonOther) {
-                                Text("그 외 다른 문제가 있어요 (아래에 상세히 적어주세요)")
+                                Text(NSLocalizedString("ui.safety.report.other_problem", comment: "그 외 다른 문제가 있어요 (아래에 상세히 적어주세요)"))
                             }
                         }
                         .toggleStyle(FZCheckboxToggleStyle())
                         
-                        TextField("필요한 경우 추가적인 내용을 적어주세요.".byCharWrapping, text: $intermediate.feedbackText, axis: .vertical)
+                        TextField(NSLocalizedString("ui.safety.flag.additional_feedback", comment: "필요한 경우 추가적인 내용을 적어주세요.").byCharWrapping, text: $intermediate.feedbackText, axis: .vertical)
                             .focused($isFeedbackTextFocused)
                             .font(.fzMain)
                             .lineLimit(4...5)
@@ -145,7 +145,7 @@ struct CardFlagSheet: View {
                         
                         
                         Toggle(isOn: $blockImmediately) {
-                            Text("신고 후 이 사용자를 곧바로 차단할래요")
+                            Text(NSLocalizedString("ui.safety.flag.block_immediately", comment: "신고 후 이 사용자를 곧바로 차단할래요"))
                         }
                         .toggleStyle(FZCheckboxToggleStyle())
                     }
@@ -158,18 +158,18 @@ struct CardFlagSheet: View {
                 isFeedbackTextFocused = false
             }
             .toolbarVisibility(.visible, for: .navigationBar)
-            .navigationTitle("카드 신고하기")
+            .navigationTitle(NSLocalizedString("ui.safety.title.report_card", comment: "카드 신고하기"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("취소") {
+                    Button(NSLocalizedString("ui.safety.action.cancel", comment: "취소")) {
                         dismissAction()
                     }
                     .disabled(busy)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("신고 보내기", role: .destructive) {
+                    Button(NSLocalizedString("ui.safety.action.send_report", comment: "신고 보내기"), role: .destructive) {
                         Task {
                             await performPost()
                         }

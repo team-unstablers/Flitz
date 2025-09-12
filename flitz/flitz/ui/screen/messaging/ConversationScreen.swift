@@ -549,7 +549,7 @@ struct ConversationScreen: View {
                             appState.currentModal = .userProfile(userId: opponent.user.id)
                         }
                 } else {
-                    Text("대화")
+                    Text(NSLocalizedString("ui.messaging.conversation.title", comment: "대화"))
                 }
             }
         }

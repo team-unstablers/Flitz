@@ -14,20 +14,20 @@ enum NoCardsAvailableReason {
     var title: String {
         switch self {
         case .noCardsExchanged:
-            return NSLocalizedString("아직 교환된 카드가 없어요", comment: "NoCardsAvailableReason::title")
+            return NSLocalizedString("ui.wave.no_cards.title", comment: "아직 교환된 카드가 없어요")
         
         case .insufficientPermission:
-            return NSLocalizedString("추가 권한이 필요해요", comment: "NoCardsAvailableReason::title")
+            return NSLocalizedString("ui.wave.no_cards.permission_needed", comment: "추가 권한이 필요해요")
         }
     }
     
     var description: String {
         switch self {
         case .noCardsExchanged:
-            return NSLocalizedString("다른 Flitz 사용자와 마주치게 되면 카드가 교환될 거예요!", comment: "NoCardsAvailableReason::description")
+            return NSLocalizedString("ui.wave.no_cards.exchange_description", comment: "다른 Flitz 사용자와 마주치게 되면 카드가 교환될 거예요!")
             
         case .insufficientPermission:
-            return NSLocalizedString("Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요.", comment: "NoCardsAvailableReason::description")
+            return NSLocalizedString("ui.wave.no_cards.permission_description", comment: "Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요.")
         }
     }
     
@@ -68,13 +68,13 @@ struct NoCardsAvailable: View {
                                 UIApplication.shared.open(url)
                             }
                         } label: {
-                            Text("앱 설정 열기")
+                            Text(NSLocalizedString("ui.wave.no_cards.open_settings", comment: "앱 설정 열기"))
                         }
                         
                         FZButton {
                             
                         } label: {
-                            Text("Wave에 대해 자세히 알아보기")
+                            Text(NSLocalizedString("ui.wave.no_cards.learn_more", comment: "Wave에 대해 자세히 알아보기"))
                         }
                     }
                 }

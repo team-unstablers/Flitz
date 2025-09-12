@@ -10,12 +10,12 @@ import SwiftUI
 struct StoreRootScreen: View {
     var body: some View {
         VStack(spacing: 8) {
-            Text("준비 중인 기능입니다")
+            Text("ui.store.coming_soon.title")
                 .font(.heading2)
                 .bold()
                 .foregroundStyle(Color.Grayscale.gray8)
             
-            Text("조금만 더 기다려 주세요.\n곧 멋진 기능으로 찾아뵐게요!")
+            Text("ui.store.coming_soon.description")
                 .multilineTextAlignment(.center)
                 .font(.main)
                 .foregroundStyle(Color.Grayscale.gray7)

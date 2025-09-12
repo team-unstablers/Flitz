@@ -10,9 +10,6 @@
     "  ›" : {
 
     },
-    "[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)" : {
-
-    },
     "**경고**: 테스트 서버이므로 자주 사용하는 비밀번호를 사용하지 마십시오." : {
 
     },
@@ -76,15 +73,6 @@
         }
       }
     },
-    "Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요." : {
-      "comment" : "NoCardsAvailableReason::description"
-    },
-    "Flitz는 현재 대한민국에서만 사용할 수 있어요." : {
-
-    },
-    "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요." : {
-
-    },
     "fz.auth.invalid_request" : {
       "comment" : "백엔드에서 반환하는 오류",
       "extractionState" : "manual",
@@ -111,6 +99,9 @@
     },
     "fzapi.signup.token_validation_failed" : {
       "comment" : "회원 가입에는 성공했지만 토큰 검증에 실패했어요. (휴대폰 시간이 너무 늦거나 빠른가요?)"
+    },
+    "fzapi.unknown_error" : {
+      "comment" : "알 수 없는 오류가 발생하였습니다"
     },
     "fzapi.user.fuzzy_distance.far" : {
       "comment" : "멀리 있음",
@@ -334,6 +325,110 @@
         }
       }
     },
+    "ui.auth.agreement.page_title" : {
+      "comment" : "약관 동의"
+    },
+    "ui.auth.country_selection.page_title" : {
+      "comment" : "국가 선택"
+    },
+    "ui.auth.country_selection.placeholder" : {
+      "comment" : "국가 선택",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "국가 선택"
+          }
+        }
+      }
+    },
+    "ui.auth.country_selection.prelude_notice" : {
+      "comment" : "Flitz는 현재 대한민국에서만 사용할 수 있어요."
+    },
+    "ui.auth.create_profile.page_title" : {
+      "comment" : "프로필 정보 입력"
+    },
+    "ui.auth.credentials.page_title" : {
+      "comment" : "잠깐! 마지막으로.."
+    },
+    "ui.auth.find_password.page_title" : {
+      "comment" : "비밀번호 찾기"
+    },
+    "ui.auth.findpassword.change_password" : {
+      "comment" : "비밀번호 변경하기"
+    },
+    "ui.auth.findpassword.send_verification" : {
+      "comment" : "인증 문자 받기"
+    },
+    "ui.auth.findpassword.textfield.confirm_password.placeholder" : {
+
+    },
+    "ui.auth.findpassword.textfield.confirmpassword.label" : {
+
+    },
+    "ui.auth.findpassword.textfield.new_password.placeholder" : {
+
+    },
+    "ui.auth.findpassword.textfield.newpassword.label" : {
+
+    },
+    "ui.auth.findpassword.textfield.phonenumber.label" : {
+
+    },
+    "ui.auth.findpassword.textfield.phonenumber.placeholder" : {
+      "comment" : "계정과 연결된 휴대폰 번호를 입력해 주세요"
+    },
+    "ui.auth.findpassword.textfield.username.label" : {
+
+    },
+    "ui.auth.findpassword.textfield.username.placeholder" : {
+      "comment" : "유저네임을 입력해 주세요"
+    },
+    "ui.auth.findpassword.textfield.verification_code.placeholder" : {
+
+    },
+    "ui.auth.findpassword.textfield.verificationcode.label" : {
+
+    },
+    "ui.auth.identity.page_title" : {
+      "comment" : "당신은 어떤 사람인가요?"
+    },
+    "ui.auth.intro.signin" : {
+      "comment" : "로그인"
+    },
+    "ui.auth.intro.signup" : {
+      "comment" : "회원가입"
+    },
+    "ui.auth.phone_verification.page_title" : {
+      "comment" : "휴대폰 인증"
+    },
+    "ui.auth.signin.debug.client_notice" : {
+      "comment" : "디버그 모드의 클라이언트입니다"
+    },
+    "ui.auth.signin.debug.host" : {
+      "comment" : "호스트: %@"
+    },
+    "ui.auth.signin.failure_alert.message" : {
+      "comment" : "로그인에 실패했습니다. 유저네임 / 비밀번호를 확인 후 다시 시도해주세요."
+    },
+    "ui.auth.signin.failure_alert.title" : {
+
+    },
+    "ui.auth.signin.find_password" : {
+      "comment" : "비밀번호 찾기"
+    },
+    "ui.auth.signin.signin_button" : {
+      "comment" : "로그인"
+    },
+    "ui.auth.signin.signup_button" : {
+      "comment" : "회원가입"
+    },
+    "ui.auth.signin.textfield.password.placeholder" : {
+
+    },
+    "ui.auth.signin.title" : {
+      "comment" : "로그인"
+    },
     "ui.auth.signup.agreement.agree_location_service_terms" : {
       "localizations" : {
         "ko" : {
@@ -374,6 +469,99 @@
         }
       }
     },
+    "ui.auth.signup.agreement.description" : {
+      "comment" : "Flitz를 사용하려면 아래 약관에 동의해야 해요."
+    },
+    "ui.auth.signup.complete_registration" : {
+      "comment" : "회원 가입 마치기"
+    },
+    "ui.auth.signup.credentials.description" : {
+      "comment" : "앱을 로그인할 때 사용할 인증 정보를 입력해 주세요."
+    },
+    "ui.auth.signup.phone_verification" : {
+      "comment" : "휴대폰 인증하기"
+    },
+    "ui.auth.signup.phone_verification.description" : {
+      "comment" : "휴대폰 인증을 통한 본인 확인을 진행해요.\n대한민국에서는 NICE 평가정보의 휴대폰 인증 서비스를 이용해요."
+    },
+    "ui.auth.signup.profile_input.description" : {
+      "comment" : "프로필을 입력해 주세요.\n다른 사용자들이 불쾌해 할 수 있는 내용은 입력하지 말아주세요."
+    },
+    "ui.auth.signup.textfield.confirm_password.placeholder" : {
+
+    },
+    "ui.auth.signup.textfield.confirmpassword.label" : {
+
+    },
+    "ui.auth.signup.textfield.password.label" : {
+
+    },
+    "ui.auth.signup.textfield.password.placeholder" : {
+
+    },
+    "ui.auth.signup.textfield.username.label" : {
+
+    },
+    "ui.auth.signup.textfield.username.placeholder" : {
+      "comment" : "유저네임을 입력해 주세요"
+    },
+    "ui.auth.signup.user_identity.description" : {
+      "comment" : "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요."
+    },
+    "ui.card.editor.action.save" : {
+      "comment" : "저장"
+    },
+    "ui.card.editor.loading.message" : {
+      "comment" : "잠시만 기다려 주세요..."
+    },
+    "ui.card.editor.loading.title" : {
+      "comment" : "불러오는 중"
+    },
+    "ui.card.editor.saving.message" : {
+      "comment" : "잠시만 기다려 주세요..."
+    },
+    "ui.card.editor.saving.title" : {
+      "comment" : "저장 중"
+    },
+    "ui.card.editor.tool.add_sticker" : {
+      "comment" : "스티커 추가"
+    },
+    "ui.card.editor.tool.add_text" : {
+      "comment" : "텍스트 추가"
+    },
+    "ui.card.editor.tool.background" : {
+      "comment" : "배경 이미지"
+    },
+    "ui.common.cancel" : {
+      "comment" : "취소"
+    },
+    "ui.common.confirm" : {
+      "comment" : "확인"
+    },
+    "ui.common.done" : {
+      "comment" : "완료"
+    },
+    "ui.common.error" : {
+      "comment" : "오류"
+    },
+    "ui.common.hashtag.placeholder" : {
+      "comment" : "해시태그를 입력하세요"
+    },
+    "ui.common.next" : {
+      "comment" : "다음"
+    },
+    "ui.common.password" : {
+      "comment" : "비밀번호"
+    },
+    "ui.common.save" : {
+      "comment" : "저장"
+    },
+    "ui.common.username" : {
+      "comment" : "유저네임"
+    },
+    "ui.common.username.placeholder" : {
+      "comment" : "유저네임을 입력해주세요"
+    },
     "ui.general.quit_app" : {
       "localizations" : {
         "ko" : {
@@ -383,6 +571,69 @@
           }
         }
       }
+    },
+    "ui.messaging.action.send" : {
+      "comment" : "전송"
+    },
+    "ui.messaging.attachment.cancel" : {
+      "comment" : "취소"
+    },
+    "ui.messaging.attachment.options" : {
+      "comment" : "이미지 옵션"
+    },
+    "ui.messaging.attachment.save" : {
+      "comment" : "사진 앱에 저장"
+    },
+    "ui.messaging.bubble.delete" : {
+      "comment" : "멤시지 삭제"
+    },
+    "ui.messaging.bubble.read" : {
+      "comment" : "읽음"
+    },
+    "ui.messaging.bubble.report" : {
+      "comment" : "메시지 신고"
+    },
+    "ui.messaging.conversation.context.block_user" : {
+      "comment" : "사용자 차단하기"
+    },
+    "ui.messaging.conversation.context.report_conversation" : {
+      "comment" : "대화 신고하기"
+    },
+    "ui.messaging.conversation.title" : {
+      "comment" : "대화"
+    },
+    "ui.messaging.image_crop.action.cancel" : {
+      "comment" : "취소"
+    },
+    "ui.messaging.image_crop.action.done" : {
+      "comment" : "완료"
+    },
+    "ui.messaging.image_crop.page_title" : {
+      "comment" : "이미지 자르기"
+    },
+    "ui.messaging.list.empty.message" : {
+      "comment" : "서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요."
+    },
+    "ui.messaging.list.empty.title" : {
+      "comment" : "아직 대화 내역이 없어요"
+    },
+    "ui.messaging.list.leave" : {
+      "comment" : "나가기"
+    },
+    "ui.messaging.list.leave_alert.message" : {
+      "comment" : "이 대화에서 나가시겠습니까? 모든 멤시지가 삭제됩니다."
+    },
+    "ui.messaging.list.leave_alert.title" : {
+
+    },
+    "ui.messaging.list.page_title" : {
+      "comment" : "메시지"
+    },
+    "ui.messaging.textfield.message_example.placeholder" : {
+      "comment" : "메시지 입력..."
+    },
+    "ui.messaging.textfield.message.placeholder" : {
+      "comment" : "메시지를 입력하세요"
     },
     "ui.mypage.notice" : {
       "comment" : "공지사항",
@@ -394,6 +645,9 @@
           }
         }
       }
+    },
+    "ui.mypage.page_title" : {
+      "comment" : "마이페이지"
     },
     "ui.mypage.privacy.blocked_users" : {
       "localizations" : {
@@ -425,6 +679,123 @@
         }
       }
     },
+    "ui.mypage.profile.identity_notice_title" : {
+      "comment" : "안내",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안내"
+          }
+        }
+      }
+    },
+    "ui.mypage.profile.image_crop.page_title" : {
+      "comment" : "이미지 자르기"
+    },
+    "ui.mypage.profile.page_title" : {
+      "comment" : "프로필 설정"
+    },
+    "ui.mypage.profile.section.account.birthdate.placeholder" : {
+
+    },
+    "ui.mypage.profile.section.account.birthdate.title" : {
+
+    },
+    "ui.mypage.profile.section.account.phonenumber.title" : {
+
+    },
+    "ui.mypage.profile.section.account.title" : {
+
+    },
+    "ui.mypage.profile.section.account.username.placeholder" : {
+
+    },
+    "ui.mypage.profile.section.account.username.title" : {
+
+    },
+    "ui.mypage.profile.section.basic.bio.placeholder" : {
+
+    },
+    "ui.mypage.profile.section.basic.bio.title" : {
+
+    },
+    "ui.mypage.profile.section.basic.hashtags.title" : {
+
+    },
+    "ui.mypage.profile.section.basic.nickname.placeholder" : {
+
+    },
+    "ui.mypage.profile.section.basic.nickname.title" : {
+
+    },
+    "ui.mypage.profile.section.basic.title" : {
+
+    },
+    "ui.mypage.profile.section.basic.title.placeholder" : {
+
+    },
+    "ui.mypage.profile.section.basic.title.title" : {
+
+    },
+    "ui.mypage.profile.section.identity.title" : {
+
+    },
+    "ui.mypage.profile.trans_identity" : {
+      "comment" : "트랜스젠더예요",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "트랜스젠더예요"
+          }
+        }
+      }
+    },
+    "ui.mypage.profile.trans_safe_match" : {
+      "comment" : "안전한 사람들하고만 매칭할래요",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전한 사람들하고만 매칭할래요"
+          }
+        }
+      }
+    },
+    "ui.mypage.profile.trans_safe_match_desc" : {
+      "comment" : "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요."
+          }
+        }
+      }
+    },
+    "ui.mypage.profile.trans_visibility" : {
+      "comment" : "트랜스젠더 여부를 프로필에 표시할래요",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "트랜스젠더 여부를 프로필에 표시할래요"
+          }
+        }
+      }
+    },
+    "ui.mypage.profile.trans_welcome" : {
+      "comment" : "트랜스젠더 사람들을 환영해요",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "트랜스젠더 사람들을 환영해요"
+          }
+        }
+      }
+    },
     "ui.mypage.safety_resources.title" : {
       "localizations" : {
         "ko" : {
@@ -434,6 +805,12 @@
           }
         }
       }
+    },
+    "ui.mypage.section.identity.identity.title" : {
+
+    },
+    "ui.mypage.section.identity.preferred_people.title" : {
+
     },
     "ui.mypage.settings" : {
       "comment" : "앱 설정",
@@ -526,6 +903,117 @@
         }
       }
     },
+    "ui.notice.detail.page_title" : {
+      "comment" : "공지사항"
+    },
+    "ui.notice.list.page_title" : {
+      "comment" : "공지사항"
+    },
+    "ui.profile.card.edit" : {
+      "comment" : "편집하기"
+    },
+    "ui.profile.card.normal_map" : {
+      "comment" : "노멀 맵"
+    },
+    "ui.profile.card.set_main" : {
+      "comment" : "메인 카드로 설정"
+    },
+    "ui.profile.context.block_user" : {
+      "comment" : "사용자 차단하기"
+    },
+    "ui.profile.context.report_user" : {
+      "comment" : "사용자 신고하기"
+    },
+    "ui.profile.edit.privacy_notice.identity_info" : {
+      "comment" : "입력하신 정체성과 선호하는 사람들에 대한 정보는 공개되지 않으며, 매칭에만 사용돼요. 언제든지 바꿀 수 있어요."
+    },
+    "ui.profile.edit.privacy_notice.transgender_info" : {
+      "comment" : "트랜스젠더 여부는 필터링이나 배제에 쓰이지 않아요."
+    },
+    "ui.profile.new_card.create" : {
+      "comment" : "새 카드 만들기"
+    },
+    "ui.safety.action.cancel" : {
+      "comment" : "취소"
+    },
+    "ui.safety.action.send_report" : {
+      "comment" : "신고 보내기"
+    },
+    "ui.safety.action.unblock" : {
+      "comment" : "차단 해제"
+    },
+    "ui.safety.assertion.app_suspended" : {
+      "comment" : "앱이 잠시 중단되었습니다"
+    },
+    "ui.safety.assertion.exit_app" : {
+      "comment" : "앱 종료하기"
+    },
+    "ui.safety.assertion.safety_suspension_message" : {
+      "comment" : "Flitz에서 사용자님의 안전을 위해 앱을 잠시 중단했어요."
+    },
+    "ui.safety.assertion.server_identity_unclear" : {
+      "comment" : "서버의 신원이 불분명합니다"
+    },
+    "ui.safety.assertion.ssl_failure_description" : {
+      "comment" : "안전한 연결을 수립할 수 없었어요.\n\n이 문제는 보호되지 않은 공공 Wi-Fi나 일부 회사/학교 네트워크에서 발생할 수 있으니, 다른 네트워크 환경에서 다시 시도해 주세요."
+    },
+    "ui.safety.blocked_users.empty_list.description" : {
+      "comment" : "차단된 사용자와는 카드 교환 및 대화가 불가능해요."
+    },
+    "ui.safety.blocked_users.empty_list.title" : {
+      "comment" : "차단된 사용자가 없어요"
+    },
+    "ui.safety.blocked_users.page_title" : {
+      "comment" : "차단된 사용자"
+    },
+    "ui.safety.flag.additional_feedback" : {
+      "comment" : "필요한 경우 추가적인 내용을 적어주세요."
+    },
+    "ui.safety.flag.block_immediately" : {
+      "comment" : "신고 후 이 사용자를 곧바로 차단할래요"
+    },
+    "ui.safety.flag.card_what_problem" : {
+      "comment" : "카드에 어떤 문제가 있었나요?"
+    },
+    "ui.safety.flag.problem_description" : {
+      "comment" : "어떤 문제가 있었는지 알려주시면, Flitz 팀에서 빠르게 조치할 수 있어요."
+    },
+    "ui.safety.flag.what_problem" : {
+      "comment" : "어떤 문제가 있었나요?"
+    },
+    "ui.safety.protection_settings.page_title" : {
+      "comment" : "사용자 보호 기능 설정"
+    },
+    "ui.safety.report.harassment" : {
+      "comment" : "다른 사용자를 괴롭히거나, 공격적인 내용을 담고 있어요"
+    },
+    "ui.safety.report.illegal_contents" : {
+      "comment" : "불법 행위를 제안하거나 조장하고 있어요 (예: 마약, 성매매 등)"
+    },
+    "ui.safety.report.impersonation" : {
+      "comment" : "다른 사람을 사칭하거나 도용하고 있어요"
+    },
+    "ui.safety.report.inappropriate_profile" : {
+      "comment" : "프로필 이미지나 프로필 내용이 부적절해요"
+    },
+    "ui.safety.report.minor" : {
+      "comment" : "미성년자 또는 청소년이 이 앱을 사용하고 있어요"
+    },
+    "ui.safety.report.other_problem" : {
+      "comment" : "그 외 다른 문제가 있어요 (아래에 상세히 적어주세요)"
+    },
+    "ui.safety.report.sexual_content" : {
+      "comment" : "음란물이나 성적 수치심을 주는 내용을 담고 있어요"
+    },
+    "ui.safety.title.report_card" : {
+      "comment" : "카드 신고하기"
+    },
+    "ui.safety.title.report_user" : {
+      "comment" : "사용자 신고하기"
+    },
+    "ui.safety.zone_settings.page_title" : {
+      "comment" : "안전 구역 설정"
+    },
     "ui.settings.account.change_password" : {
       "comment" : "비밀번호 변경",
       "localizations" : {
@@ -544,6 +1032,45 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "계정 비활성화"
+          }
+        }
+      }
+    },
+    "ui.settings.account.deactivate_button" : {
+      "comment" : "회원 탈퇴하기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회원 탈퇴하기"
+          }
+        }
+      }
+    },
+    "ui.settings.account.deactivate_password_alert.title" : {
+
+    },
+    "ui.settings.account.deactivate_password.message" : {
+      "comment" : "계정을 비활성화하려면 계정 비밀번호를 입력해주세요."
+    },
+    "ui.settings.account.error_alert_ok" : {
+      "comment" : "확인",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
+          }
+        }
+      }
+    },
+    "ui.settings.account.error_alert_title" : {
+      "comment" : "오류",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류"
           }
         }
       }
@@ -569,6 +1096,48 @@
           }
         }
       }
+    },
+    "ui.settings.change_password.action.change" : {
+      "comment" : "변경"
+    },
+    "ui.settings.change_password.page_title" : {
+      "comment" : "비밀번호 변경"
+    },
+    "ui.settings.deactivate_completed.completion_message" : {
+      "comment" : "계정 삭제가 완료되었습니다.\n그동안 Flitz를 이용해 주셔서 감사합니다."
+    },
+    "ui.settings.deactivate_completed.page_title" : {
+      "comment" : "계정 삭제 완료"
+    },
+    "ui.settings.deactivate_completed.thank_you_title" : {
+      "comment" : "이용해 주셔서 감사합니다"
+    },
+    "ui.settings.deactivate.page_title" : {
+      "comment" : "계정 삭제하기"
+    },
+    "ui.settings.deactivate.textfield.password.placeholder" : {
+
+    },
+    "ui.settings.deactivation.description" : {
+      "comment" : "계정을 삭제하면 포토카드,메시지 등 기존의 모든 활동정보가 삭제됩니다. 계정 삭제후 7일동안 다시 가입을 할 수 없습니다."
+    },
+    "ui.settings.deactivation.reason.confirmation" : {
+      "comment" : "회원 탈퇴 안내 사항을 확인하였으며, 이에 동의합니다."
+    },
+    "ui.settings.deactivation.reason.description" : {
+      "comment" : "그 동안 Flitz를 이용해 주셔서 감사합니다.\n사용자님이 느끼셨던 점을 저희에게 공유해주시면 더욱 좋은 서비스를 제공할 수 있도록 노력하겠습니다."
+    },
+    "ui.settings.deactivation.reason.placeholder" : {
+      "comment" : "피드백을 남겨주세요. (번거로우시면 꼭 남겨주시지 않으셔도 괜찮아요!)"
+    },
+    "ui.settings.deactivation.reason.title" : {
+      "comment" : "%@님이 떠나시는 이유는 무엇인가요?"
+    },
+    "ui.settings.deactivation.title" : {
+      "comment" : "%@님, 정말 계정을 삭제하시겠어요?"
+    },
+    "ui.settings.logout_completed.page_title" : {
+      "comment" : "로그아웃 완료"
     },
     "ui.settings.notification.enable_marketing_notifications" : {
       "comment" : "마케팅 알림 받기",
@@ -636,6 +1205,241 @@
         }
       }
     },
+    "ui.settings.passwd.textfield.confirm_password.placeholder" : {
+
+    },
+    "ui.settings.passwd.textfield.current_password.placeholder" : {
+
+    },
+    "ui.settings.passwd.textfield.new_password.placeholder" : {
+
+    },
+    "ui.settings.password.textfield.confirmpassword.label" : {
+
+    },
+    "ui.settings.password.textfield.currentpassword.label" : {
+
+    },
+    "ui.settings.password.textfield.newpassword.label" : {
+
+    },
+    "ui.settings.safety.contacts_block_privacy_notice" : {
+      "comment" : "이 기능을 사용하면 연락처 정보가 복호화 불가능한 형태로 해시 처리되어 Flitz 서버에 저장됩니다. 또한, 전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기능을 사용하면 연락처 정보가 복호화 불가능한 형태로 해시 처리되어 Flitz 서버에 저장됩니다. 또한, 전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다."
+          }
+        }
+      }
+    },
+    "ui.settings.safety.contacts_block.description" : {
+      "comment" : "이 기능을 사용하면, 연락처에 등록된 사람이 추후 Flitz 서비스에 가입하거나, Flitz 앱을 켠 상태로 마주치게 되더라도 서로를 확인할 수 없게 됩니다."
+    },
+    "ui.settings.safety.contacts_block.hash_docs" : {
+      "comment" : "[해시 (단방향 암호화)란 무엇인가요?](https://docs.flitz.cards/help/safety/what-is-hashing.ko.html)"
+    },
+    "ui.settings.safety.contacts_block.remove_all" : {
+      "comment" : "서버에 저장된 연락처를 전부 삭제하고 차단 해제하기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서버에 저장된 연락처를 전부 삭제하고 차단 해제하기"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.contacts_block.sync_now" : {
+      "comment" : "지금 연락처 동기화하기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금 연락처 동기화하기"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.contacts_block.title" : {
+      "comment" : "연락처 미리 차단",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연락처 미리 차단"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.contacts_block.toggle" : {
+      "comment" : "휴대폰 연락처에 등록된 사람들을 미리 차단하기",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "휴대폰 연락처에 등록된 사람들을 미리 차단하기"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.location_select_instruction" : {
+      "comment" : "위치를 길게 눌러서 선택하세요.",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위치를 길게 눌러서 선택하세요."
+          }
+        }
+      }
+    },
+    "ui.settings.safety.location.move_to_current" : {
+      "comment" : "현재 위치로 이동"
+    },
+    "ui.settings.safety.notice_title" : {
+      "comment" : "안내",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안내"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.radius" : {
+      "comment" : "반경",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반경"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.safe_zone_marker" : {
+      "comment" : "안전 구역\n(반경 %dm)",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전 구역\\n(반경 %dm)"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.safety_zone.beta_notice" : {
+      "comment" : "안전 구역에 있는 동안, 다른 사람들이 사용자님을 발견하거나 카드 교환을 할 수 없도록 합니다. 이 기능은 베타 버전이며, 추후 변경될 수 있습니다."
+    },
+    "ui.settings.safety.safety_zone.set_location" : {
+
+    },
+    "ui.settings.safety.safety_zone.title" : {
+
+    },
+    "ui.settings.safety.safety_zone.toggle" : {
+
+    },
+    "ui.settings.safety.safety_zone.warning_not_set" : {
+      "comment" : "아직 안전 구역을 지정하지 않았습니다! '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다."
+    },
+    "ui.settings.safety.sync_contacts_alert_message" : {
+      "comment" : "연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\n\n계속 진행하시겠습니까?",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\\n\\n계속 진행하시겠습니까?"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.sync_contacts_alert_title" : {
+      "comment" : "연락처를 서버에 동기화하시겠습니까?",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연락처를 서버에 동기화하시겠습니까?"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.sync_contacts_alert_yes" : {
+      "comment" : "예",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예"
+          }
+        }
+      }
+    },
+    "ui.settings.safety.zone_not_set_warning" : {
+      "comment" : "아직 안전 구역을 지정하지 않았습니다! '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다.",
+      "extractionState" : "stale",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 안전 구역을 지정하지 않았습니다! '안전 구역 지정하기' 버튼을 눌러 위치를 지정하지 않으면, 아무런 효과가 없을 것입니다."
+          }
+        }
+      }
+    },
+    "ui.settings.safety.zone.delete" : {
+      "comment" : "안전 구역 삭제"
+    },
+    "ui.store.coming_soon.description" : {
+      "comment" : "조금만 더 기다려 주세요.\n곧 멋진 기능으로 찾아뵐게요!",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조금만 더 기다려 주세요.\n곧 멋진 기능으로 찾아뵐게요!"
+          }
+        }
+      }
+    },
+    "ui.store.coming_soon.title" : {
+      "comment" : "준비 중입니다",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 중입니다"
+          }
+        }
+      }
+    },
+    "ui.support.new_ticket.content_placeholder" : {
+      "comment" : "문의 내용을 입력해주세요"
+    },
+    "ui.support.new_ticket.description" : {
+      "comment" : "문의 내용을 보내주시면 최대한 빠르게 답변 드릴게요!"
+    },
+    "ui.support.new_ticket.page_title" : {
+      "comment" : "새 문의 티켓"
+    },
+    "ui.support.new_ticket.title" : {
+      "comment" : "새로운 문의 티켓 보내기"
+    },
+    "ui.support.new_ticket.title_placeholder" : {
+      "comment" : "제목을 입력해주세요"
+    },
+    "ui.support.ticket_detail.add_response_button" : {
+      "comment" : "답변 추가하기"
+    },
+    "ui.support.ticket_detail.new_response_placeholder" : {
+      "comment" : "새로운 답변 추가하기..."
+    },
+    "ui.support.ticket_detail.new_response_section_title" : {
+      "comment" : "새로운 답변 추가하기"
+    },
     "ui.support.ticket_detail.title" : {
       "localizations" : {
         "ko" : {
@@ -666,10 +1470,82 @@
         }
       }
     },
-    "Unsupported message type" : {
-
+    "ui.support.ticket.cancel" : {
+      "comment" : "취소"
     },
-    "Wave에 대해 자세히 알아보기" : {
+    "ui.support.ticket.send" : {
+      "comment" : "전송하기"
+    },
+    "ui.tab.message" : {
+      "comment" : "메시지"
+    },
+    "ui.tab.profile" : {
+      "comment" : "프로필"
+    },
+    "ui.tab.store" : {
+      "comment" : "스토어"
+    },
+    "ui.tab.wave" : {
+      "comment" : "웨이브"
+    },
+    "ui.wave.card_manager.context_delete" : {
+      "comment" : "카드 삭제하기"
+    },
+    "ui.wave.card_manager.context_edit" : {
+      "comment" : "카드 편집하기"
+    },
+    "ui.wave.card_manager.context_set_main" : {
+      "comment" : "멤인 카드로 설정"
+    },
+    "ui.wave.card_manager.create_new" : {
+      "comment" : "새 카드 만들기"
+    },
+    "ui.wave.card_manager.limit_message" : {
+      "comment" : "카드는 4장까지 만들 수 있습니다"
+    },
+    "ui.wave.card.context.report" : {
+      "comment" : "카드 신고하기"
+    },
+    "ui.wave.favorites.context.remove" : {
+      "comment" : "보관함에서 삭제하기"
+    },
+    "ui.wave.my_card.delete" : {
+      "comment" : "삭제하기"
+    },
+    "ui.wave.my_card.edit" : {
+      "comment" : "편집하기"
+    },
+    "ui.wave.my_card.main_set" : {
+      "comment" : "멤인 카드로 설정됨"
+    },
+    "ui.wave.my_card.set_main" : {
+      "comment" : "멤인 카드로 설정하기"
+    },
+    "ui.wave.no_cards.exchange_description" : {
+      "comment" : "다른 Flitz 사용자와 마주치게 되면 카드가 교환될 거예요!"
+    },
+    "ui.wave.no_cards.learn_more" : {
+      "comment" : "Wave에 대해 자세히 알아보기"
+    },
+    "ui.wave.no_cards.open_settings" : {
+      "comment" : "앱 설정 열기"
+    },
+    "ui.wave.no_cards.permission_description" : {
+      "comment" : "Flitz가 다른 사용자와 카드를 교환할 수 있도록 Bluetooth 및 위치 정보 권한을 허용해 주세요."
+    },
+    "ui.wave.no_cards.permission_needed" : {
+      "comment" : "추가 권한이 필요해요"
+    },
+    "ui.wave.no_cards.title" : {
+      "comment" : "아직 교환된 카드가 없어요"
+    },
+    "ui.wave.not_ready.message" : {
+      "comment" : "시간이 지나면 카드를 보을 수 있게 될 거에요.\n조금만 기다려 주세요!"
+    },
+    "ui.wave.not_ready.title" : {
+      "comment" : "아직은 카드를 볼 수 없어요"
+    },
+    "Unsupported message type" : {
 
     },
     "x: %@ y: %@" : {
@@ -681,375 +1557,6 @@
           }
         }
       }
-    },
-    "계정 삭제 완료" : {
-
-    },
-    "계정 삭제하기" : {
-
-    },
-    "계정과 연결된 휴대폰 번호를 입력해 주세요" : {
-
-    },
-    "계정을 비활성화하려면 계정 비밀번호를 입력해주세요." : {
-
-    },
-    "공지사항" : {
-
-    },
-    "국가 선택" : {
-
-    },
-    "그 외 다른 문제가 있어요 (아래에 상세히 적어주세요)" : {
-
-    },
-    "나가기" : {
-
-    },
-    "닉네임을 입력하세요" : {
-
-    },
-    "다른 Flitz 사용자와 마주치게 되면 카드가 교환될 거예요!" : {
-      "comment" : "NoCardsAvailableReason::description"
-    },
-    "다른 사람을 사칭하거나 도용하고 있어요" : {
-
-    },
-    "다른 사용자를 괴롭히거나, 공격적인 내용을 담고 있어요" : {
-
-    },
-    "다음" : {
-
-    },
-    "당신은 어떤 사람인가요?" : {
-
-    },
-    "당신을 나타내는 한줄 칭호!" : {
-
-    },
-    "대화" : {
-
-    },
-    "대화 나가기" : {
-
-    },
-    "대화 신고하기" : {
-
-    },
-    "등록되지 않음" : {
-
-    },
-    "디버그 모드의 클라이언트입니다" : {
-
-    },
-    "로그아웃 완료" : {
-
-    },
-    "로그인" : {
-
-    },
-    "로그인 실패" : {
-
-    },
-    "로그인에 실패했습니다. 유저네임 / 비밀번호를 확인 후 다시 시도해주세요." : {
-
-    },
-    "마이페이지" : {
-
-    },
-    "멋진 자기 소개를 입력해 보세요!" : {
-
-    },
-    "메시지" : {
-
-    },
-    "메시지 삭제" : {
-
-    },
-    "메시지 신고" : {
-
-    },
-    "메시지를 입력하세요" : {
-
-    },
-    "메인 카드로 설정됨" : {
-
-    },
-    "메인 카드로 설정하기" : {
-
-    },
-    "문자로 수신받은 인증 번호를 입력해 주세요" : {
-
-    },
-    "미성년자 또는 청소년이 이 앱을 사용하고 있어요" : {
-
-    },
-    "반경" : {
-
-    },
-    "보관함에서 삭제하기" : {
-
-    },
-    "불러오는 중" : {
-
-    },
-    "불법 행위를 제안하거나 조장하고 있어요 (예: 마약, 성매매 등)" : {
-
-    },
-    "비밀번호 변경" : {
-
-    },
-    "비밀번호 변경하기" : {
-
-    },
-    "비밀번호 입력" : {
-
-    },
-    "비밀번호 찾기" : {
-
-    },
-    "비밀번호를 다시 한번 입력해 주세요" : {
-
-    },
-    "비밀번호를 입력하세요" : {
-
-    },
-    "비밀번호를 입력해 주세요" : {
-
-    },
-    "비밀번호를 입력해주세요" : {
-
-    },
-    "사용자 보호 기능 설정" : {
-
-    },
-    "사용자 신고하기" : {
-
-    },
-    "사용자 차단하기" : {
-
-    },
-    "사진 앱에 저장" : {
-
-    },
-    "삭제하기" : {
-
-    },
-    "새 문의 티켓" : {
-
-    },
-    "새 비밀번호를 입력해 주세요" : {
-
-    },
-    "새 카드 만들기" : {
-
-    },
-    "서로가 카드를 **좋아요** 하면 대화를 시작할 수 있어요." : {
-
-    },
-    "스토어" : {
-
-    },
-    "시간이 지나면 카드를 볼 수 있게 될 거에요.\n조금만 기다려 주세요!" : {
-
-    },
-    "신고 보내기" : {
-
-    },
-    "신고 후 이 사용자를 곧바로 차단할래요" : {
-
-    },
-    "아직 교환된 카드가 없어요" : {
-      "comment" : "NoCardsAvailableReason::title"
-    },
-    "아직 대화 내역이 없어요" : {
-
-    },
-    "아직 안전 구역을 지정하지 않았습니다!" : {
-
-    },
-    "아직은 카드를 볼 수 없어요" : {
-
-    },
-    "안내" : {
-
-    },
-    "안전 구역\n(반경 %lldm)" : {
-
-    },
-    "안전 구역 기능 켜기 (베타)" : {
-
-    },
-    "안전 구역 설정" : {
-
-    },
-    "안전 구역 설정 (베타)" : {
-
-    },
-    "안전 구역 지정하기" : {
-
-    },
-    "안전한 사람들하고만 매칭할래요" : {
-
-    },
-    "앱 설정 열기" : {
-
-    },
-    "앱 종료하기" : {
-
-    },
-    "앱이 잠시 중단되었습니다" : {
-
-    },
-    "약관 동의" : {
-
-    },
-    "연락처 미리 차단" : {
-
-    },
-    "연락처 차단 기능을 사용하기 위해서는 연락처를 서버에 업로드해야 합니다.\n연락처는 복호화 불가능한 형태로 해시 처리되어 저장되며, 전화번호를 제외한 다른 정보는 저장되지 않습니다.\n업로드된 연락처는 언제든지 삭제할 수 있습니다.\n\n계속 진행하시겠습니까?" : {
-
-    },
-    "연락처를 서버로부터 모두 삭제하고 차단 해제하기" : {
-
-    },
-    "연락처를 서버에 동기화하시겠습니까?" : {
-
-    },
-    "예" : {
-
-    },
-    "오류" : {
-
-    },
-    "웨이브" : {
-
-    },
-    "위치를 길게 눌러서 선택하세요." : {
-
-    },
-    "유저네임을 입력해 주세요" : {
-
-    },
-    "유저네임을 입력해주세요" : {
-
-    },
-    "음란물이나 성적 수치심을 주는 내용을 담고 있어요" : {
-
-    },
-    "이 대화에서 나가시겠습니까? 모든 메시지가 삭제됩니다." : {
-
-    },
-    "이미지 옵션" : {
-
-    },
-    "이미지 자르기" : {
-
-    },
-    "인증 문자 받기" : {
-
-    },
-    "읽음" : {
-
-    },
-    "잠깐! 마지막으로.." : {
-
-    },
-    "잠시만 기다려 주세요..." : {
-
-    },
-    "저장 중" : {
-
-    },
-    "전송하기" : {
-
-    },
-    "전화번호를 제외한 연락처 필드 (이름, 이메일 등)은 Flitz 서버에 저장되지 않습니다." : {
-
-    },
-    "조금만 더 기다려 주세요.\n곧 멋진 기능으로 찾아뵐게요!" : {
-
-    },
-    "준비 중인 기능입니다" : {
-
-    },
-    "지금 연락처 동기화하기" : {
-
-    },
-    "차단 해제" : {
-
-    },
-    "차단된 사용자" : {
-
-    },
-    "차단된 사용자가 없어요" : {
-
-    },
-    "차단된 사용자와는 카드 교환 및 대화가 불가능해요." : {
-
-    },
-    "추가 권한이 필요해요" : {
-      "comment" : "NoCardsAvailableReason::title"
-    },
-    "취소" : {
-
-    },
-    "카드 신고하기" : {
-
-    },
-    "카드는 4장까지 만들 수 있습니다" : {
-
-    },
-    "트랜스젠더 여부를 프로필에 표시할래요" : {
-
-    },
-    "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요." : {
-
-    },
-    "편집하기" : {
-
-    },
-    "프로필" : {
-
-    },
-    "프로필 설정" : {
-
-    },
-    "프로필 이미지나 프로필 내용이 부적절해요" : {
-
-    },
-    "프로필 정보 입력" : {
-
-    },
-    "해시태그를 입력하세요" : {
-
-    },
-    "현재 비밀번호를 입력해 주세요" : {
-
-    },
-    "호스트: %@" : {
-
-    },
-    "확인" : {
-
-    },
-    "회원 가입 마치기" : {
-
-    },
-    "회원 탈퇴하기" : {
-
-    },
-    "회원가입" : {
-
-    },
-    "휴대폰 연락처에 등록된 사람들을 미리 차단하기" : {
-
-    },
-    "휴대폰 인증" : {
-
-    },
-    "휴대폰 인증하기" : {
-
     }
   },
   "version" : "1.0"

@@ -25,7 +25,7 @@ struct AppIntroScreen: View {
                     FZButton(size: .large) {
                         authPhaseState.navState.append(.signUp)
                     } label: {
-                        Text("회원가입")
+                        Text(NSLocalizedString("ui.auth.intro.signup", comment: "회원가입"))
                             .font(.fzMain)
                             .semibold()
                     }
@@ -33,7 +33,7 @@ struct AppIntroScreen: View {
                     FZButton(palette: .clear, size: .large) {
                         authPhaseState.navState.append(.signIn)
                     } label: {
-                        Text("로그인")
+                        Text(NSLocalizedString("ui.auth.intro.signin", comment: "로그인"))
                             .font(.fzMain)
                             .semibold()
                     }

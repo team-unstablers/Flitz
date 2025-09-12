@@ -142,7 +142,7 @@ struct NoticeListScreen: View {
                 ProgressView()
             }
         }
-        .navigationTitle("공지사항")
+        .navigationTitle(NSLocalizedString("ui.notice.list.page_title", comment: "공지사항"))
         .onAppear {
             Task {
                 await viewModel.fetchNotices()

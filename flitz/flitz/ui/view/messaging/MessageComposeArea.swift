@@ -49,11 +49,11 @@ struct EditableImageThumbnail: View {
                     VStack {
                         SwiftUICropView(editingStack: editorContext.editingStack, isAutoApplyEditingStackEnabled: true)
                     }
-                    .navigationTitle("이미지 자르기")
+                    .navigationTitle(NSLocalizedString("ui.messaging.image_crop.page_title", comment: "이미지 자르기"))
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("취소") {
+                            Button(NSLocalizedString("ui.messaging.image_crop.action.cancel", comment: "취소")) {
                                 editorContext.editingStack.revertEdit()
                                 editorVisible = false
                                 self.onSave?()
@@ -61,7 +61,7 @@ struct EditableImageThumbnail: View {
                         }
                         
                         ToolbarItem(placement: .confirmationAction) {
-                            Button("완료") {
+                            Button(NSLocalizedString("ui.messaging.image_crop.action.done", comment: "완료")) {
                                 editorVisible = false
                                 self.onSave?()
                             }
@@ -137,7 +137,7 @@ struct MessageComposeArea: View {
                     
                     Divider()
                 }
-                TextField("메시지를 입력하세요", text: $text, axis: .vertical)
+                TextField(NSLocalizedString("ui.messaging.textfield.message.placeholder", comment: "메시지를 입력하세요"), text: $text, axis: .vertical)
                     .lineLimit(1...3)
                 // .disabled(isSending)
                     .focused(focused)

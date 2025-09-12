@@ -21,7 +21,7 @@ struct NewCardPreview: View {
                             Group {
                                 Image(systemName: "plus")
                                     .font(.system(size: 64))
-                                Text("새 카드 만들기")
+                                Text(NSLocalizedString("ui.profile.new_card.create", comment: "새 카드 만들기"))
                                     .font(.heading2)
                                     .bold()
                             }

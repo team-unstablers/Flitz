@@ -46,12 +46,12 @@ struct CardEditor: View {
             
             if initialBusy {
                 VStack(spacing: 6) {
-                    Text("불러오는 중")
+                    Text(NSLocalizedString("ui.card.editor.loading.title", comment: "불러오는 중"))
                         .font(.fzHeading3)
                         .semibold()
                         .foregroundStyle(.white)
                     
-                    Text("잠시만 기다려 주세요...")
+                    Text(NSLocalizedString("ui.card.editor.loading.message", comment: "잠시만 기다려 주세요..."))
                         .font(.fzMain)
                         .foregroundStyle(.white.opacity(0.7))
                 }
@@ -61,12 +61,12 @@ struct CardEditor: View {
             
             if busy {
                 VStack(spacing: 6) {
-                    Text("저장 중")
+                    Text(NSLocalizedString("ui.card.editor.saving.title", comment: "저장 중"))
                         .font(.fzHeading3)
                         .semibold()
                         .foregroundStyle(.white)
 
-                    Text("잠시만 기다려 주세요...")
+                    Text(NSLocalizedString("ui.card.editor.saving.message", comment: "잠시만 기다려 주세요..."))
                         .font(.fzMain)
                         .foregroundStyle(.white.opacity(0.7))
                 }
@@ -86,7 +86,7 @@ struct CardEditor: View {
                 if busy {
                     ProgressView()
                 } else {
-                    Button("저장") {
+                    Button(NSLocalizedString("ui.card.editor.action.save", comment: "저장")) {
                         self.saveCard()
                     }
                 }

@@ -20,7 +20,7 @@ struct ServerSelector: View {
                     Text(host.description)
                 }
             }
-            Text("호스트: \(host.rawValue)")
+            Text(String(format: NSLocalizedString("ui.auth.signin.debug.host", comment: "호스트: %@"), host.rawValue))
         }
     }
     
@@ -62,21 +62,21 @@ struct SignInScreen: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("로그인")
+            Text(NSLocalizedString("ui.auth.signin.title", comment: "로그인"))
                 .font(.fzHeading1)
                 .bold()
                 .padding(.bottom, 40)
             
-            FZEntry("유저네임") {
-                TextField("유저네임을 입력해주세요", text: $username)
+            FZEntry(NSLocalizedString("ui.common.username", comment: "유저네임")) {
+                TextField(NSLocalizedString("ui.common.username.placeholder", comment: "유저네임을 입력해주세요"), text: $username)
                     .autocorrectionDisabled(true)
                     .background(.clear)
             }
             .padding(.bottom, 20)
             .disabled(busy)
 
-            FZEntry("비밀번호") {
-                SecureField("비밀번호를 입력해주세요", text: $password)
+            FZEntry(NSLocalizedString("ui.common.password", comment: "비밀번호")) {
+                SecureField(NSLocalizedString("ui.auth.signin.textfield.password.placeholder", comment: ""), text: $password)
                     .autocorrectionDisabled(true)
                     .background(.clear)
             }
@@ -94,7 +94,7 @@ struct SignInScreen: View {
                 if busy {
                     ProgressView()
                 } else {
-                    Text("로그인")
+                    Text(NSLocalizedString("ui.auth.signin.signin_button", comment: "로그인"))
                         .font(.fzMain)
                         .semibold()
                 }
@@ -106,7 +106,7 @@ struct SignInScreen: View {
                 FZButton(palette: .clear, size: .textual) {
                     authPhaseState.navState = [.signUp]
                 } label: {
-                    Text("회원가입")
+                    Text(NSLocalizedString("ui.auth.signin.signup_button", comment: "회원가입"))
                         .font(.fzMain)
                 }
                 
@@ -118,7 +118,7 @@ struct SignInScreen: View {
                 FZButton(palette: .clear, size: .textual) {
                     authPhaseState.navState.append(.findPassword)
                 } label: {
-                    Text("비밀번호 찾기")
+                    Text(NSLocalizedString("ui.auth.signin.find_password", comment: "비밀번호 찾기"))
                         .font(.fzMain)
                 }
             }
@@ -126,7 +126,7 @@ struct SignInScreen: View {
             
 #if DEBUG
             VStack(spacing: 0) {
-                Text("디버그 모드의 클라이언트입니다")
+                Text(NSLocalizedString("ui.auth.signin.debug.client_notice", comment: "디버그 모드의 클라이언트입니다"))
                     .padding(.bottom, 16)
                     .bold()
                     .foregroundStyle(.red.opacity(0.8))
@@ -144,10 +144,10 @@ struct SignInScreen: View {
         .toolbarVisibility(.hidden, for: .navigationBar)
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .alert("로그인 실패", isPresented: $showLoginFailureAlert) {
-            Button("확인") { }
+        .alert("ui.auth.signin.failure_alert.title", isPresented: $showLoginFailureAlert) {
+            Button(NSLocalizedString("ui.common.confirm", comment: "확인")) { }
         } message: {
-            Text("로그인에 실패했습니다. 유저네임 / 비밀번호를 확인 후 다시 시도해주세요.")
+            Text(NSLocalizedString("ui.auth.signin.failure_alert.message", comment: "로그인에 실패했습니다. 유저네임 / 비밀번호를 확인 후 다시 시도해주세요."))
         }
     }
     

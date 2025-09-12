@@ -39,19 +39,19 @@ struct NewSupportTicketSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
-                    Text("새로운 문의 티켓 보내기".byCharWrapping)
+                    Text(NSLocalizedString("ui.support.new_ticket.title", comment: "새로운 문의 티켓 보내기").byCharWrapping)
                         .font(.fzHeading1)
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text("문의 내용을 보내주시면 최대한 빠르게 답변 드릴게요!".byCharWrapping)
+                    Text(NSLocalizedString("ui.support.new_ticket.description", comment: "문의 내용을 보내주시면 최대한 빠르게 답변 드릴게요!").byCharWrapping)
                         .font(.fzMain)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, 8)
 
 
                     VStack(alignment: .leading, spacing: 16) {
-                        TextField("제목을 입력해주세요".byCharWrapping, text: $title)
+                        TextField(NSLocalizedString("ui.support.new_ticket.title_placeholder", comment: "제목을 입력해주세요").byCharWrapping, text: $title)
                             .focused($focusState, equals: .title)
                             .font(.fzMain)
                             .padding(12)
@@ -63,7 +63,7 @@ struct NewSupportTicketSheet: View {
                             }
                             .disabled(busy)
                         
-                        TextField("문의 내용을 입력해주세요".byCharWrapping, text: $content, axis: .vertical)
+                        TextField(NSLocalizedString("ui.support.new_ticket.content_placeholder", comment: "문의 내용을 입력해주세요").byCharWrapping, text: $content, axis: .vertical)
                             .focused($focusState, equals: .content)
                             .font(.fzMain)
                             .lineLimit(10...10)
@@ -85,18 +85,18 @@ struct NewSupportTicketSheet: View {
                 focusState = nil
             }
             .toolbarVisibility(.visible, for: .navigationBar)
-            .navigationTitle("새 문의 티켓")
+            .navigationTitle(NSLocalizedString("ui.support.new_ticket.page_title", comment: "새 문의 티켓"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("취소") {
+                    Button(NSLocalizedString("ui.support.ticket.cancel", comment: "취소")) {
                         handler()
                     }
                     .disabled(busy)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("전송하기", role: .destructive) {
+                    Button(NSLocalizedString("ui.support.ticket.send", comment: "전송하기"), role: .destructive) {
                         Task {
                             await performPost()
                         }

@@ -213,10 +213,10 @@ struct UserProfileModalBody: View {
                 }
                 Spacer()
                 UserProfileModalMenuButton() {
-                    Button("사용자 신고하기", role: .destructive) {
+                    Button(NSLocalizedString("ui.profile.context.report_user", comment: "사용자 신고하기"), role: .destructive) {
                         isFlagSheetVisible = true
                     }
-                    Button("사용자 차단하기", role: .destructive) {
+                    Button(NSLocalizedString("ui.profile.context.block_user", comment: "사용자 차단하기"), role: .destructive) {
                         Task {
                             await self.blockUser()
                             onDismiss?()

@@ -352,14 +352,14 @@ struct SignUpPhases {
         
         var body: some View {
             VStack {
-                Text("Flitz는 현재 대한민국에서만 사용할 수 있어요.")
+                Text(NSLocalizedString("ui.auth.country_selection.prelude_notice", comment: "Flitz는 현재 대한민국에서만 사용할 수 있어요."))
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray7)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                     .padding(.bottom, 60)
                 
-                Picker("국가 선택", selection: $viewModel.countryCode) {
+                Picker("ui.auth.country_selection.placeholder", selection: $viewModel.countryCode) {
                         ForEach(CountryCode.allCases, id: \.self) {
                             Text($0.displayName)
                                 .tag($0.rawValue)
@@ -372,14 +372,14 @@ struct SignUpPhases {
                 FZButton(size: .large) {
                     viewModel.phase.append(.agreement)
                 } label: {
-                    Text("다음")
+                    Text(NSLocalizedString("ui.common.next", comment: "다음"))
                         .font(.fzMain)
                         .semibold()
                 }
                 .disabled(viewModel.countryCode != .KR)
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("국가 선택")
+            .navigationTitle(NSLocalizedString("ui.auth.country_selection.page_title", comment: "국가 선택"))
         }
     }
     
@@ -389,7 +389,7 @@ struct SignUpPhases {
         
         var body: some View {
             VStack {
-                Text("Flitz를 사용하려면 아래 약관에 동의해야 해요.".byCharWrapping)
+                Text(NSLocalizedString("ui.auth.signup.agreement.description", comment: "Flitz를 사용하려면 아래 약관에 동의해야 해요.").byCharWrapping)
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray7)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -436,7 +436,7 @@ struct SignUpPhases {
                     if viewModel.busy {
                         ProgressView()
                     } else {
-                        Text("다음")
+                        Text(NSLocalizedString("ui.common.next", comment: "다음"))
                             .font(.fzMain)
                             .semibold()
                     }
@@ -444,7 +444,7 @@ struct SignUpPhases {
                 .disabled(viewModel.busy || !validated)
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("약관 동의")
+            .navigationTitle(NSLocalizedString("ui.auth.agreement.page_title", comment: "약관 동의"))
         }
         
         var validated: Bool {
@@ -476,7 +476,7 @@ struct SignUpPhases {
         
         var body: some View {
             VStack {
-                Text("휴대폰 인증을 통한 본인 확인을 진행해요.\n대한민국에서는 NICE 평가정보의 휴대폰 인증 서비스를 이용해요.".byCharWrapping)
+                Text(NSLocalizedString("ui.auth.signup.phone_verification.description", comment: "휴대폰 인증을 통한 본인 확인을 진행해요.\n대한민국에서는 NICE 평가정보의 휴대폰 인증 서비스를 이용해요.").byCharWrapping)
                     .font(.fzMain)
                     .foregroundStyle(Color.Grayscale.gray7)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -500,7 +500,7 @@ struct SignUpPhases {
                     if viewModel.busy {
                         ProgressView()
                     } else {
-                        Text("휴대폰 인증하기")
+                        Text(NSLocalizedString("ui.auth.signup.phone_verification", comment: "휴대폰 인증하기"))
                             .font(.fzMain)
                             .semibold()
                     }
@@ -508,7 +508,7 @@ struct SignUpPhases {
                 .disabled(viewModel.busy)
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("휴대폰 인증")
+            .navigationTitle(NSLocalizedString("ui.auth.phone_verification.page_title", comment: "휴대폰 인증"))
             .sheet(isPresented: $shouldPresentNiceWebView) {
                 NavigationView {
                     NicePhoneVerification(
@@ -530,10 +530,10 @@ struct SignUpPhases {
                         }
                         self.shouldPresentNiceWebView = false
                     }
-                    .navigationTitle("휴대폰 인증")
+                    .navigationTitle(NSLocalizedString("ui.auth.phone_verification.page_title", comment: "휴대폰 인증"))
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("취소") {
+                            Button(NSLocalizedString("ui.common.cancel", comment: "취소")) {
                                 self.shouldPresentNiceWebView = false
                             }
                         }
@@ -552,7 +552,7 @@ struct SignUpPhases {
             VStack {
                 ScrollView {
                     VStack {
-                        Text("Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요.")
+                        Text(NSLocalizedString("ui.auth.signup.user_identity.description", comment: "Flitz에서 당신을 다른 사람들과 이어주기 위해 알아야 해요.").byCharWrapping)
                             .font(.fzMain)
                             .foregroundStyle(Color.Grayscale.gray7)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -561,48 +561,48 @@ struct SignUpPhases {
                         
                         
                         ProfileEditSection {
-                            ProfileEditSectionEntity(title: "정체성") {
+                            ProfileEditSectionEntity(title: "ui.mypage.section.identity.identity.title") {
                                 FZSingleChipSelector(selectedChip: $viewModel.intermediate.gender)
                                     .padding(.bottom, 8)
                                 
                                 Group {
                                     Toggle(isOn: $viewModel.intermediate.isTransgender) {
-                                        Text("트랜스젠더예요" + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
+                                        Text(NSLocalizedString("ui.mypage.profile.trans_identity", comment: "트랜스젠더예요") + (viewModel.intermediate.isTransgender ? " 🙌🏳️‍⚧️🙌" : ""))
                                             .font(.fzMain)
                                     }
                                     .tint(Color.Pride.trans1)
                                     
                                     if viewModel.intermediate.isTransgender {
                                         Toggle(isOn: $viewModel.intermediate.transVisibleToOthers) {
-                                            Text("트랜스젠더 여부를 프로필에 표시할래요")
+                                            Text(NSLocalizedString("ui.mypage.profile.trans_visibility", comment: "트랜스젠더 여부를 프로필에 표시할래요"))
                                                 .font(.fzMain)
                                         }
                                         .tint(Color.Pride.trans2)
                                     }
                                 }
-                                .padding(.vertical, 4)
+                                    .padding(.vertical, 4)
                             }
                             
                             ProfileEditSectionDivider()
-                            
-                            ProfileEditSectionEntity(title: "선호하는 사람들") {
+
+                            ProfileEditSectionEntity(title: "ui.mypage.section.identity.preferred_people.title") {
                                 FZChipSelector(selectedChips: $viewModel.intermediate.preferredGender)
                                 
                                 if (viewModel.intermediate.isTransgender) {
-                                    Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
-                                        Text("안전한 사람들하고만 매칭할래요")
+                                     Toggle(isOn: $viewModel.intermediate.enableTransSafeMatch) {
+                                        Text(NSLocalizedString("ui.mypage.profile.trans_safe_match", comment: "안전한 사람들하고만 매칭할래요"))
                                             .font(.fzMain)
                                     }
                                     .tint(Color.Pride.trans1)
                                     .padding(.vertical, 4)
                                     
                                     if (viewModel.intermediate.enableTransSafeMatch) {
-                                        Text("트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요.")
+                                        Text(NSLocalizedString("ui.mypage.profile.trans_safe_match_desc", comment: "트랜스젠더를 환영한다고 밝힌 사람들하고만 매칭해요."))
                                             .font(.fzSmall)
                                     }
                                 } else {
                                     Toggle(isOn: $viewModel.intermediate.isTransPreferred) {
-                                        Text("트랜스젠더 사람들을 환영해요" + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
+                                        Text(NSLocalizedString("ui.mypage.profile.trans_welcome", comment: "트랜스젠더 사람들을 환영해요") + (viewModel.intermediate.isTransPreferred ? " 🙌🏳️‍⚧️🙌" : ""))
                                             .font(.fzMain)
                                     }
                                     .tint(Color.Pride.trans1)
@@ -620,7 +620,7 @@ struct SignUpPhases {
                     FZButton(size: .large) {
                         viewModel.phase.append(.createProfile)
                     } label: {
-                        Text("다음")
+                        Text(NSLocalizedString("ui.common.next", comment: "다음"))
                             .font(.fzMain)
                             .semibold()
                     }
@@ -628,7 +628,7 @@ struct SignUpPhases {
             }
             .safeAreaPadding(.horizontal)
             .safeAreaPadding(.bottom)
-            .navigationTitle("당신은 어떤 사람인가요?")
+            .navigationTitle(NSLocalizedString("ui.auth.identity.page_title", comment: "당신은 어떤 사람인가요?"))
         }
     }
     
@@ -640,7 +640,7 @@ struct SignUpPhases {
             VStack {
                 ScrollView {
                     VStack {
-                        Text("프로필을 입력해 주세요.\n다른 사용자들이 불쾌해 할 수 있는 내용은 입력하지 말아주세요.".byCharWrapping)
+                        Text(NSLocalizedString("ui.auth.signup.profile_input.description", comment: "프로필을 입력해 주세요.\n다른 사용자들이 불쾌해 할 수 있는 내용은 입력하지 말아주세요.").byCharWrapping)
                             .font(.fzMain)
                             .foregroundStyle(Color.Grayscale.gray7)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -664,28 +664,28 @@ struct SignUpPhases {
                         }
                         
                         ProfileEditSection {
-                            ProfileEditSectionEntity(title: "닉네임", error: viewModel.intermediate.validationError.displayName) {
-                                TextField("닉네임을 입력하세요", text: $viewModel.intermediate.displayName)
+                            ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.nickname.title", error: viewModel.intermediate.validationError.displayName) {
+                                TextField("ui.mypage.profile.section.basic.nickname.placeholder", text: $viewModel.intermediate.displayName)
                                     .font(.fzHeading3)
                             }
                             
                             ProfileEditSectionDivider()
                             
-                            ProfileEditSectionEntity(title: "한줄 칭호", error: viewModel.intermediate.validationError.title) {
-                                TextField("당신을 나타내는 한줄 칭호!", text: $viewModel.intermediate.title)
+                            ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.title.title", error: viewModel.intermediate.validationError.title) {
+                                TextField("ui.mypage.profile.section.basic.title.placeholder", text: $viewModel.intermediate.title)
                                     .font(.fzHeading3)
                             }
                             
                             ProfileEditSectionDivider()
                             
-                            ProfileEditSectionEntity(title: "해시태그") {
+                            ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.hashtags.title") {
                                 FZHashtagField(hashtags: $viewModel.intermediate.hashtags)
                             }
                             
                             ProfileEditSectionDivider()
                             
-                            ProfileEditSectionEntity(title: "자기소개", error: viewModel.intermediate.validationError.bio) {
-                                TextField("멋진 자기 소개를 입력해 보세요!", text: $viewModel.intermediate.bio, axis: .vertical)
+                            ProfileEditSectionEntity(title: "ui.mypage.profile.section.basic.bio.title", error: viewModel.intermediate.validationError.bio) {
+                                TextField("ui.mypage.profile.section.basic.bio.placeholder", text: $viewModel.intermediate.bio, axis: .vertical)
                                     .lineLimit(3...5)
                                     .font(.fzHeading3)
                             }
@@ -696,7 +696,7 @@ struct SignUpPhases {
                     FZButton(size: .large) {
                         viewModel.phase.append(.credentials)
                     } label: {
-                        Text("다음")
+                        Text(NSLocalizedString("ui.common.next", comment: "다음"))
                             .font(.fzMain)
                             .semibold()
                     }
@@ -707,7 +707,7 @@ struct SignUpPhases {
                 }
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("프로필 정보 입력")
+            .navigationTitle(NSLocalizedString("ui.auth.create_profile.page_title", comment: "프로필 정보 입력"))
         }
     }
     
@@ -721,7 +721,7 @@ struct SignUpPhases {
             VStack {
                 ScrollView {
                     VStack {
-                        Text("앱을 로그인할 때 사용할 인증 정보를 입력해 주세요.".byCharWrapping)
+                        Text(NSLocalizedString("ui.auth.signup.credentials.description", comment: "앱을 로그인할 때 사용할 인증 정보를 입력해 주세요.").byCharWrapping)
                             .font(.fzMain)
                             .foregroundStyle(Color.Grayscale.gray7)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -729,8 +729,8 @@ struct SignUpPhases {
                             .padding(.bottom, 60)
                         
                         VStack(spacing: 40) {
-                            FZInlineEntry("유저네임", error: viewModel.intermediateCredential.usernameError) {
-                                TextField("유저네임을 입력해 주세요", text: $viewModel.intermediateCredential.username)
+                            FZInlineEntry(NSLocalizedString("ui.auth.signup.textfield.username.label", comment: ""), error: viewModel.intermediateCredential.usernameError) {
+                                TextField(NSLocalizedString("ui.auth.signup.textfield.username.placeholder", comment: "유저네임을 입력해 주세요"), text: $viewModel.intermediateCredential.username)
                                     .textContentType(.username)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
@@ -739,8 +739,8 @@ struct SignUpPhases {
                                 viewModel.intermediateCredential.validateUsername()
                             }
                             
-                            FZInlineEntry("비밀번호", error: viewModel.intermediateCredential.passwordError) {
-                                SecureField("비밀번호를 입력해 주세요", text: $viewModel.intermediateCredential.password)
+                            FZInlineEntry(NSLocalizedString("ui.auth.signup.textfield.password.label", comment: ""), error: viewModel.intermediateCredential.passwordError) {
+                                SecureField(NSLocalizedString("ui.auth.signup.textfield.password.placeholder", comment: ""), text: $viewModel.intermediateCredential.password)
                                     .textContentType(.password)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
@@ -749,8 +749,8 @@ struct SignUpPhases {
                                 viewModel.intermediateCredential.validatePassword()
                             }
 
-                            FZInlineEntry("비밀번호 재입력", error: viewModel.intermediateCredential.confirmPasswordError) {
-                                SecureField("비밀번호를 다시 한번 입력해 주세요", text: $viewModel.intermediateCredential.confirmPassword)
+                            FZInlineEntry(NSLocalizedString("ui.auth.signup.textfield.confirmpassword.label", comment: ""), error: viewModel.intermediateCredential.confirmPasswordError) {
+                                SecureField(NSLocalizedString("ui.auth.signup.textfield.confirm_password.placeholder", comment: ""), text: $viewModel.intermediateCredential.confirmPassword)
                                     .textContentType(.password)
                                     .autocapitalization(.none)
                                     .disableAutocorrection(true)
@@ -777,7 +777,7 @@ struct SignUpPhases {
                         if viewModel.busy {
                             ProgressView()
                         } else {
-                            Text("회원 가입 마치기")
+                            Text(NSLocalizedString("ui.auth.signup.complete_registration", comment: "회원 가입 마치기"))
                                 .font(.fzMain)
                                 .semibold()
                         }
@@ -787,7 +787,7 @@ struct SignUpPhases {
                 }
             }
             .safeAreaPadding(.horizontal)
-            .navigationTitle("잠깐! 마지막으로..")
+            .navigationTitle(NSLocalizedString("ui.auth.credentials.page_title", comment: "잠깐! 마지막으로.."))
         }
         
         var validated: Bool {
@@ -844,9 +844,9 @@ struct SignUpScreen: View {
         .environmentObject(viewModel)
         .toolbarVisibility(.hidden, for: .navigationBar)
         .alert(isPresented: $viewModel.shouldPresentError) {
-            Alert(title: Text("오류"),
+            Alert(title: Text(NSLocalizedString("ui.common.error", comment: "오류")),
                   message: Text(viewModel.errorMessage),
-                  dismissButton: .default(Text("확인")))
+                  dismissButton: .default(Text(NSLocalizedString("ui.common.confirm", comment: "확인"))))
         }
     }
 }
