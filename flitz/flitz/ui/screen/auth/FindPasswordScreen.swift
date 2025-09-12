@@ -155,7 +155,7 @@ struct FindPasswordScreen: View {
                     }
                 } else {
                     VStack(spacing: 40) {
-                        FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.verificationcode.label", comment: "")) {
+                        FZInlineEntry(NSLocalizedString("ui.auth.findpassword.textfield.verification_code.label", comment: "")) {
                             SecureField(NSLocalizedString("ui.auth.findpassword.textfield.verification_code.placeholder", comment: ""), text: $viewModel.verificationCode)
                                 .textContentType(.password)
                                 .autocapitalization(.none)
