@@ -441,19 +441,54 @@
       }
     },
     "ui.auth.findpassword.textfield.confirm_password.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 비밀번호를 다시 한번 입력해 주세요"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.confirmpassword.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호 재입력"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.new_password.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 비밀번호를 입력해 주세요"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.newpassword.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 비밀번호"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.phonenumber.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "휴대폰 번호"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.phonenumber.placeholder" : {
       "comment" : "계정과 연결된 휴대폰 번호를 입력해 주세요",
@@ -467,7 +502,14 @@
       }
     },
     "ui.auth.findpassword.textfield.username.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유저네임"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.username.placeholder" : {
       "comment" : "유저네임을 입력해 주세요",
@@ -481,10 +523,24 @@
       }
     },
     "ui.auth.findpassword.textfield.verification_code.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인증 코드"
+          }
+        }
+      }
     },
     "ui.auth.findpassword.textfield.verification_code.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인증 코드를 입력해 주세요"
+          }
+        }
+      }
     },
     "ui.auth.identity.page_title" : {
       "comment" : "당신은 어떤 사람인가요?",
@@ -600,7 +656,14 @@
       }
     },
     "ui.auth.signin.textfield.password.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호를 입력해주세요"
+          }
+        }
+      }
     },
     "ui.auth.signin.title" : {
       "comment" : "로그인",
@@ -720,19 +783,54 @@
       }
     },
     "ui.auth.signup.textfield.confirm_password.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호를 다시 한번 입력해주세요"
+          }
+        }
+      }
     },
     "ui.auth.signup.textfield.confirmpassword.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호 재입력"
+          }
+        }
+      }
     },
     "ui.auth.signup.textfield.password.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호"
+          }
+        }
+      }
     },
     "ui.auth.signup.textfield.password.placeholder" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀번호를 입력해주세요"
+          }
+        }
+      }
     },
     "ui.auth.signup.textfield.username.label" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유저네임"
+          }
+        }
+      }
     },
     "ui.auth.signup.textfield.username.placeholder" : {
       "comment" : "유저네임을 입력해 주세요",
@@ -740,7 +838,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "유저네임을 입력해 주세요"
+            "value" : "유저네임을 입력해주세요"
           }
         }
       }
@@ -1152,7 +1250,14 @@
       }
     },
     "ui.messaging.list.leave_alert.title" : {
-
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대화에서 나가기"
+          }
+        }
+      }
     },
     "ui.messaging.list.page_title" : {
       "comment" : "메시지",
