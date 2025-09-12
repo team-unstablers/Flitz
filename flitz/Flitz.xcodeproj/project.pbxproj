@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F63BE5152E3CF33B0086DAF4 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = F63BE5142E3CF33B0086DAF4 /* Starscream */; };
+		F641B5262E74C05600B5A158 /* FlitzWaveSpot.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = F641B51A2E74C05500B5A158 /* FlitzWaveSpot.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F67E7FEB051E43EAAD6E2EF6 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 3DE04B9DE8774333A7EBC34C /* Sentry */; };
 		F689AB572E44D9B200BB1E6F /* BrightroomEngine in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB562E44D9B200BB1E6F /* BrightroomEngine */; };
 		F689AB592E44D9B200BB1E6F /* BrightroomUI in Frameworks */ = {isa = PBXBuildFile; productRef = F689AB582E44D9B200BB1E6F /* BrightroomUI */; };
@@ -27,6 +28,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F641B5242E74C05600B5A158 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F699D0802D00325300761976 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F641B5192E74C05500B5A158;
+			remoteInfo = "Flitz WaveSpot";
+		};
 		F699D0992D00325500761976 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F699D0802D00325300761976 /* Project object */;
@@ -51,6 +59,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		F641B52B2E74C05600B5A158 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				F641B5262E74C05600B5A158 /* FlitzWaveSpot.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F6DA520D2E47C0710061155D /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -65,6 +84,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F641B51A2E74C05500B5A158 /* FlitzWaveSpot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlitzWaveSpot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64996F42D2A87740090E3F6 /* Flitz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Flitz.entitlements; path = Flitz/Flitz.entitlements; sourceTree = "<group>"; };
 		F699D0882D00325300761976 /* Flitz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flitz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F699D0982D00325500761976 /* flitzTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flitzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +95,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F641B52A2E74C05600B5A158 /* Exceptions for "wavespot" folder in "FlitzWaveSpot" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F641B5192E74C05500B5A158 /* FlitzWaveSpot */;
+		};
 		F699D2122D005B5600761976 /* Exceptions for "flitz" folder in "Flitz" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -99,6 +126,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		F641B51B2E74C05500B5A158 /* wavespot */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F641B52A2E74C05600B5A158 /* Exceptions for "wavespot" folder in "FlitzWaveSpot" target */,
+			);
+			path = wavespot;
+			sourceTree = "<group>";
+		};
 		F699D08A2D00325300761976 /* flitz */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -129,6 +164,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F641B5172E74C05500B5A158 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F699D0852D00325300761976 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -186,6 +228,7 @@
 				F699D09B2D00325500761976 /* flitzTests */,
 				F699D0A52D00325500761976 /* flitzUITests */,
 				F6DA52022E47C0710061155D /* FlitzNotificationService */,
+				F641B51B2E74C05500B5A158 /* wavespot */,
 				F6DA520E2E47C09D0061155D /* Frameworks */,
 				F699D0892D00325300761976 /* Products */,
 			);
@@ -198,6 +241,7 @@
 				F699D0982D00325500761976 /* flitzTests.xctest */,
 				F699D0A22D00325500761976 /* flitzUITests.xctest */,
 				F6DA52012E47C0710061155D /* FlitzNotificationService.appex */,
+				F641B51A2E74C05500B5A158 /* FlitzWaveSpot.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -220,6 +264,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F641B5192E74C05500B5A158 /* FlitzWaveSpot */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F641B5272E74C05600B5A158 /* Build configuration list for PBXNativeTarget "FlitzWaveSpot" */;
+			buildPhases = (
+				F641B5162E74C05500B5A158 /* Sources */,
+				F641B5172E74C05500B5A158 /* Frameworks */,
+				F641B5182E74C05500B5A158 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F641B51B2E74C05500B5A158 /* wavespot */,
+			);
+			name = FlitzWaveSpot;
+			packageProductDependencies = (
+			);
+			productName = "Flitz WaveSpot";
+			productReference = F641B51A2E74C05500B5A158 /* FlitzWaveSpot.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
+		};
 		F699D0872D00325300761976 /* Flitz */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F699D0AC2D00325500761976 /* Build configuration list for PBXNativeTarget "Flitz" */;
@@ -229,11 +295,13 @@
 				F699D0862D00325300761976 /* Resources */,
 				F6DA520D2E47C0710061155D /* Embed Foundation Extensions */,
 				62FB7E7C04684DA78ECDBAF1 /* Upload Debug Symbols to Sentry */,
+				F641B52B2E74C05600B5A158 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				F6DA52072E47C0710061155D /* PBXTargetDependency */,
+				F641B5252E74C05600B5A158 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F699D08A2D00325300761976 /* flitz */,
@@ -335,6 +403,9 @@
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					F641B5192E74C05500B5A158 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 					F699D0872D00325300761976 = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -380,11 +451,19 @@
 				F699D0972D00325500761976 /* flitzTests */,
 				F699D0A12D00325500761976 /* flitzUITests */,
 				F6DA52002E47C0710061155D /* FlitzNotificationService */,
+				F641B5192E74C05500B5A158 /* FlitzWaveSpot */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F641B5182E74C05500B5A158 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F699D0862D00325300761976 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,6 +513,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F641B5162E74C05500B5A158 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F699D0842D00325300761976 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -465,6 +551,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F641B5252E74C05600B5A158 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F641B5192E74C05500B5A158 /* FlitzWaveSpot */;
+			targetProxy = F641B5242E74C05600B5A158 /* PBXContainerItemProxy */;
+		};
 		F699D09A2D00325500761976 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F699D0872D00325300761976 /* Flitz */;
@@ -483,6 +574,70 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		F641B5282E74C05600B5A158 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = wavespot/Flitz_WaveSpot.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = wavespot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Flitz: WaveSpot";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz.wavespot;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F641B5292E74C05600B5A158 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = wavespot/Flitz_WaveSpot.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XHA76UVA95;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = wavespot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Flitz: WaveSpot";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.unstabler.flitz.wavespot;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F699D0AA2D00325500761976 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -829,6 +984,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F641B5272E74C05600B5A158 /* Build configuration list for PBXNativeTarget "FlitzWaveSpot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F641B5282E74C05600B5A158 /* Debug */,
+				F641B5292E74C05600B5A158 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F699D0832D00325300761976 /* Build configuration list for PBXProject "Flitz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
