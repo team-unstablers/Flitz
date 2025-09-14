@@ -14,6 +14,7 @@ enum FZAPIError: LocalizedError {
     case invalidToken
     case unauthorized
     case invalidResponse
+    case sessionInvalidated
     
     case badRequest(response: SimpleResponse?)
     
@@ -36,6 +37,8 @@ enum FZAPIError: LocalizedError {
             return "Unauthorized access"
         case .invalidResponse:
             return "Invalid response from server"
+        case .sessionInvalidated:
+            return "Session has been invalidated"
         case .badRequest(let response):
             if let reason = response?.reason {
                 return NSLocalizedString(reason, comment: "")

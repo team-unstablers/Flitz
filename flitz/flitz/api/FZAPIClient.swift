@@ -74,6 +74,14 @@ class FZAPIClient {
                     }
                     throw FZAPIError.badRequest(response: nil)
                 }
+                if code == 481 {
+                    Task { @MainActor in
+                        RootAppState.shared.navState = [.logoutCompleted(reason: .byAnotherSession)]
+                        RootAppState.shared.logout()
+                    }
+                    
+                    throw FZAPIError.sessionInvalidated
+                }
                 break
             default:
                 break
