@@ -34,6 +34,8 @@ actor FZTokenRefreshPerformer {
         }
         
         let task = Task {
+            defer { self.refreshTask = nil }
+            
             guard let refreshToken = client.context.refreshToken else {
                 throw FZAPIError.noRefreshToken
             }
@@ -55,7 +57,6 @@ actor FZTokenRefreshPerformer {
         }
         
         refreshTask = task
-        defer { self.refreshTask = nil }
         
         try await task.value
     }
