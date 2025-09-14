@@ -402,14 +402,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "You have been logged out due to access from another device.\nPress the button below to exit the Flitz app."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 기기에서 접속하여 로그아웃 되었습니다.\n아래 버튼을 누르면 Flitz 앱을 종료합니다."
+            "value" : "세션이 만료되어 로그아웃 되었습니다.\n아래 버튼을 누르면 Flitz 앱을 종료합니다."
           }
         }
       }
@@ -436,14 +436,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Logged in from another device"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 기기에서 접속하였습니다"
+            "value" : "로그인 세션이 만료되었습니다."
           }
         }
       }
