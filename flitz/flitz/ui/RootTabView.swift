@@ -50,8 +50,8 @@ struct RootTabView: View {
             StoreRootScreen()
                 .tag(RootTab.store)
                 .tabItem {
-                    Image(systemName: "house")
-                    Text(NSLocalizedString("ui.tab.store", comment: "스토어"))
+                    Image(systemName: "flame.fill")
+                    Text(NSLocalizedString("ui.tab.store", comment: "WaveSpot"))
                 }
             MyPageScreen()
                 .tag(RootTab.profile)
