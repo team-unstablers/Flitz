@@ -5000,6 +5000,91 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "fz.notification.message.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "fz.notification.support_response.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new reply has been added to your support ticket."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문의해주신 티켓에 새 답변이 등록되었습니다."
+          }
+        }
+      }
+    },
+    "fz.notification.support_response.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new reply has been added to your \"%@\" ticket."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" 티켓에 새로운 답변이 등록되었습니다."
+          }
+        }
+      }
+    },
+    "fz.notification.match.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's a Match!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매칭 성공!"
+          }
+        }
+      }
+    },
+    "fz.notification.match.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You matched with %@! Start a conversation now!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@님과 매칭되었습니다! 지금 바로 대화를 시작해보세요!"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
