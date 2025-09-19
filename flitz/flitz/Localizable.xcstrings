@@ -722,7 +722,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wait!\nOne last thing..."
+            "value" : "One last thing..."
           }
         },
         "ko" : {
@@ -1054,7 +1054,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Login failed.\nPlease check your username/password and try again."
+            "value" : "Please check your username/password and try again."
           }
         },
         "ko" : {
@@ -1066,7 +1066,20 @@
       }
     },
     "ui.auth.signin.failure_alert.title" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to sign in"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인 실패"
+          }
+        }
+      }
     },
     "ui.auth.signin.find_password" : {
       "comment" : "비밀번호 찾기",
