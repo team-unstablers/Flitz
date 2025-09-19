@@ -172,6 +172,12 @@
     "fz.notification.match.body" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You matched with %@! Start a conversation now!"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -183,6 +189,12 @@
     "fz.notification.match.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's a Match!"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -194,6 +206,12 @@
     "fz.notification.message.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New message from %@"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -205,6 +223,12 @@
     "fz.notification.support_response.body" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new reply has been added to your \"%@\" ticket."
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -216,6 +240,12 @@
     "fz.notification.support_response.title" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new reply has been added to your support ticket"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1490,6 +1520,12 @@
     "ui.card.editor.tab.edit" : {
       "comment" : "편집",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1501,6 +1537,12 @@
     "ui.card.editor.tab.preview" : {
       "comment" : "미리보기",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1511,6 +1553,12 @@
     },
     "ui.card.editor.title" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Card"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5017,6 +5065,9 @@
     },
     "Unsupported message type" : {
       "shouldTranslate" : false
+    },
+    "value: %@" : {
+
     },
     "x: %@ y: %@" : {
       "localizations" : {
