@@ -5063,6 +5063,57 @@
         }
       }
     },
+    "ui.wave.tabs.exchanged" : {
+      "comment" : "최근",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근"
+          }
+        }
+      }
+    },
+    "ui.wave.tabs.liked_cards" : {
+      "comment" : "보관함",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liked"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보관함"
+          }
+        }
+      }
+    },
+    "ui.wave.tabs.my_cards" : {
+      "comment" : "내 카드",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cards"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 카드"
+          }
+        }
+      }
+    },
     "Unsupported message type" : {
       "shouldTranslate" : false
     },

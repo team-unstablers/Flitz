@@ -9,9 +9,9 @@ import SwiftUI
 
 struct WaveScreen: View {
     static let tabs: [FZTab] = [
-        FZTab(id: "exchanged", title: "최근"),
-        FZTab(id: "liked-cards", title: "보관함"),
-        FZTab(id: "my-cards", title: "내 카드"),
+        FZTab(id: "exchanged", title: NSLocalizedString("ui.wave.tabs.exchanged", comment: "최근")),
+        FZTab(id: "liked-cards", title: NSLocalizedString("ui.wave.tabs.liked_cards", comment: "보관함")),
+        FZTab(id: "my-cards", title: NSLocalizedString("ui.wave.tabs.my_cards", comment: "내 카드")),
     ]
     
     @EnvironmentObject
