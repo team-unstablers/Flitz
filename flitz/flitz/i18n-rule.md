@@ -11,4 +11,33 @@
 
 # 용어집
 
-(아직은 없습니다)
+### 주요 기능
+- 웨이브: Wave
+- 포토 카드 / 카드: Photocard / Card
+- 카드 교환: Card Exchange
+- 매칭: Match
+- 안전 구역: Safe Zone
+- 보관함: Favorites
+- 아웃팅: Outing
+
+### 계정 관련
+- 회원가입: Sign Up
+- 로그인: Sign In
+- 로그아웃: Sign Out
+- 계정 삭제 / 회원 탈퇴: Delete Account / Deactivate Account
+- 비밀번호: Password
+- 유저네임: Username
+
+### 일반 UI
+- 편집하기: Edit
+- 저장: Save
+- 다음: Next
+- 완료: Done
+- 확인: Confirm
+- 취소: Cancel
+- 설정: Settings
+- 알림: Notification
+- 신고하기: Report
+- 차단하기: Block
+- 삭제하기: Delete
+
