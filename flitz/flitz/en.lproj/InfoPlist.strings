@@ -1,4 +1,4 @@
-/* 
+/*
   InfoPlist.strings
   Flitz
 
@@ -6,13 +6,13 @@
   
 */
 
-NSLocalNetworkUsageDescription = "Flitz app accesses local network for development purposes. (This message should not appear in production environment)";
+NSLocalNetworkUsageDescription = "Accesses the local network for Flitz app development. (This message should not be displayed in the production environment)";
 
-NSBluetoothPeripheralUsageDescription = "Bluetooth permission is required to exchange photo cards with other users.";
-NSBluetoothAlwaysUsageDescription = "Bluetooth permission is required to exchange photo cards with other users.";
+NSBluetoothPeripheralUsageDescription = "Flitz requires Bluetooth access to exchange photocards with other users.";
+NSBluetoothAlwaysUsageDescription = "Flitz requires Bluetooth access to exchange photocards with other users.";
 
-NSLocationAlwaysUsageDescription = "Location permission is required to safely exchange photo cards with other users.\nPlease select 'Allow Always'.";
-NSLocationWhenInUseUsageDescription = "Location permission is required to exchange photo cards with other users.";
-NSLocationAlwaysAndWhenInUseUsageDescription = "Location permission is required to safely exchange photo cards with other users.\nPlease select 'Allow Always'.";
+NSLocationAlwaysUsageDescription = "Your location is required to safely exchange photocards with other users.\nPlease choose 'Allow Always'.";
+NSLocationWhenInUseUsageDescription = "Your location is required to exchange photocards with other users.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is required to safely exchange photocards with other users.\nPlease choose 'Allow Always'.";
 
-NSContactsUsageDescription = "Flitz wants to access your contacts to use the contact pre-blocking feature.";
+NSContactsUsageDescription = "Flitz needs to access your contacts to use the 'Block Contacts' feature.\n\n※ When you use this feature, your contacts will be uploaded to our servers.\n※ Your contacts are stored in a non-decryptable hashed format, and no information other than phone numbers is saved.\n※ You can delete your uploaded contacts from the server at any time.";
