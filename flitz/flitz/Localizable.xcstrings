@@ -140,14 +140,14 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "%@ cards have been exchanged. Check them out now!"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 개의 카드가 교환되었어요. 지금 바로 확인해 보세요!"
+            "value" : "%@개의 카드가 교환되었어요. 지금 바로 확인해 보세요!"
           }
         }
       }
