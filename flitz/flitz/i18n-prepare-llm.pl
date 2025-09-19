@@ -37,10 +37,10 @@ for my $key (keys %$strings) {
     
     my $comment = $entry->{'comment'};
     my $ko = $entry->{'localizations'}{'ko'}{'stringUnit'}{'value'} // '';
-    
+    my $en = exists $entry->{'localizations'}{'en'}{'stringUnit'}{'value'} // '';
+
     next if $ko eq '';
-    next if exists $entry->{'localizations'}{'en'};
     
-    say encode_json({ key => $key, ko => $ko });
+    say encode_json({ key => $key, ko => $ko, en => $en, comment => $comment });
 }
 

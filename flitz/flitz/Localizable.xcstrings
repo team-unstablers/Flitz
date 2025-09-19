@@ -37,7 +37,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Republic of Korea"
+            "value" : "South Korea"
           }
         },
         "ko" : {
@@ -54,7 +54,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Other Countries"
+            "value" : "Other"
           }
         },
         "ko" : {
@@ -140,8 +140,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@ cards have been exchanged. Check them out now!"
+            "state" : "translated",
+            "value" : "%@ cards have been exchanged.\nCheck them out now!"
           }
         },
         "ko" : {
@@ -175,7 +175,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You matched with %@! Start a conversation now!"
+            "value" : "You've matched with %@!\nStart a conversation now!"
           }
         },
         "ko" : {
@@ -192,7 +192,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It's a Match!"
+            "value" : "It's a match!"
           }
         },
         "ko" : {
@@ -226,7 +226,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A new reply has been added to your \"%@\" ticket."
+            "value" : "A new reply has been posted to your ticket \"%@\"."
           }
         },
         "ko" : {
@@ -243,7 +243,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A new reply has been added to your support ticket"
+            "value" : "A new reply has been posted to your support ticket"
           }
         },
         "ko" : {
@@ -260,7 +260,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registration was successful, but token validation failed.\n(Is your phone's time too slow or too fast?)"
+            "value" : "Sign-up was successful, but token validation failed.\n(Is your phone's time correct?)"
           }
         },
         "ko" : {
@@ -277,7 +277,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An unknown error has occurred"
+            "value" : "An unknown error occurred"
           }
         },
         "ko" : {
@@ -311,7 +311,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Very Far"
+            "value" : "Very far"
           }
         },
         "ko" : {
@@ -328,7 +328,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medium Distance"
+            "value" : "Nearby"
           }
         },
         "ko" : {
@@ -345,7 +345,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Near"
+            "value" : "Close"
           }
         },
         "ko" : {
@@ -362,7 +362,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Very Near"
+            "value" : "Very close"
           }
         },
         "ko" : {
@@ -430,7 +430,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recently Online"
+            "value" : "Recently online"
           }
         },
         "ko" : {
@@ -466,8 +466,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "You have been logged out due to access from another device.\nPress the button below to exit the Flitz app."
+            "state" : "translated",
+            "value" : "Your session has expired.\nPress the button below to close the Flitz app."
           }
         },
         "ko" : {
@@ -484,7 +484,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You have been successfully logged out.\nPress the button below to exit the Flitz app."
+            "value" : "You have been successfully signed out.\nPress the button below to close the Flitz app."
           }
         },
         "ko" : {
@@ -500,8 +500,8 @@
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Logged in from another device"
+            "state" : "translated",
+            "value" : "Your sign-in session has expired."
           }
         },
         "ko" : {
@@ -518,7 +518,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You have been logged out"
+            "value" : "You have been signed out"
           }
         },
         "ko" : {
@@ -586,7 +586,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "**Outing** is a serious **criminal act**.\nPlease respect the privacy of others."
+            "value" : "**Outing** is a serious **criminal act**. Please respect others' privacy."
           }
         },
         "ko" : {
@@ -603,7 +603,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Analyzing or modifying this software and its communications through reverse engineering, packet dumping, etc., is strictly prohibited by law."
+            "value" : "Analyzing or tampering with this software or its communications through reverse engineering, packet dumping, or other methods is strictly prohibited by law."
           }
         },
         "ko" : {
@@ -637,7 +637,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Agree to Terms"
+            "value" : "Terms and Conditions"
           }
         },
         "ko" : {
@@ -722,7 +722,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One last thing..."
+            "value" : "One last step..."
           }
         },
         "ko" : {
@@ -821,7 +821,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a new password"
+            "value" : "Enter a new password"
           }
         },
         "ko" : {
@@ -870,7 +870,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter the phone number associated with your account"
+            "value" : "Enter the phone number associated with your account"
           }
         },
         "ko" : {
@@ -1003,7 +1003,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phone Verification"
+            "value" : "Phone\nVerification"
           }
         },
         "ko" : {
@@ -1020,7 +1020,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Client is in debug mode"
+            "value" : "This is a debug client"
           }
         },
         "ko" : {
@@ -1054,7 +1054,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please check your username/password and try again."
+            "value" : "Sign-in failed.\nPlease check your username/password and try again."
           }
         },
         "ko" : {
@@ -1070,7 +1070,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Failed to sign in"
+            "value" : "Sign-In Failed"
           }
         },
         "ko" : {
@@ -1170,7 +1170,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I agree to Flitz's [Location-Based Services Terms of Use](https://docs.flitz.cards/legal/en/tos-location.html)."
+            "value" : "I agree to Flitz's [Location-Based Services Terms of Service](https://docs.flitz.cards/legal/en/tos-location.html)."
           }
         },
         "ko" : {
@@ -1186,7 +1186,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Receive marketing notifications from the Flitz app. (Optional)"
+            "value" : "Receive marketing notifications from Flitz.\n(Optional)"
           }
         },
         "ko" : {
@@ -1235,7 +1235,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You must agree to the terms below to use Flitz."
+            "value" : "To use Flitz, you need to agree to the terms below."
           }
         },
         "ko" : {
@@ -1252,7 +1252,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Complete Registration"
+            "value" : "Complete Sign-Up"
           }
         },
         "ko" : {
@@ -1269,7 +1269,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter the credentials you will use to log in to the app."
+            "value" : "Please enter the credentials you will use to sign in."
           }
         },
         "ko" : {
@@ -1303,7 +1303,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We proceed with identity verification through phone authentication.\nIn South Korea, we use the phone authentication service from NICE Information Service."
+            "value" : "We will verify your identity via phone authentication.\nIn South Korea, we use NICE Information Service's phone authentication service."
           }
         },
         "ko" : {
@@ -1320,7 +1320,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please fill out your profile.\nDo not enter any content that might be offensive to other users."
+            "value" : "Please complete your profile.\nRefrain from posting content that may be offensive to others."
           }
         },
         "ko" : {
@@ -1384,7 +1384,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a password"
+            "value" : "Please enter your password"
           }
         },
         "ko" : {
@@ -1417,7 +1417,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a username"
+            "value" : "Please enter your username"
           }
         },
         "ko" : {
@@ -1434,7 +1434,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We need to know this to connect you with others on Flitz."
+            "value" : "We need this to connect you with others on Flitz."
           }
         },
         "ko" : {
@@ -1468,7 +1468,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please wait a moment..."
+            "value" : "Please wait..."
           }
         },
         "ko" : {
@@ -1502,7 +1502,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please wait a moment..."
+            "value" : "Please wait..."
           }
         },
         "ko" : {
@@ -1790,7 +1790,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a username"
+            "value" : "Please enter your username"
           }
         },
         "ko" : {
@@ -2044,7 +2044,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You can start a conversation when you both **like** each other's cards."
+            "value" : "You can start chatting once you both **like** each other's cards."
           }
         },
         "ko" : {
@@ -2455,7 +2455,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a nickname"
+            "value" : "Please enter your nickname"
           }
         },
         "ko" : {
@@ -2519,7 +2519,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One-line Title"
+            "value" : "Title"
           }
         },
         "ko" : {
@@ -2552,7 +2552,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I am transgender"
+            "value" : "I'm transgender"
           }
         },
         "ko" : {
@@ -2569,7 +2569,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only match with people who are safe"
+            "value" : "Only match with people who are safe for trans individuals"
           }
         },
         "ko" : {
@@ -2586,7 +2586,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Only match with people who have indicated they welcome transgender individuals."
+            "value" : "Only matches with people who have indicated they welcome transgender individuals."
           }
         },
         "ko" : {
@@ -2603,7 +2603,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show my transgender identity on my profile"
+            "value" : "Show on my profile that I'm transgender"
           }
         },
         "ko" : {
@@ -2823,7 +2823,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location-Based Services Terms of Use"
+            "value" : "Location-Based Services Terms of Service"
           }
         },
         "ko" : {
@@ -2840,7 +2840,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Announcement"
+            "value" : "Announcements"
           }
         },
         "ko" : {
@@ -2959,7 +2959,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Information about your identity and preferences will not be made public and is used only for matching.\nYou can change it at any time."
+            "value" : "Your identity and preference information will not be made public and is only used for matching.\nYou can change it at any time."
           }
         },
         "ko" : {
@@ -3112,7 +3112,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The server's identity is unclear"
+            "value" : "Server identity is unclear"
           }
         },
         "ko" : {
@@ -3129,7 +3129,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Could not establish a secure connection.\n\nThis issue can occur on unsecured public Wi-Fi or some corporate/school networks. Please try again on a different network."
+            "value" : "Could not establish a secure connection.\n\nThis issue can occur on unprotected public Wi-Fi or some corporate/school networks. Please try again on a different network."
           }
         },
         "ko" : {
@@ -3146,7 +3146,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You cannot exchange cards or converse with blocked users."
+            "value" : "You cannot exchange cards or chat with blocked users."
           }
         },
         "ko" : {
@@ -3197,7 +3197,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please provide additional details if necessary."
+            "value" : "Please provide any additional details if necessary."
           }
         },
         "ko" : {
@@ -3231,7 +3231,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "What was the problem with the card?"
+            "value" : "What was the issue with the card?"
           }
         },
         "ko" : {
@@ -3248,7 +3248,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please tell us what the problem was so the Flitz team can take action quickly."
+            "value" : "Let us know what happened so the Flitz team can take action quickly."
           }
         },
         "ko" : {
@@ -3265,7 +3265,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "What was the problem?"
+            "value" : "What was the issue?"
           }
         },
         "ko" : {
@@ -3282,7 +3282,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Safety Feature Settings"
+            "value" : "Safety Settings"
           }
         },
         "ko" : {
@@ -3299,7 +3299,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It contains harassing or offensive content towards other users"
+            "value" : "Harassing or aggressive content"
           }
         },
         "ko" : {
@@ -3316,7 +3316,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proposing or encouraging illegal activities (e.g., drugs, prostitution, etc.)"
+            "value" : "Proposing or promoting illegal activities (e.g., drugs, prostitution)"
           }
         },
         "ko" : {
@@ -3333,7 +3333,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impersonating or catfishing someone else"
+            "value" : "Impersonating or catfishing"
           }
         },
         "ko" : {
@@ -3384,7 +3384,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "There is another issue (please describe in detail below)"
+            "value" : "Other issue (please describe below)"
           }
         },
         "ko" : {
@@ -3401,7 +3401,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It contains obscene or sexually explicit content"
+            "value" : "Contains sexually explicit or suggestive content"
           }
         },
         "ko" : {
@@ -3452,7 +3452,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Safety Zone Settings"
+            "value" : "Safe Zone Settings"
           }
         },
         "ko" : {
@@ -3537,7 +3537,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To deactivate your account, please enter your account password."
+            "value" : "Please enter your account password to deactivate your account."
           }
         },
         "ko" : {
@@ -3588,7 +3588,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Log Out"
+            "value" : "Sign Out"
           }
         },
         "ko" : {
@@ -3741,7 +3741,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When you delete your account, all your existing activity information, such as photocards and messages, will be deleted.\nYou will not be able to sign up again for 7 days after account deletion."
+            "value" : "When you delete your account, all your activity, including photocards and messages, will be permanently deleted.\nYou will not be able to sign up again for 7 days after deletion."
           }
         },
         "ko" : {
@@ -3758,7 +3758,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I have read and agree to the account deactivation terms."
+            "value" : "I have read and agree to the account deletion policy."
           }
         },
         "ko" : {
@@ -3775,7 +3775,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thank you for using Flitz.\nIf you share your experiences with us, we will strive to provide a better service."
+            "value" : "Thank you for using Flitz.\nPlease share your feedback with us so we can improve our service."
           }
         },
         "ko" : {
@@ -3792,7 +3792,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please leave your feedback.\n(It's okay not to leave feedback if it's bothersome!)"
+            "value" : "Please leave your feedback. (Optional, but greatly appreciated!)"
           }
         },
         "ko" : {
@@ -3809,7 +3809,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Why are you leaving, %@?"
+            "value" : "%@, why are you leaving?"
           }
         },
         "ko" : {
@@ -3843,7 +3843,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logout Complete"
+            "value" : "Signed Out"
           }
         },
         "ko" : {
@@ -4064,7 +4064,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When you use this feature, your contact information is hashed into a non-decryptable format and stored on Flitz's servers.\nAlso, contact fields other than the phone number (such as name, email, etc.) are not stored on Flitz's servers."
+            "value" : "When you use this feature, your contact information is hashed into a non-decryptable format and stored on Flitz's servers.\nFurthermore, contact fields other than the phone number (e.g., name, email) are not stored on Flitz's servers."
           }
         },
         "ko" : {
@@ -4081,7 +4081,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When you use this feature, if someone in your contacts joins Flitz later or you encounter them with the Flitz app open, you will not be able to see each other."
+            "value" : "When you enable this feature, people in your phone's contacts won't be able to find you, even if they join Flitz later or you cross paths with the app open."
           }
         },
         "ko" : {
@@ -4115,7 +4115,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all contacts stored on the server and unblock them"
+            "value" : "Delete all contacts from the server and unblock them"
           }
         },
         "ko" : {
@@ -4149,7 +4149,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Block Contacts in Advance"
+            "value" : "Block Contacts"
           }
         },
         "ko" : {
@@ -4166,7 +4166,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Block people registered in your phone's contacts in advance"
+            "value" : "Block people from my phone's contacts"
           }
         },
         "ko" : {
@@ -4251,7 +4251,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Safety Zone\\n(Radius: %dm)"
+            "value" : "Safe Zone\n(Radius: %dm)"
           }
         },
         "ko" : {
@@ -4268,7 +4268,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "While in a Safety Zone, other people cannot discover you or exchange cards with you.\nThis feature is in beta and may change in the future."
+            "value" : "While you are in a Safe Zone, others cannot discover you or exchange cards with you.\nThis feature is in beta and subject to change."
           }
         },
         "ko" : {
@@ -4285,7 +4285,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set Safety Zone"
+            "value" : "Set Safe Zone"
           }
         },
         "ko" : {
@@ -4302,7 +4302,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set Safety Zone (Beta)"
+            "value" : "Safe Zone Settings (Beta)"
           }
         },
         "ko" : {
@@ -4319,7 +4319,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Turn on Safety Zone (Beta)"
+            "value" : "Turn on Safe Zone (Beta)"
           }
         },
         "ko" : {
@@ -4336,7 +4336,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You haven't set a Safety Zone yet!\nIf you don't set a location by pressing the 'Set Safety Zone' button, it will have no effect."
+            "value" : "You haven't set a Safe Zone yet! This feature will have no effect until you set a location using the 'Set Safe Zone' button."
           }
         },
         "ko" : {
@@ -4353,7 +4353,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To use the contact blocking feature, you need to upload your contacts to the server.\\nContacts are stored in a non-decryptable hashed format, and no information other than phone numbers is saved.\\nYou can delete your uploaded contacts at any time.\\n\\nDo you want to proceed?"
+            "value" : "To use the contact blocking feature, you need to upload your contacts to the server.\nYour contacts are stored in a non-decryptable hashed format, and no information other than phone numbers is saved.\nYou can delete your uploaded contacts at any time.\n\nDo you want to continue?"
           }
         },
         "ko" : {
@@ -4370,7 +4370,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you want to sync your contacts with the server?"
+            "value" : "Sync contacts to server?"
           }
         },
         "ko" : {
@@ -4405,7 +4405,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You haven't set a Safety Zone yet!\nIf you don't set a location by pressing the 'Set Safety Zone' button, it will have no effect."
+            "value" : "You haven't set a Safe Zone yet!\nThis feature will have no effect until you set a location using the 'Set Safe Zone' button."
           }
         },
         "ko" : {
@@ -4422,7 +4422,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Safety Zone"
+            "value" : "Delete Safe Zone"
           }
         },
         "ko" : {
@@ -4439,7 +4439,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please wait a little longer.\nWe'll be back with amazing features soon!"
+            "value" : "Please wait a little longer.\nWe'll be back soon with amazing new features!"
           }
         },
         "ko" : {
@@ -4592,7 +4592,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add a New Reply"
+            "value" : "Add a new reply"
           }
         },
         "ko" : {
@@ -4691,7 +4691,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message"
+            "value" : "Messages"
           }
         },
         "ko" : {
@@ -4912,7 +4912,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Main Card"
+            "value" : "Set as Main Card"
           }
         },
         "ko" : {
@@ -4946,7 +4946,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When you encounter another Flitz user, your cards will be exchanged!"
+            "value" : "When you cross paths with another Flitz user, your cards will be exchanged!"
           }
         },
         "ko" : {
@@ -5014,7 +5014,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Additional Permissions Needed"
+            "value" : "Additional permissions required"
           }
         },
         "ko" : {
@@ -5031,7 +5031,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No cards exchanged yet"
+            "value" : "No exchanged cards yet"
           }
         },
         "ko" : {
@@ -5048,7 +5048,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You will be able to see the cards over time.\nPlease wait a little longer!"
+            "value" : "You'll be able to see cards over time.\nPlease wait a little longer!"
           }
         },
         "ko" : {
@@ -5065,7 +5065,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cards are not available yet"
+            "value" : "Can't see cards yet"
           }
         },
         "ko" : {
@@ -5099,7 +5099,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liked"
+            "value" : "Favorites"
           }
         },
         "ko" : {
