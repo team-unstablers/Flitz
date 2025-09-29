@@ -138,6 +138,7 @@ struct CardEditor: View {
                     Button(NSLocalizedString("ui.card.editor.action.save", comment: "저장")) {
                         self.saveCard()
                     }
+                    .foregroundStyle(currentTab == .editor ? .white : .black)
                 }
             }
         }

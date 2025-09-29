@@ -508,6 +508,7 @@ struct ProfileEditImage: View {
                                 editorVisible = false
                                 self.editorContext = nil
                             }
+                            .foregroundStyle(.white)
                         }
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(NSLocalizedString("ui.common.save", comment: "저장")) {
@@ -528,6 +529,7 @@ struct ProfileEditImage: View {
                                     // TODO: Sentry.catch
                                 }
                             }
+                            .foregroundStyle(.white)
                         }
                     }
                 }

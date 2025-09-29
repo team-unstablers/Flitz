@@ -58,6 +58,7 @@ struct EditableImageThumbnail: View {
                                 editorVisible = false
                                 self.onSave?()
                             }
+                            .foregroundStyle(.white)
                         }
                         
                         ToolbarItem(placement: .confirmationAction) {
@@ -65,6 +66,7 @@ struct EditableImageThumbnail: View {
                                 editorVisible = false
                                 self.onSave?()
                             }
+                            .foregroundStyle(.white)
                         }
                     }
 
