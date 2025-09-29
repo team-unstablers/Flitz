@@ -151,9 +151,6 @@ struct WaveCardPreview: View {
                                 }
                         )
                         .shadow(color: .black.opacity(0.4), radius: 8, x: 0, y: 0)
-                        .onAppear {
-                            Self._printChanges()
-                        }
                 }
                 .padding(.bottom, profileOffsetY)
 
