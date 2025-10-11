@@ -10,7 +10,7 @@
 import UIKit
 import SwiftUI
 
-final class ConversationViewController: UIViewController {
+final class FZConversationViewController: UIViewController {
     
     enum Section: Hashable {
         case date(Date)
@@ -138,25 +138,25 @@ final class ConversationViewController: UIViewController {
     }
 }
 
-extension ConversationViewController: UICollectionViewDelegate { }
+extension FZConversationViewController: UICollectionViewDelegate { }
 
-extension ConversationViewController: UICollectionViewDataSourcePrefetching {
+extension FZConversationViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         // 썸네일/이미지 프리패치 자리
     }
 }
 
 
-struct UIConversationView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> ConversationViewController {
-        ConversationViewController()
+struct FZConversationView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> FZConversationViewController {
+        FZConversationViewController()
     }
     
-    func updateUIViewController(_ uiViewController: ConversationViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: FZConversationViewController, context: Context) {
     }
 }
 
 #Preview {
-    UIConversationView()
+    FZConversationView()
         .ignoresSafeArea(.all)
 }

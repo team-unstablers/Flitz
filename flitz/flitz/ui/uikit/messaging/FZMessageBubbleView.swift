@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class FZMessageBubbleView: UIView {
 
@@ -25,7 +26,7 @@ class FZMessageBubbleView: UIView {
     private let contentStack = UIStackView()
     private let bubble = UIView()
     private let textView = UITextView()
-    private let imageView = UIImageView()
+    private var thumbnailHostingController: UIHostingController<AnyView>?
     private let metadataStack = UIStackView()
     private let timeLabel = UILabel()
     private let readLabel = UILabel()
@@ -80,14 +81,6 @@ class FZMessageBubbleView: UIView {
         textView.isHidden = true
         bubble.addSubview(textView)
 
-        // Image view
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.masksToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.isHidden = true
-        imageView.isUserInteractionEnabled = true
-        bubble.addSubview(imageView)
-
         // Metadata stack
         metadataStack.axis = .vertical
         metadataStack.spacing = 2
@@ -104,10 +97,6 @@ class FZMessageBubbleView: UIView {
         timeLabel.font = UIFont.preferredFont(forTextStyle: .caption2)
         timeLabel.textColor = UIColor.systemGray
         metadataStack.addArrangedSubview(timeLabel)
-
-        // Add tap gesture for image
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageTap))
-        imageView.addGestureRecognizer(tapGesture)
     }
 
     private func setupConstraints() {
@@ -125,12 +114,6 @@ class FZMessageBubbleView: UIView {
             textView.leadingAnchor.constraint(equalTo: bubble.leadingAnchor),
             textView.trailingAnchor.constraint(equalTo: bubble.trailingAnchor),
             textView.bottomAnchor.constraint(equalTo: bubble.bottomAnchor),
-
-            // Image view constraints
-            imageView.topAnchor.constraint(equalTo: bubble.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: bubble.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: bubble.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: bubble.bottomAnchor),
 
             // Bubble max width
             bubble.widthAnchor.constraint(lessThanOrEqualToConstant: 260)
@@ -187,7 +170,7 @@ class FZMessageBubbleView: UIView {
 
     private func configureTextContent(message: DirectMessage, isFromCurrentUser: Bool) {
         textView.isHidden = false
-        imageView.isHidden = true
+        thumbnailHostingController?.view.isHidden = true
 
         textView.text = message.content.text
 
@@ -202,7 +185,6 @@ class FZMessageBubbleView: UIView {
 
     private func configureAttachmentContent(message: DirectMessage, isFromCurrentUser: Bool) {
         textView.isHidden = true
-        imageView.isHidden = false
 
         bubble.backgroundColor = .clear
 
@@ -217,46 +199,48 @@ class FZMessageBubbleView: UIView {
         let originalSize = CGSize(width: width, height: height)
         let scaledSize = originalSize.scaleInto(target: CGSize(width: 200, height: 200))
 
-        // Update image view size constraint
-        NSLayoutConstraint.deactivate(imageView.constraints.filter {
-            $0.firstAttribute == .width || $0.firstAttribute == .height
-        })
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: scaledSize.width),
-            imageView.heightAnchor.constraint(equalToConstant: scaledSize.height)
-        ])
+        // Create SwiftUI thumbnail view
+        let thumbnailView = ThumbnailPreview(
+            attachmentId: attachmentId,
+            url: url,
+            size: scaledSize
+        )
+        .onTapGesture {
+            self.onAttachmentTap?(attachmentId)
+        }
 
-        // Load image (using URLSession for now, can be replaced with CachedAsyncImage equivalent)
-        loadImage(from: url, identifier: "message:attachment:\(attachmentId)")
+        // Remove old hosting controller if exists
+        if let oldController = thumbnailHostingController {
+            oldController.view.removeFromSuperview()
+            oldController.willMove(toParent: nil)
+            oldController.removeFromParent()
+        }
+
+        // Create new hosting controller
+        let hostingController = UIHostingController(rootView: AnyView(thumbnailView))
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        self.thumbnailHostingController = hostingController
+        bubble.addSubview(hostingController.view)
+
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: bubble.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: bubble.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: bubble.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: bubble.bottomAnchor),
+            hostingController.view.widthAnchor.constraint(equalToConstant: scaledSize.width),
+            hostingController.view.heightAnchor.constraint(equalToConstant: scaledSize.height)
+        ])
     }
 
     private func configureUnsupportedContent(isFromCurrentUser: Bool) {
         textView.isHidden = false
-        imageView.isHidden = true
+        thumbnailHostingController?.view.isHidden = true
 
         textView.text = "Unsupported message type"
         bubble.backgroundColor = .systemGray5
         textView.textColor = .label
-    }
-
-    // MARK: - Image Loading
-
-    private func loadImage(from url: URL, identifier: String) {
-        // Show placeholder
-        imageView.backgroundColor = UIColor.systemGray5.withAlphaComponent(0.1)
-
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let self = self,
-                  let data = data,
-                  let image = UIImage(data: data) else {
-                return
-            }
-
-            DispatchQueue.main.async {
-                self.imageView.image = image
-                self.imageView.backgroundColor = .clear
-            }
-        }.resume()
     }
 
     // MARK: - Context Menu
@@ -265,13 +249,6 @@ class FZMessageBubbleView: UIView {
         let interaction = UIContextMenuInteraction(delegate: self)
         bubble.interactions.forEach { bubble.removeInteraction($0) }
         bubble.addInteraction(interaction)
-    }
-
-    // MARK: - Actions
-
-    @objc private func handleImageTap() {
-        guard let attachmentId = currentMessage?.content.attachment_id else { return }
-        onAttachmentTap?(attachmentId)
     }
 }
 
