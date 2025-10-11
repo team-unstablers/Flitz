@@ -28,9 +28,43 @@ final class FZConversationViewController: UIViewController {
 
     // MessageComposeArea 상태 관리
     @Published private var isSending: Bool = false
-    @Published private var composeAreaFocused: Bool = false
-    
-    
+    @Published private var composeAreaFocused: Bool = false {
+        didSet {
+            // 키보드가 표시될 때 자동 스크롤
+            if composeAreaFocused && shouldStickToBottom {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                    self?.scrollToBottom(animated: true)
+                }
+            }
+        }
+    }
+
+    // 스크롤 상태 관리
+    private var shouldStickToBottom = true
+
+    // ViewModel 및 Combine
+    private var viewModel: ConversationViewModel!
+    private var cancellables = Set<AnyCancellable>()
+    private var currentUserId: String?
+
+    let conversationId: String
+
+    init(conversationId: String) {
+        self.conversationId = conversationId
+        super.init(nibName: nil, bundle: nil)
+
+        self.viewModel = ConversationViewModel(conversationId: conversationId)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        // 노티피케이션 옵저버 제거
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,7 +73,32 @@ final class FZConversationViewController: UIViewController {
         self.configureCollectionView()
         self.configureComposeArea()
         self.configureDataSource()
-        self.loadInitial()
+        self.setupViewModelBindings()
+        self.setupScenePhaseObservers()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // WebSocket 연결
+        viewModel.connectWebSocket()
+
+        // 읽음 처리
+        Task {
+            await viewModel.markAsRead()
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // WebSocket 연결 해제
+        viewModel.disconnectWebSocket()
+    }
+
+    func configure(with apiClient: FZAPIClient, currentUserId: String) {
+        self.currentUserId = currentUserId
+        viewModel.configure(with: apiClient, currentUserId: currentUserId)
     }
     
     private func configureCollectionView() {
@@ -102,23 +161,45 @@ final class FZConversationViewController: UIViewController {
     }
 
     private func handleSendMessage(request: MessageRequest) {
-        // TODO: 실제 메시지 전송 로직 구현
         logger.debug("Sending message: \(request.text), images: \(request.images.count)")
 
-        // isSending 상태 업데이트
-        isSending = true
-
-        // 임시: 1초 후 전송 완료
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.isSending = false
+        Task {
+            await viewModel.sendMessage(request: request)
         }
     }
     
     private func configureDataSource() {
-        dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, item in
+        dataSource = DataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, item in
+            guard let self = self else {
+                return collectionView.dequeueReusableCell(withReuseIdentifier: MessageBubbleCell.reuseID, for: indexPath)
+            }
+
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MessageBubbleCell.reuseID, for: indexPath) as! MessageBubbleCell
-            cell.configure(with: item, isFromCurrentUser: item.sender == "me", isRead: true)
-            
+
+            let isFromCurrentUser = self.viewModel.isFromCurrentUser(item)
+
+            // 읽음 상태 계산 (SwiftUI 버전과 동일)
+            let isRead: Bool = {
+                guard let opponentId = self.viewModel.opponentId,
+                      let readAt = self.viewModel.readState[opponentId],
+                      let messageDate = item.created_at.asISO8601Date else {
+                    return false
+                }
+                return readAt >= messageDate
+            }()
+
+            // 첨부파일 탭 핸들러
+            cell.configure(
+                with: item,
+                isFromCurrentUser: isFromCurrentUser,
+                isRead: isRead,
+                onAttachmentTap: { [weak self] attachmentId in
+                    self?.composeAreaFocused = false
+                    // TODO: 첨부파일 전체화면 보기 구현
+                    self?.logger.debug("Attachment tapped: \(attachmentId)")
+                }
+            )
+
             return cell
         }
     }
@@ -134,43 +215,54 @@ final class FZConversationViewController: UIViewController {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
     
-    private func loadInitial() {
-        let now = Date()
-        let messages: [DirectMessage] = [
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385415")!,
-                sender: "other",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "안녕하세요!"
-                ),
-                created_at: "1970-01-01T00:00:00Z"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385416")!,
-                sender: "me",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "네, 반갑습니다!"
-                ),
-                created_at: "1970-01-01T00:00:01Z"
-            ),
-            DirectMessage(
-                id: UUID(uuidString: "9CBFEB0A-0883-4685-A2CB-6A21F5385417")!,
-                sender: "other",
-                content: DirectMessageContent(
-                    type: "text",
-                    text: "날씨가 좋네요 😊"
-                ),
-                created_at: "1970-01-01T00:00:02Z"
-            )
-        ]
-        
-        grouped = groupByDay(messages: messages)
-        applySnapshot(animated: false)
-        scrollToBottom(animated: false)
+    private func setupViewModelBindings() {
+        // 메시지 리스트 변경 구독
+        viewModel.$messages
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] messages in
+                guard let self = self else { return }
+                self.grouped = self.groupByDay(messages: messages)
+                self.applySnapshot(animated: true)
+
+                // shouldStickToBottom이 true이거나 첫 로딩 시 자동 스크롤
+                if self.shouldStickToBottom || messages.count > 0 {
+                    self.scrollToBottom(animated: messages.count > 0)
+                }
+            }
+            .store(in: &cancellables)
+
+        // 전송 상태 동기화
+        viewModel.$isSending
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.isSending, on: self)
+            .store(in: &cancellables)
+
+        // 로딩 상태 구독 (필요 시 로딩 인디케이터 표시)
+        viewModel.$isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLoading in
+                self?.logger.debug("Loading state: \(isLoading)")
+                // TODO: 로딩 인디케이터 표시
+            }
+            .store(in: &cancellables)
+
+        // 대화 정보 구독 (네비게이션 바 업데이트)
+        viewModel.$conversation
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] conversation in
+                self?.configureNavigationBar(with: conversation)
+            }
+            .store(in: &cancellables)
+
+        // 연결 상태 구독 (에러 핸들링 및 사용자 피드백)
+        viewModel.$connectionState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.handleConnectionStateChange(state)
+            }
+            .store(in: &cancellables)
     }
-    
+
     private func groupByDay(messages: [DirectMessage]) -> [(Section, [DirectMessage])] {
         let cal = Calendar.current
         let dict = Dictionary(grouping: messages) { (m: DirectMessage) -> Date in
@@ -178,8 +270,7 @@ final class FZConversationViewController: UIViewController {
         }.sorted { $0.key < $1.key }
         return dict.map { (key, vals) in (.date(key), vals.sorted { $0.created_at < $1.created_at }) }
     }
-    
-    
+
     private func scrollToBottom(animated: Bool) {
         guard let lastSection = grouped.last else { return }
         let sectionIndex = grouped.count - 1
@@ -189,6 +280,116 @@ final class FZConversationViewController: UIViewController {
             collectionView.scrollToItem(at: idx, at: .bottom, animated: animated)
         }
     }
+
+    private func configureNavigationBar(with conversation: DirectMessageConversation?) {
+        guard let conversation = conversation,
+              let currentUserId = currentUserId,
+              let opponent = conversation.participants.first(where: { $0.user.id != currentUserId }) else {
+            // 대화 정보가 없으면 기본 타이틀 표시
+            navigationItem.titleView = nil
+            title = NSLocalizedString("ui.messaging.conversation.title", comment: "대화")
+            return
+        }
+
+        // 커스텀 타이틀 뷰 생성
+        let titleView = UIStackView()
+        titleView.axis = .horizontal
+        titleView.spacing = 8
+        titleView.alignment = .center
+
+        // 프로필 이미지 (TODO: 실제 이미지 로드)
+        let profileImageView = UIImageView()
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.layer.cornerRadius = 18
+        profileImageView.layer.masksToBounds = true
+        profileImageView.backgroundColor = .systemGray5
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileImageView.widthAnchor.constraint(equalToConstant: 36),
+            profileImageView.heightAnchor.constraint(equalToConstant: 36)
+        ])
+        titleView.addArrangedSubview(profileImageView)
+
+        // 이름 레이블
+        let nameLabel = UILabel()
+        nameLabel.text = opponent.user.display_name
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        titleView.addArrangedSubview(nameLabel)
+
+        // 탭 제스처 추가
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTitleViewTap))
+        titleView.addGestureRecognizer(tapGesture)
+        titleView.isUserInteractionEnabled = true
+
+        navigationItem.titleView = titleView
+    }
+
+    @objc private func handleTitleViewTap() {
+        // 키보드 내리기
+        composeAreaFocused = false
+
+        // TODO: 프로필 화면으로 이동
+        logger.debug("Title view tapped")
+    }
+
+    private func handleConnectionStateChange(_ state: ConversationViewModel.ConnectionState) {
+        switch state {
+        case .connected:
+            logger.info("[Connection] Connected to conversation")
+            // TODO: 연결 성공 시 UI 피드백 (배너 숨기기 등)
+
+        case .disconnected:
+            logger.warning("[Connection] Disconnected from conversation")
+            // TODO: 연결 끊김 시 UI 피드백 (배너 표시 등)
+
+        case .reconnecting(let attempt):
+            logger.info("[Connection] Reconnecting... (attempt \(attempt))")
+            // TODO: 재연결 시도 시 UI 피드백 (배너 표시 등)
+        }
+    }
+
+    private func setupScenePhaseObservers() {
+        // 포그라운드 진입 노티피케이션
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+
+        // 백그라운드 진입 노티피케이션
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+    }
+
+    @objc private func handleWillEnterForeground() {
+        logger.info("[ConversationViewController] App became active, reconnecting...")
+
+        // WebSocket 재연결 (필요 시)
+        if viewModel.connectionState == .disconnected {
+            viewModel.connectWebSocket()
+        }
+
+        // 메시지 갱신 및 읽음 처리
+        Task {
+            await viewModel.loadMessages()
+            await viewModel.markAsRead()
+        }
+
+        // 알림 제거
+        viewModel.removeThreadNotifications()
+    }
+
+    @objc private func handleDidEnterBackground() {
+        logger.info("[ConversationViewController] App went to background, disconnecting...")
+
+        // WebSocket 연결 끊기
+        viewModel.disconnectWebSocket()
+    }
 }
 
 extension FZConversationViewController: UICollectionViewDelegate {
@@ -196,11 +397,31 @@ extension FZConversationViewController: UICollectionViewDelegate {
         // 스크롤 시작 시 키보드 내리기
         composeAreaFocused = false
     }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // 하단 근처인지 판단 (100pt 이내)
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+
+        let isNearBottom = (contentHeight - offsetY - frameHeight) < 100
+
+        shouldStickToBottom = isNearBottom
+    }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        // 2번째 아이템이 표시될 때 이전 메시지 로드 (SwiftUI 버전과 동일)
+        if viewModel.messages.count > 2 && indexPath.section == 0 && indexPath.item <= 1 {
+            Task {
+                await viewModel.loadPreviousMessages()
+            }
+        }
+    }
 }
 
 extension FZConversationViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        // 썸네일/이미지 프리패치 자리
+        // 썸네일/이미지 프리패치 (9단계에서 구현)
     }
 }
 
@@ -229,15 +450,25 @@ struct MessageComposeAreaWrapper: View {
 }
 
 struct FZConversationView: UIViewControllerRepresentable {
+    @EnvironmentObject var appState: RootAppState
+    @Environment(\.userId) var userId
+
+    let conversationId: String
+
     func makeUIViewController(context: Context) -> FZConversationViewController {
-        FZConversationViewController()
+        let viewController = FZConversationViewController(conversationId: conversationId)
+        viewController.configure(with: appState.client, currentUserId: userId)
+        return viewController
     }
-    
+
     func updateUIViewController(_ uiViewController: FZConversationViewController, context: Context) {
+        // 필요 시 업데이트 로직 추가
     }
 }
 
 #Preview {
-    FZConversationView()
+    FZConversationView(conversationId: "preview-conversation")
+        .environmentObject(RootAppState())
+        .environment(\.userId, "preview-user")
         .ignoresSafeArea(.all)
 }

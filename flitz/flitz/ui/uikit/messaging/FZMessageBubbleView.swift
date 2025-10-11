@@ -310,9 +310,11 @@ final class MessageBubbleCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         // FZMessageBubbleView will handle its own cleanup
+        bubbleView.onAttachmentTap = nil
     }
 
-    func configure(with message: DirectMessage, isFromCurrentUser: Bool, isRead: Bool) {
+    func configure(with message: DirectMessage, isFromCurrentUser: Bool, isRead: Bool, onAttachmentTap: ((String) -> Void)? = nil) {
+        bubbleView.onAttachmentTap = onAttachmentTap
         bubbleView.configure(with: message, isFromCurrentUser: isFromCurrentUser, isRead: isRead)
     }
 }
