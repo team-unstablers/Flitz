@@ -94,7 +94,6 @@ struct CachedAsyncImage<Content: View, Placeholder: View>: View {
         }
         
         image = UIImage(contentsOfFile: cacheEntry.url.path())
-        
     }
 }
 

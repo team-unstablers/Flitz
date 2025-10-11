@@ -195,7 +195,11 @@ struct ThumbnailPreview: View {
                 content: DirectMessageContent(
                     type: "attachment",
                     attachment_type: "image",
-                    public_url: "https://ppiy.ac/system/accounts/avatars/110/796/233/076/688/314/original/df6e9ebf6bb70ef2.jpg"
+                    attachment_id: "9CBFEB0A-0883-4685-A2CB-6A21F5385415",
+                    width: 320,
+                    height: 320,
+                    public_url: "https://avatars.githubusercontent.com/u/964412?v=4",
+                    thumbnail_url: "https://avatars.githubusercontent.com/u/964412?v=4",
                 ),
                 created_at: "1970-01-01T00:00:00Z"
             ),

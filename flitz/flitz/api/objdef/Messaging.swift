@@ -33,7 +33,7 @@ struct DirectMessageContent: Codable {
     var thumbnail_url: String?
 }
 
-struct DirectMessage: Codable, Identifiable, Equatable {
+struct DirectMessage: Codable, Identifiable, Equatable, Hashable, Sendable {
     var id: UUID
     var sender: String
     var content: DirectMessageContent
@@ -42,6 +42,10 @@ struct DirectMessage: Codable, Identifiable, Equatable {
     
     static func == (lhs: DirectMessage, rhs: DirectMessage) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 
