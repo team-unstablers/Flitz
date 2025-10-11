@@ -35,6 +35,7 @@ class FZMessageBubbleView: UIView {
 
     private var leadingConstraint: NSLayoutConstraint!
     private var trailingConstraint: NSLayoutConstraint!
+    private var thumbnailConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialization
 
@@ -170,7 +171,18 @@ class FZMessageBubbleView: UIView {
 
     private func configureTextContent(message: DirectMessage, isFromCurrentUser: Bool) {
         textView.isHidden = false
-        thumbnailHostingController?.view.isHidden = true
+
+        // 이전 썸네일 제약조건 제거
+        NSLayoutConstraint.deactivate(thumbnailConstraints)
+        thumbnailConstraints.removeAll()
+
+        // 썸네일 뷰 제거
+        if let hostingController = thumbnailHostingController {
+            hostingController.view.removeFromSuperview()
+            hostingController.willMove(toParent: nil)
+            hostingController.removeFromParent()
+            thumbnailHostingController = nil
+        }
 
         textView.text = message.content.text
 
@@ -210,6 +222,9 @@ class FZMessageBubbleView: UIView {
         }
 
         // Remove old hosting controller if exists
+        NSLayoutConstraint.deactivate(thumbnailConstraints)
+        thumbnailConstraints.removeAll()
+
         if let oldController = thumbnailHostingController {
             oldController.view.removeFromSuperview()
             oldController.willMove(toParent: nil)
@@ -224,19 +239,31 @@ class FZMessageBubbleView: UIView {
         self.thumbnailHostingController = hostingController
         bubble.addSubview(hostingController.view)
 
-        NSLayoutConstraint.activate([
+        thumbnailConstraints = [
             hostingController.view.topAnchor.constraint(equalTo: bubble.topAnchor),
             hostingController.view.leadingAnchor.constraint(equalTo: bubble.leadingAnchor),
             hostingController.view.trailingAnchor.constraint(equalTo: bubble.trailingAnchor),
             hostingController.view.bottomAnchor.constraint(equalTo: bubble.bottomAnchor),
             hostingController.view.widthAnchor.constraint(equalToConstant: scaledSize.width),
             hostingController.view.heightAnchor.constraint(equalToConstant: scaledSize.height)
-        ])
+        ]
+        NSLayoutConstraint.activate(thumbnailConstraints)
     }
 
     private func configureUnsupportedContent(isFromCurrentUser: Bool) {
         textView.isHidden = false
-        thumbnailHostingController?.view.isHidden = true
+
+        // 이전 썸네일 제약조건 제거
+        NSLayoutConstraint.deactivate(thumbnailConstraints)
+        thumbnailConstraints.removeAll()
+
+        // 썸네일 뷰 제거
+        if let hostingController = thumbnailHostingController {
+            hostingController.view.removeFromSuperview()
+            hostingController.willMove(toParent: nil)
+            hostingController.removeFromParent()
+            thumbnailHostingController = nil
+        }
 
         textView.text = "Unsupported message type"
         bubble.backgroundColor = .systemGray5
