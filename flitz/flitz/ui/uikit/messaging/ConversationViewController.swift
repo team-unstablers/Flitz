@@ -109,10 +109,11 @@ final class FZConversationViewController: UIViewController {
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
             config.showsSeparators = false
             config.backgroundColor = .clear
-            
+            config.headerMode = .supplementary
+
             return .list(using: config, layoutEnvironment: environment)
         }
-        
+
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.keyboardDismissMode = .interactive
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -120,8 +121,9 @@ final class FZConversationViewController: UIViewController {
         view.addSubview(collectionView)
 
         // constraint는 composeArea 추가 후 설정
-        
+
         collectionView.register(MessageBubbleCell.self, forCellWithReuseIdentifier: MessageBubbleCell.reuseID)
+        collectionView.register(FZDateSeparatorView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: FZDateSeparatorView.reuseID)
         collectionView.delegate = self
         collectionView.prefetchDataSource = self
     }
@@ -205,6 +207,28 @@ final class FZConversationViewController: UIViewController {
 
             return cell
         }
+
+        // 섹션 헤더 (날짜 구분) 설정
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self = self else { return nil }
+
+            if kind == UICollectionView.elementKindSectionHeader {
+                let header = collectionView.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: FZDateSeparatorView.reuseID,
+                    for: indexPath
+                ) as! FZDateSeparatorView
+
+                let section = self.grouped[indexPath.section].0
+                if case .date(let date) = section {
+                    header.configure(with: date)
+                }
+
+                return header
+            }
+
+            return nil
+        }
     }
     
     private func applySnapshot(animated: Bool = false) {
@@ -249,14 +273,6 @@ final class FZConversationViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        // 대화 정보 구독 (네비게이션 바 업데이트)
-        viewModel.$conversation
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] conversation in
-                self?.configureNavigationBar(with: conversation)
-            }
-            .store(in: &cancellables)
-
         // 연결 상태 구독 (에러 핸들링 및 사용자 피드백)
         viewModel.$connectionState
             .receive(on: DispatchQueue.main)
@@ -282,57 +298,6 @@ final class FZConversationViewController: UIViewController {
             let idx = IndexPath(item: itemIndex, section: sectionIndex)
             collectionView.scrollToItem(at: idx, at: .bottom, animated: animated)
         }
-    }
-
-    private func configureNavigationBar(with conversation: DirectMessageConversation?) {
-        guard let conversation = conversation,
-              let currentUserId = currentUserId,
-              let opponent = conversation.participants.first(where: { $0.user.id != currentUserId }) else {
-            // 대화 정보가 없으면 기본 타이틀 표시
-            navigationItem.titleView = nil
-            title = NSLocalizedString("ui.messaging.conversation.title", comment: "대화")
-            return
-        }
-
-        // 커스텀 타이틀 뷰 생성
-        let titleView = UIStackView()
-        titleView.axis = .horizontal
-        titleView.spacing = 8
-        titleView.alignment = .center
-
-        // 프로필 이미지 (TODO: 실제 이미지 로드)
-        let profileImageView = UIImageView()
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.cornerRadius = 18
-        profileImageView.layer.masksToBounds = true
-        profileImageView.backgroundColor = .systemGray5
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: 36),
-            profileImageView.heightAnchor.constraint(equalToConstant: 36)
-        ])
-        titleView.addArrangedSubview(profileImageView)
-
-        // 이름 레이블
-        let nameLabel = UILabel()
-        nameLabel.text = opponent.user.display_name
-        nameLabel.font = UIFont.boldSystemFont(ofSize: 17)
-        titleView.addArrangedSubview(nameLabel)
-
-        // 탭 제스처 추가
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTitleViewTap))
-        titleView.addGestureRecognizer(tapGesture)
-        titleView.isUserInteractionEnabled = true
-
-        navigationItem.titleView = titleView
-    }
-
-    @objc private func handleTitleViewTap() {
-        // 키보드 내리기
-        composeAreaFocused = false
-
-        // TODO: 프로필 화면으로 이동
-        logger.debug("Title view tapped")
     }
 
     private func handleConnectionStateChange(_ state: ConversationViewModel.ConnectionState) {
