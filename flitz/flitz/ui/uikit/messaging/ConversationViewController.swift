@@ -9,27 +9,35 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 final class FZConversationViewController: UIViewController {
-    
+    private let logger = createFZOSLogger("FZConversationViewController")
+
     enum Section: Hashable {
         case date(Date)
     }
-    
+
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, DirectMessage>
 
     private var collectionView: UICollectionView!
-    
+    private var composeAreaHostingController: UIHostingController<MessageComposeAreaWrapper>!
+
     private var dataSource: DataSource!
     private var grouped: [(Section, [DirectMessage])] = []
+
+    // MessageComposeArea 상태 관리
+    @Published private var isSending: Bool = false
+    @Published private var composeAreaFocused: Bool = false
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         view.backgroundColor = .systemBackground
-        
+
         self.configureCollectionView()
+        self.configureComposeArea()
         self.configureDataSource()
         self.loadInitial()
     }
@@ -46,19 +54,64 @@ final class FZConversationViewController: UIViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.keyboardDismissMode = .interactive
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(collectionView)
-        
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+
+        // constraint는 composeArea 추가 후 설정
         
         collectionView.register(MessageBubbleCell.self, forCellWithReuseIdentifier: MessageBubbleCell.reuseID)
         collectionView.delegate = self
         collectionView.prefetchDataSource = self
+    }
+
+    private func configureComposeArea() {
+        // SwiftUI MessageComposeArea를 Wrapper로 감싸서 호스팅
+        let focusedBinding = Binding<Bool>(
+            get: { [weak self] in self?.composeAreaFocused ?? false },
+            set: { [weak self] newValue in self?.composeAreaFocused = newValue }
+        )
+
+        let wrapper = MessageComposeAreaWrapper(
+            focused: focusedBinding,
+            isSending: isSending
+        ) { [weak self] request in
+            self?.handleSendMessage(request: request)
+        }
+
+        composeAreaHostingController = UIHostingController(rootView: wrapper)
+        composeAreaHostingController.view.backgroundColor = .clear
+        composeAreaHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(composeAreaHostingController)
+        view.addSubview(composeAreaHostingController.view)
+        composeAreaHostingController.didMove(toParent: self)
+
+        // Auto Layout 설정
+        NSLayoutConstraint.activate([
+            // CollectionView
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: composeAreaHostingController.view.topAnchor),
+
+            // ComposeArea
+            composeAreaHostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            composeAreaHostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            composeAreaHostingController.view.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+        ])
+    }
+
+    private func handleSendMessage(request: MessageRequest) {
+        // TODO: 실제 메시지 전송 로직 구현
+        logger.debug("Sending message: \(request.text), images: \(request.images.count)")
+
+        // isSending 상태 업데이트
+        isSending = true
+
+        // 임시: 1초 후 전송 완료
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.isSending = false
+        }
     }
     
     private func configureDataSource() {
@@ -138,7 +191,12 @@ final class FZConversationViewController: UIViewController {
     }
 }
 
-extension FZConversationViewController: UICollectionViewDelegate { }
+extension FZConversationViewController: UICollectionViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // 스크롤 시작 시 키보드 내리기
+        composeAreaFocused = false
+    }
+}
 
 extension FZConversationViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -146,6 +204,29 @@ extension FZConversationViewController: UICollectionViewDataSourcePrefetching {
     }
 }
 
+// MARK: - SwiftUI Wrapper
+
+/// MessageComposeArea를 UIKit에서 사용하기 위한 Wrapper
+struct MessageComposeAreaWrapper: View {
+    @Binding var focused: Bool
+    @FocusState private var internalFocused: Bool
+    var isSending: Bool
+    var onSend: (MessageRequest) -> Void
+
+    var body: some View {
+        MessageComposeArea(
+            focused: $internalFocused,
+            onSend: onSend,
+            isSending: isSending
+        )
+        .onChange(of: focused) { _, newValue in
+            internalFocused = newValue
+        }
+        .onChange(of: internalFocused) { _, newValue in
+            focused = newValue
+        }
+    }
+}
 
 struct FZConversationView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> FZConversationViewController {
