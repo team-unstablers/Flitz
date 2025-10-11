@@ -52,11 +52,15 @@ final class FZConversationViewController: UIViewController {
 
     let conversationId: String
 
-    init(conversationId: String) {
+    init(conversationId: String, viewModel: ConversationViewModel? = nil) {
         self.conversationId = conversationId
         super.init(nibName: nil, bundle: nil)
-
-        self.viewModel = ConversationViewModel(conversationId: conversationId)
+        
+        if let viewModel = viewModel {
+            self.viewModel = viewModel
+        } else {
+            self.viewModel = ConversationViewModel(conversationId: conversationId)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -200,8 +204,14 @@ final class FZConversationViewController: UIViewController {
                 isRead: isRead,
                 onAttachmentTap: { [weak self] attachmentId in
                     self?.composeAreaFocused = false
-                    // TODO: 첨부파일 전체화면 보기 구현
-                    self?.logger.debug("Attachment tapped: \(attachmentId)")
+                    
+                    guard let conversationId = self?.viewModel.conversationId else {
+                        return
+                    }
+                    
+                    RootAppState.shared.navState.append(
+                        .attachment(conversationId: conversationId, attachmentId: attachmentId)
+                    )
                 }
             )
 
@@ -432,9 +442,15 @@ struct FZConversationView: UIViewControllerRepresentable {
     @Environment(\.userId) var userId
 
     let conversationId: String
+    let viewModel: ConversationViewModel?
+    
+    init(conversationId: String, viewModel: ConversationViewModel? = nil) {
+        self.conversationId = conversationId
+        self.viewModel = viewModel
+    }
 
     func makeUIViewController(context: Context) -> FZConversationViewController {
-        let viewController = FZConversationViewController(conversationId: conversationId)
+        let viewController = FZConversationViewController(conversationId: conversationId, viewModel: viewModel)
         viewController.configure(with: appState.client, currentUserId: userId)
         return viewController
     }

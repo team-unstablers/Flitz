@@ -56,8 +56,8 @@ struct RootNavigation: View {
                             if userId == UserIdKey.defaultValue {
                                 EmptyView()
                             } else {
-                                // ConversationScreen(conversationId: conversationId)
-                                FZConversationView(conversationId: conversationId)
+                                ConversationScreen(conversationId: conversationId)
+                                // FZConversationView(conversationId: conversationId)
                             }
                         case .attachment(let conversationId, let attachmentId):
                             AttachmentScreen(conversationId: conversationId, attachmentId: attachmentId)

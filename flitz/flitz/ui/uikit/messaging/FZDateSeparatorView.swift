@@ -40,7 +40,7 @@ final class FZDateSeparatorView: UICollectionReusableView {
         addSubview(containerView)
 
         // Capsule background
-        capsuleBackground.backgroundColor = .systemBackground
+        capsuleBackground.backgroundColor = .white
         capsuleBackground.layer.cornerRadius = 14
         capsuleBackground.layer.masksToBounds = false
         capsuleBackground.layer.shadowColor = UIColor.black.cgColor
