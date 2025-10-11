@@ -41,11 +41,14 @@ final class FZConversationViewController: UIViewController {
 
     // 스크롤 상태 관리
     private var shouldStickToBottom = true
+    
+    private var shouldLoadMore = true
 
     // ViewModel 및 Combine
     private var viewModel: ConversationViewModel!
     private var cancellables = Set<AnyCancellable>()
     private var currentUserId: String?
+    
 
     let conversationId: String
 
@@ -204,7 +207,7 @@ final class FZConversationViewController: UIViewController {
         }
     }
     
-    private func applySnapshot(animated: Bool = true) {
+    private func applySnapshot(animated: Bool = false) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, DirectMessage>()
         
         grouped.forEach { section, items in
@@ -222,11 +225,11 @@ final class FZConversationViewController: UIViewController {
             .sink { [weak self] messages in
                 guard let self = self else { return }
                 self.grouped = self.groupByDay(messages: messages)
-                self.applySnapshot(animated: true)
+                self.applySnapshot(animated: false)
 
                 // shouldStickToBottom이 true이거나 첫 로딩 시 자동 스크롤
-                if self.shouldStickToBottom || messages.count > 0 {
-                    self.scrollToBottom(animated: messages.count > 0)
+                if self.shouldStickToBottom {
+                    self.scrollToBottom(animated: false)
                 }
             }
             .store(in: &cancellables)
@@ -407,11 +410,21 @@ extension FZConversationViewController: UICollectionViewDelegate {
         let isNearBottom = (contentHeight - offsetY - frameHeight) < 100
 
         shouldStickToBottom = isNearBottom
+        
+        if !viewModel.isLoadingMore {
+            self.shouldLoadMore = true
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         // 2번째 아이템이 표시될 때 이전 메시지 로드 (SwiftUI 버전과 동일)
-        if viewModel.messages.count > 2 && indexPath.section == 0 && indexPath.item <= 1 {
+        
+        if !shouldLoadMore {
+            return
+        }
+        
+        if viewModel.messages.count > 10 && indexPath.section == 0 && indexPath.item <= 9 {
+            self.shouldLoadMore = false
             Task {
                 await viewModel.loadPreviousMessages()
             }
