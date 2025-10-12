@@ -202,6 +202,12 @@ struct MyPageScreen: View {
 }
 
 #Preview {
-    MyPageScreen()
-        .environmentObject(RootAppState())
+    TabView {
+        MyPageScreen()
+            .environmentObject(RootAppState())
+            .tabItem {
+                Image(systemName: "person")
+                Text("test")
+            }
+    }
 }

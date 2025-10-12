@@ -28,8 +28,12 @@ struct RootTabView: View {
     }
     
     func resetTabBarStyle() {
-        UITabBar.appearance().isTranslucent = true
-        UITabBar.appearance().backgroundColor = .white
+        if #available(iOS 26.0, *) {
+            return
+        } else {
+            UITabBar.appearance().isTranslucent = true
+            UITabBar.appearance().backgroundColor = .white
+        }
     }
     
     var body: some View {

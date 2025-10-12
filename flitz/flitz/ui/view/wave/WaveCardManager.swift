@@ -170,7 +170,29 @@ struct WaveCardPreview: View {
                     if let user = distribution.card.user {
                         BlurEffectView(style: .regular)
                             .opacity(profileGeometryHelper.opacity)
-                        CollapseableUserProfile(profile: user, dismiss: nil, profileGeometryHelper: profileGeometryHelper)
+                        CollapseableUserProfile(
+                            profile: user,
+                            dismiss: nil,
+                            profileGeometryHelper: profileGeometryHelper
+                        )
+                        
+                        if #available(iOS 26.0, *) {
+                            VStack(spacing: 0) {
+                                LinearGradient(
+                                    colors: [
+                                        .white.opacity(0.0),
+                                        .white.opacity(1.0),
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: 16)
+                                Rectangle()
+                                    .fill(.white)
+                                    .ignoresSafeArea(.container)
+                                    .frame(maxWidth: .infinity, maxHeight: .zero)
+                            }
+                        }
                     }
                 }
                 
