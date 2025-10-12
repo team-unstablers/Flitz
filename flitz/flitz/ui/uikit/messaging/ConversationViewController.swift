@@ -153,6 +153,7 @@ final class FZConversationViewController: UIViewController {
         addChild(composeAreaHostingController)
         view.addSubview(composeAreaHostingController.view)
         composeAreaHostingController.didMove(toParent: self)
+        composeAreaHostingController.sizingOptions = .intrinsicContentSize
 
         // Auto Layout 설정
         NSLayoutConstraint.activate([
