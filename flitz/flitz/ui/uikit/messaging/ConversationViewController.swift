@@ -28,16 +28,6 @@ final class FZConversationViewController: UIViewController {
 
     // MessageComposeArea 상태 관리
     @Published private var isSending: Bool = false
-    @Published private var composeAreaFocused: Bool = false {
-        didSet {
-            // 키보드가 표시될 때 자동 스크롤
-            if composeAreaFocused && shouldStickToBottom {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                    self?.scrollToBottom(animated: true)
-                }
-            }
-        }
-    }
 
     // 스크롤 상태 관리
     private var shouldStickToBottom = true
@@ -134,13 +124,9 @@ final class FZConversationViewController: UIViewController {
 
     private func configureComposeArea() {
         // SwiftUI MessageComposeArea를 Wrapper로 감싸서 호스팅
-        let focusedBinding = Binding<Bool>(
-            get: { [weak self] in self?.composeAreaFocused ?? false },
-            set: { [weak self] newValue in self?.composeAreaFocused = newValue }
-        )
-
+        // ViewModel을 직접 전달하여 @Published 변경 감지
         let wrapper = MessageComposeAreaWrapper(
-            focused: focusedBinding,
+            viewModel: viewModel,
             isSending: isSending
         ) { [weak self] request in
             self?.handleSendMessage(request: request)
@@ -204,12 +190,12 @@ final class FZConversationViewController: UIViewController {
                 isFromCurrentUser: isFromCurrentUser,
                 isRead: isRead,
                 onAttachmentTap: { [weak self] attachmentId in
-                    self?.composeAreaFocused = false
-                    
+                    self?.viewModel.isComposeAreaFocused = false
+
                     guard let conversationId = self?.viewModel.conversationId else {
                         return
                     }
-                    
+
                     RootAppState.shared.navState.append(
                         .attachment(conversationId: conversationId, attachmentId: attachmentId)
                     )
@@ -289,6 +275,19 @@ final class FZConversationViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] state in
                 self?.handleConnectionStateChange(state)
+            }
+            .store(in: &cancellables)
+
+        // ComposeArea 포커스 상태 구독 (키보드 표시 시 자동 스크롤)
+        viewModel.$isComposeAreaFocused
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isFocused in
+                guard let self = self else { return }
+                if isFocused && self.shouldStickToBottom {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        self.scrollToBottom(animated: true)
+                    }
+                }
             }
             .store(in: &cancellables)
     }
@@ -374,7 +373,7 @@ final class FZConversationViewController: UIViewController {
 extension FZConversationViewController: UICollectionViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 스크롤 시작 시 키보드 내리기
-        composeAreaFocused = false
+        viewModel.isComposeAreaFocused = false
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -418,7 +417,7 @@ extension FZConversationViewController: UICollectionViewDataSourcePrefetching {
 
 /// MessageComposeArea를 UIKit에서 사용하기 위한 Wrapper
 struct MessageComposeAreaWrapper: View {
-    @Binding var focused: Bool
+    @ObservedObject var viewModel: ConversationViewModel
     @FocusState private var internalFocused: Bool
     var isSending: Bool
     var onSend: (MessageRequest) -> Void
@@ -429,11 +428,13 @@ struct MessageComposeAreaWrapper: View {
             onSend: onSend,
             isSending: isSending
         )
-        .onChange(of: focused) { _, newValue in
+        .onChange(of: viewModel.isComposeAreaFocused) { _, newValue in
+            // ViewModel 변경을 FocusState에 반영
             internalFocused = newValue
         }
         .onChange(of: internalFocused) { _, newValue in
-            focused = newValue
+            // FocusState 변경을 ViewModel에 반영
+            viewModel.isComposeAreaFocused = newValue
         }
     }
 }

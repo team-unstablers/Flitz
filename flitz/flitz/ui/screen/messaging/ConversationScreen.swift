@@ -21,6 +21,8 @@ class ConversationViewModel: ObservableObject {
     @Published var isReconnecting = false
     @Published var connectionState: ConnectionState = .disconnected
     
+    @Published var isComposeAreaFocused: Bool = false
+    
     private var currentPage: Paginated<DirectMessage>?
     private var apiClient: FZAPIClient?
     private var currentUserId: String?
@@ -397,17 +399,6 @@ struct ConversationScreen: View {
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
     }
-    
-    // 두 메시지가 같은 날짜인지 확인하는 헬퍼 함수
-    private func isSameDay(_ message1: DirectMessage?, _ message2: DirectMessage?) -> Bool {
-        guard let date1 = message1?.created_at.asISO8601Date,
-              let date2 = message2?.created_at.asISO8601Date else {
-            return false
-        }
-        
-        let calendar = Calendar.current
-        return calendar.isDate(date1, inSameDayAs: date2)
-    }
    
     var body: some View {
         FZConversationView(conversationId: viewModel.conversationId, viewModel: viewModel)
@@ -425,8 +416,7 @@ struct ConversationScreen: View {
                             Text(opponent.user.display_name).bold()
                         }
                         .onTapGesture {
-                            // FIXME
-                            // composeAreaFocused = false
+                            viewModel.isComposeAreaFocused = false
                             appState.currentModal = .userProfile(userId: opponent.user.id)
                         }
                     } else {
