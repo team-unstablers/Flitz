@@ -172,20 +172,35 @@ class FZAPIClient {
     }
     
     func nextPage<T: Codable>(_ pagination: Paginated<T>) async throws -> Paginated<T>? {
+        
+#if DEBUG
+        guard let next = pagination.next?.replacingOccurrences(of: "http://", with: "https://"),
+              let url = URL(string: next) else {
+            return nil
+        }
+#else
         guard let next = pagination.next,
               let url = URL(string: next) else {
             return nil
         }
+#endif
         
         return try await self.request(to: url,
                                       expects: Paginated<T>.self)
     }
     
     func prevPage<T: Codable>(_ pagination: Paginated<T>) async throws -> Paginated<T>? {
+#if DEBUG
+        guard let previous = pagination.previous?.replacingOccurrences(of: "http://", with: "https://"),
+              let url = URL(string: previous) else {
+            return nil
+        }
+#else
         guard let previous = pagination.previous,
               let url = URL(string: previous) else {
             return nil
         }
+#endif
         
         return try await self.request(to: url,
                                       expects: Paginated<T>.self)

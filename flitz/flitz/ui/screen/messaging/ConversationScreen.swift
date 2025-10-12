@@ -21,6 +21,8 @@ class ConversationViewModel: ObservableObject {
     @Published var isReconnecting = false
     @Published var connectionState: ConnectionState = .disconnected
     
+    @Published var isComposeAreaFocused: Bool = false
+    
     private var currentPage: Paginated<DirectMessage>?
     private var apiClient: FZAPIClient?
     private var currentUserId: String?
@@ -385,233 +387,47 @@ struct ConversationScreen: View {
     @EnvironmentObject
     var appState: RootAppState
     
-    @Environment(\.userId)
-    var userId
-    
     @Environment(\.scenePhase)
     var scenePhase
     
+    @Environment(\.userId)
+    var userId
+
     @StateObject
     var viewModel: ConversationViewModel
-    
-    @State
-    private var selectedItem: PhotosPickerItem?
-    
-    @State
-    private var shouldStickToBottom = true
-    
-    @FocusState
-    private var composeAreaFocused: Bool
 
     init(conversationId: String) {
         _viewModel = StateObject(wrappedValue: ConversationViewModel(conversationId: conversationId))
     }
-    
-    // 두 메시지가 같은 날짜인지 확인하는 헬퍼 함수
-    private func isSameDay(_ message1: DirectMessage?, _ message2: DirectMessage?) -> Bool {
-        guard let date1 = message1?.created_at.asISO8601Date,
-              let date2 = message2?.created_at.asISO8601Date else {
-            return false
-        }
-        
-        let calendar = Calendar.current
-        return calendar.isDate(date1, inSameDayAs: date2)
-    }
    
     var body: some View {
-        VStack(spacing: 0) {
-            if viewModel.isLoading && viewModel.messages.isEmpty {
-                Spacer()
-                ProgressView()
-                Spacer()
-            } else {
-                ScrollViewReader { proxy in
-                    List {
-                        // 로딩 인디케이터
-                        if viewModel.isLoadingMore {
-                            HStack {
-                                Spacer()
-                                ProgressView()
-                                Spacer()
-                            }
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
-                        }
-                        
-                        ForEach(Array(viewModel.messages.enumerated()), id: \.element.id) { index, message in
-                            // 날짜가 바뀌면 날짜 인디케이터 표시
-                            if index == 0 || !isSameDay(viewModel.messages[index - 1], message) {
-                                if let messageDate = message.created_at.asISO8601Date {
-                                    DateSeparator(date: messageDate)
-                                        .listRowSeparator(.hidden)
-                                        .listRowInsets(EdgeInsets())
-                                        .listRowBackground(Color.clear)
-                                }
-                            }
-                            
-                            MessageBubble(
-                                message: message,
-                                isFromCurrentUser: viewModel.isFromCurrentUser(message),
-                                isRead: viewModel.opponentId != nil && viewModel.readState[viewModel.opponentId!] != nil 
-                                    ? viewModel.readState[viewModel.opponentId!]! >= message.created_at.asISO8601Date!
-                                    : false,
-                                onAttachmentTap: { attachmentId in
-                                    composeAreaFocused = false
-                                    appState.navState.append(RootNavigationItem.attachment(conversationId: viewModel.conversationId, attachmentId: attachmentId))
-                                }
+        FZConversationView(conversationId: viewModel.conversationId, viewModel: viewModel)
+            .ignoresSafeArea(.all)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    if let conversation = viewModel.conversation,
+                       let opponent = conversation.participants.first(where: { $0.user.id != userId }) {
+                        HStack {
+                            ProfileImage(
+                                url: opponent.user.profile_image_url,
+                                userId: opponent.user.id,
+                                size: 36
                             )
-                            .drawingGroup()
-                            .id(message.id)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
-                            .listRowBackground(Color.clear)
-                            .onAppear {
-                                // 위에서 3번째 메시지가 나타나면 이전 메시지 로드
-                                if message.id == viewModel.messages[safe: 2]?.id {
-                                    Task {
-                                        await viewModel.loadPreviousMessages()
-                                    }
-                                }
-                            }
+                            Text(opponent.user.display_name).bold()
                         }
-                        
-                        // 하단 패딩용 빈 뷰
-                        Color.clear
-                            .frame(height: 0)
-                            .listRowSeparator(.hidden)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
-                            .id("bottomAnchor")
-                            .onAppear {
-                                shouldStickToBottom = true
-                            }
-                            .onDisappear {
-                                shouldStickToBottom = false
-                            }
-                    }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.visible)
-                    .scrollDismissesKeyboard(.interactively)
-                    .defaultScrollAnchor(.bottom)
-                    .onChange(of: viewModel.messages.count) { oldCount, newCount in
-                        // 새 메시지가 추가되었을 때만 스크롤
-                        if shouldStickToBottom || composeAreaFocused {
-                            proxy.scrollTo("bottomAnchor", anchor: .bottom)
-                        }
-                    }
-                    .onChange(of: composeAreaFocused) { _, newValue in
-                        if newValue && shouldStickToBottom {
-                            // 키보드가 나타날 때 스크롤
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                // 약간의 지연을 주어 키보드가 나타난 후 스크롤
-                                proxy.scrollTo("bottomAnchor", anchor: .bottom)
-                            }
-                        }
-                    }
-                    .onAppear {
-                        proxy.scrollTo("bottomAnchor", anchor: .bottom)
-                    }
-                }
-            }
-            
-            Divider()
-            
-            MessageComposeArea(
-                focused: $composeAreaFocused,
-                onSend: { request in
-                    Task {
-                        await viewModel.sendMessage(request: request)
-                    }
-                    
-                    DispatchQueue.main.async {
-                        composeAreaFocused = true
-                    }
-                },
-                isSending: viewModel.isSending
-            )
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                if let conversation = viewModel.conversation,
-                   let opponent = conversation.participants.first(where: { $0.user.id != userId }) {
-                    HStack {
-                        ProfileImage(
-                            url: opponent.user.profile_image_url,
-                            userId: opponent.user.id,
-                            size: 36
-                        )
-                        Text(opponent.user.display_name).bold()
-                    }
                         .onTapGesture {
-                            composeAreaFocused = false
+                            viewModel.isComposeAreaFocused = false
                             appState.currentModal = .userProfile(userId: opponent.user.id)
                         }
-                } else {
-                    Text(NSLocalizedString("ui.messaging.conversation.title", comment: "대화"))
+                    } else {
+                        Text(NSLocalizedString("ui.messaging.conversation.title", comment: "대화"))
+                    }
                 }
             }
-        }
-        .onAppear {
-            viewModel.configure(with: appState.client, currentUserId: userId)
-        }
-        .onDisappear {
-            viewModel.disconnectWebSocket()
-        }
-        .onChange(of: scenePhase) { oldPhase, newPhase in
-            switch newPhase {
-            case .active:
-                // 앱이 포그라운드로 돌아왔을 때
-                logger.info("[ConversationScreen] App became active, reconnecting...")
-                // WebSocket 재연결 및 메시지 갱신
-                if viewModel.connectionState == .disconnected {
-                    viewModel.connectWebSocket()
-                }
-                Task {
-                    await viewModel.loadMessages()
-                    await viewModel.markAsRead()
-                }
-            case .background:
-                // 앱이 백그라운드로 갔을 때
-                logger.info("[ConversationScreen] App went to background, disconnecting...")
-                viewModel.disconnectWebSocket()
-            case .inactive:
-                // 중간 상태 (앱 스위처 등)
-                break
-            @unknown default:
-                break
-            }
-        }
-        .onScenePhase(.active, immediate: true) {
-            viewModel.removeThreadNotifications()
-        }
-        .environment(\.conversationId, viewModel.conversationId)
+            .environment(\.conversationId, viewModel.conversationId)
     }
     
-}
-
-// 날짜 구분 인디케이터 컴포넌트
-struct DateSeparator: View {
-    let date: Date
-    
-    var body: some View {
-        HStack {
-            Spacer()
-            Text(date.localeDateString)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .background(
-                    Capsule()
-                        .fill(Color(UIColor.systemBackground))
-                        .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
-                )
-            Spacer()
-        }
-        .padding(.vertical, 8)
-    }
 }
 
 // Array 안전 접근을 위한 Extension
