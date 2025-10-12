@@ -402,6 +402,7 @@ struct ConversationScreen: View {
    
     var body: some View {
         FZConversationView(conversationId: viewModel.conversationId, viewModel: viewModel)
+            .ignoresSafeArea(.all)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
