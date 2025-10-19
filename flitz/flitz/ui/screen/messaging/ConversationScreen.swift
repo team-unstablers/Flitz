@@ -414,7 +414,8 @@ struct ConversationScreen: View {
                                 userId: opponent.user.id,
                                 size: 36
                             )
-                            Text(opponent.user.display_name).bold()
+                            Text(opponent.user.display_name)
+                                .bold()
                         }
                         .onTapGesture {
                             viewModel.isComposeAreaFocused = false

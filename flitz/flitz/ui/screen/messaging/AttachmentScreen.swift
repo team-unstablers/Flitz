@@ -59,7 +59,6 @@ struct AttachmentScreen: View {
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
-    @State private var showingActionSheet = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -163,33 +162,28 @@ struct AttachmentScreen: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(false)
+        /*
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    showingActionSheet = true
-                }) {
+                Menu {
+                    Button {
+                        saveImageToPhotos()
+                    } label: {
+                        Text(NSLocalizedString("ui.messaging.attachment.save", comment: "사진 앱에 저장"))
+                    }
+                } label: {
                     Image(systemName: "ellipsis")
-                        .foregroundColor(.white)
+                        // .foregroundColor()
                 }
             }
         }
+         */
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarVisibility(toolbarVisible ? .visible : .hidden, for: .navigationBar)
         .statusBar(hidden: scale > 1)
         .ignoresSafeArea()
         .onAppear {
             viewModel.configure(with: appState.client)
-        }
-        .actionSheet(isPresented: $showingActionSheet) {
-            ActionSheet(
-                title: Text(NSLocalizedString("ui.messaging.attachment.options", comment: "이미지 옵션")),
-                buttons: [
-                    .default(Text(NSLocalizedString("ui.messaging.attachment.save", comment: "사진 앱에 저장"))) {
-                        saveImageToPhotos()
-                    },
-                    .cancel(Text(NSLocalizedString("ui.messaging.attachment.cancel", comment: "취소")))
-                ]
-            )
         }
     }
     

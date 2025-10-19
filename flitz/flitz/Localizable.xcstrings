@@ -1836,6 +1836,7 @@
     },
     "ui.messaging.attachment.cancel" : {
       "comment" : "취소",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1853,6 +1854,7 @@
     },
     "ui.messaging.attachment.options" : {
       "comment" : "이미지 옵션",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

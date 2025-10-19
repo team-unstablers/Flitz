@@ -30,6 +30,7 @@ final class FZConversationViewController: UIViewController {
     @Published private var isSending: Bool = false
 
     // 스크롤 상태 관리
+    private var initialLoad = true
     private var shouldStickToBottom = true
     
     private var shouldLoadMore = true
@@ -228,7 +229,7 @@ final class FZConversationViewController: UIViewController {
         }
     }
     
-    private func applySnapshot(animated: Bool = false) {
+    private func applySnapshot(animated: Bool = false, completion: (() -> Void)? = nil) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, DirectMessage>()
         
         grouped.forEach { section, items in
@@ -236,7 +237,7 @@ final class FZConversationViewController: UIViewController {
             snapshot.appendItems(items, toSection: section)
         }
         
-        dataSource.apply(snapshot, animatingDifferences: animated)
+        dataSource.apply(snapshot, animatingDifferences: animated, completion: completion)
     }
     
     private func setupViewModelBindings() {
@@ -246,11 +247,14 @@ final class FZConversationViewController: UIViewController {
             .sink { [weak self] messages in
                 guard let self = self else { return }
                 self.grouped = self.groupByDay(messages: messages)
-                self.applySnapshot(animated: false)
-
-                // shouldStickToBottom이 true이거나 첫 로딩 시 자동 스크롤
-                if self.shouldStickToBottom {
-                    self.scrollToBottom(animated: false)
+                self.applySnapshot(animated: false) {
+                    // shouldStickToBottom이 true이거나 첫 로딩 시 자동 스크롤
+                    if self.grouped.last != nil && (self.shouldStickToBottom || self.initialLoad) {
+                        print("scrollToBottom")
+                        self.scrollToBottom(animated: false)
+                        
+                        self.initialLoad = false
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -304,6 +308,7 @@ final class FZConversationViewController: UIViewController {
         guard let lastSection = grouped.last else { return }
         let sectionIndex = grouped.count - 1
         let itemIndex = lastSection.1.count - 1
+        
         if sectionIndex >= 0, itemIndex >= 0 {
             let idx = IndexPath(item: itemIndex, section: sectionIndex)
             collectionView.scrollToItem(at: idx, at: .bottom, animated: animated)
@@ -390,7 +395,7 @@ extension FZConversationViewController: UICollectionViewDelegate {
             self.shouldLoadMore = true
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         // 2번째 아이템이 표시될 때 이전 메시지 로드 (SwiftUI 버전과 동일)
         

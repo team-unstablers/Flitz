@@ -52,7 +52,7 @@ final class FZDateSeparatorView: UICollectionReusableView {
 
         // Label
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textColor = .secondaryLabel
+        label.textColor = UIColor.gray // .secondaryLabel
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(label)
