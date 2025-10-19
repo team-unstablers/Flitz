@@ -85,9 +85,38 @@ class WaveCardManagerViewModel: ObservableObject {
         
 }
 
+struct WaveCardNoticeBox<Content: View>: View {
+    
+    @ViewBuilder
+    var content: () -> Content
+    
+    var body: some View {
+        if #available (iOS 26.0, *) {
+            VStack() {
+                content()
+            }
+            .padding()
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
+            .shadow(color: .black.opacity(0.24), radius: 16)
+            .padding(.bottom, 32)
+        } else {
+            VStack() {
+                content()
+            }
+            .padding()
+            .background {
+                BlurEffectView(style: .extraLight)
+            }
+            .cornerRadius(12)
+            .shadow(color: .black.opacity(0.24), radius: 16)
+            .padding(.bottom, 32)
+        }
+    }
+}
+
 struct WaveCardNotRevealed: View {
     var body: some View {
-        VStack() {
+        WaveCardNoticeBox {
             Text(NSLocalizedString("ui.wave.not_ready.title", comment: "아직은 카드를 볼 수 없어요"))
                 .font(.heading2)
                 .bold()
@@ -98,13 +127,22 @@ struct WaveCardNotRevealed: View {
                 .font(.main)
                 .foregroundStyle(Color.Grayscale.gray7)
         }
-        .padding()
-        .background {
-            BlurEffectView(style: .extraLight)
+    }
+}
+
+struct WaveMainCardNotExists: View {
+    var body: some View {
+        WaveCardNoticeBox {
+            Text(NSLocalizedString("ui.wave.main_card_not_exists.title", comment: "아직 메인 카드가 없어요"))
+                .font(.heading2)
+                .bold()
+                .foregroundStyle(Color.Grayscale.gray8)
+            
+            Text(NSLocalizedString("ui.wave.main_card_not_exists.message", comment: "메인 카드가 없으면 다른 사람의 카드를 받을 수 없어요.\n'내 카드' 탭에서 메인 카드를 설정해 주세요!"))
+                .multilineTextAlignment(.center)
+                .font(.main)
+                .foregroundStyle(Color.Grayscale.gray7)
         }
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.24), radius: 16)
-        .padding(.bottom, 32)
     }
 }
 
@@ -211,13 +249,27 @@ struct WaveCardPreview: View {
 
 
 struct WaveCardManagerView: View {
+    @EnvironmentObject
+    var appState: RootAppState
+    
     @StateObject
     var viewModel = WaveCardManagerViewModel()
     
     var body: some View {
         VStack {
             if viewModel.distributions.isEmpty {
-                NoCardsAvailable(reason: .noCardsExchanged)
+                ZStack(alignment: .bottom) {
+                    NoCardsAvailable(reason: .noCardsExchanged)
+                   
+                    if let profile = appState.profile,
+                       profile.main_card_id == nil {
+                        WaveMainCardNotExists()
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity)
+                            ))
+                    }
+                }
             } else {
                 WaveCardPreview(viewModel: viewModel)
             }

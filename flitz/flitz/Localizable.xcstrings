@@ -4872,6 +4872,40 @@
         }
       }
     },
+    "ui.wave.main_card_not_exists.message" : {
+      "comment" : "메인 카드가 없으면 다른 사람의 카드를 받을 수 없어요.\n'내 카드' 탭에서 메인 카드를 설정해 주세요!",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can't receive cards from others without a main card.\nPlease set your main card in the 'My Card' tab!"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메인 카드가 없으면 다른 사람의 카드를 받을 수 없어요.\n'내 카드' 탭에서 메인 카드를 설정해 주세요!"
+          }
+        }
+      }
+    },
+    "ui.wave.main_card_not_exists.title" : {
+      "comment" : "아직 메인 카드가 없어요",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You don't have a main card yet"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 메인 카드가 없어요"
+          }
+        }
+      }
+    },
     "ui.wave.my_card.delete" : {
       "comment" : "삭제하기",
       "localizations" : {
